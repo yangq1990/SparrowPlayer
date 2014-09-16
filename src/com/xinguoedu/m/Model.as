@@ -22,18 +22,15 @@ package com.xinguoedu.m
 	
 	public class Model extends EventDispatcher
 	{		
-		public var playerconfig:Object;
-		
-		public var media:BaseMedia;
-		
-		private var _mediaMap:Object = {};
-		
+		public var playerconfig:Object;		
+		public var media:BaseMedia;		
+		private var _mediaMap:Object = {};		
 		private var _mediaVO:MediaVO = new MediaVO();
 		private var _logoVO:LogoVO = new LogoVO();
 		private var _errorHintVO:ErrorHintVO = new ErrorHintVO();
 		private var _adVO:AdVO = new AdVO();
 		private var _videoadVO:VideoAdVO = new VideoAdVO();
-		
+		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
 		
@@ -116,7 +113,7 @@ package com.xinguoedu.m
 		{
 			return (_mediaMap[mediaType] is BaseMedia);
 		}
-		
+			
 		public function get mediaVO():MediaVO
 		{
 			return _mediaVO;
@@ -130,14 +127,13 @@ package com.xinguoedu.m
 		public function get errorHintVO():ErrorHintVO
 		{
 			return _errorHintVO;
-		}
-	
+		}	
 		
 		public function set skin(mc:MovieClip):void
 		{
 			_skin = mc;
 		}
-		
+
 		public function get skin():MovieClip
 		{
 			return _skin;
