@@ -59,6 +59,10 @@ package com.xinguoedu.utils
 			
 			_config['volume'] = int(xml.volume);
 			
+			//decrypt
+			_config['omittedLength'] = int(xml.decrypt.omittedLength);
+			_config['seed'] = int(xml.decrypt.seed);
+			
 			loadFlashvars();			
 			loadCookies();
 		}

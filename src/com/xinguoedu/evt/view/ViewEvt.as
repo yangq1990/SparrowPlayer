@@ -18,6 +18,10 @@ package com.xinguoedu.evt.view
 		public static const TIME:String = "time_se";
 		public static const VOLUME:String = "volume_se";
 		public static const VIDEOADS_COMPLETE:String = "videoads_complete_se";
+		/**
+		 * 按下键盘空格键 
+		 */		
+		public static const KEYDOWN_SPACE:String = "keydown_space_se";
 		
 		public var data:*;
 		

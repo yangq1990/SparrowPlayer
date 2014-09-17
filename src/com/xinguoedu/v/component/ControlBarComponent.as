@@ -1,5 +1,6 @@
 package com.xinguoedu.v.component
 {
+	import com.greensock.TweenLite;
 	import com.xinguoedu.consts.Layout;
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
@@ -12,15 +13,17 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.utils.StageReference;
 	import com.xinguoedu.utils.Strings;
 	import com.xinguoedu.v.base.BaseComponent;
-	import com.greensock.TweenLite;
 	
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.display.StageDisplayState;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
+	import flash.ui.Keyboard;
+	import flash.ui.Mouse;
 	import flash.utils.clearTimeout;
 	import flash.utils.setTimeout;
 	
@@ -50,9 +53,8 @@ package com.xinguoedu.v.component
 		/** 播放头位置 **/
 		private var _pos:Number;		
 		private var _pct:Number;
-		/**  **/
-		private var _scrubber:MovieClip;
-		
+		/** 拖动的mc **/
+		private var _scrubber:MovieClip;		
 		/** 拖动的位置 **/
 		private var _draggingPos:Number;
 		/** 是否在拖动volumeSlider **/
@@ -60,8 +62,11 @@ package com.xinguoedu.v.component
 		/** controlbar tween **/
 		private var _controlbarTween:TweenLite;
 		/** 计时器  **/
-		private var _timeout:uint;
-		
+		private var _timeout:uint;		
+		/** identify mouseover controlbar **/
+		private var _isMouseOverControlbar:Boolean;
+		/** identify mouseover volumeSlider **/
+		private var _isMouseOverVolumeSlider:Boolean;		
 		
 		public function ControlBarComponent(m:Model)
 		{
@@ -100,12 +105,15 @@ package com.xinguoedu.v.component
 		override protected function addListeners():void
 		{
 			super.addListeners();
-			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_TIME, timeHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_ERROR, mediaErrorHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_COMPLETE, mediaCompleteHandler);	
 			StageReference.stage.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
 			StageReference.stage.addEventListener(Event.MOUSE_LEAVE, mouseLeftStageHandler);
+			StageReference.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
+			StageReference.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
+			this.addEventListener(MouseEvent.MOUSE_OVER, mouseOverControlbarHandler);
+			this.addEventListener(MouseEvent.MOUSE_OUT, mouseOutControlbarHandler);			
 		}
 		
 		/** 提示，包括文字提示和时间提示 **/
@@ -202,14 +210,9 @@ package com.xinguoedu.v.component
 			else if(_scrubber.name == 'volumeSlider')
 			{
 				_draggingVolumeSlider = true;
-				_scrubber.done.height = Math.abs(_scrubber.icon.y);
-				pct = int((Math.abs(_scrubber.icon.y) - _scrubber.icon.height*0.5) / actualHeight * 100);	
-				_scrubber.volumeText.text = pct + "%";
-				trumpetHandler(pct);
-				//拖着icon移动的时候，没必要不停写入cookie，等mouseup的时候再写入
-				dispatchEvent(new ViewEvt(ViewEvt.VOLUME, {'save2cookie':false, 'pct':pct}));				
-			}
-		
+				pct = int((Math.abs(_scrubber.icon.y) - _scrubber.icon.height*0.5) / actualHeight * 100);					
+				volumeChangeHandler(_scrubber.icon.y, pct,false);
+			}		
 		}
 		
 		/** Handle mouse releases on sliders. **/
@@ -229,11 +232,8 @@ package com.xinguoedu.v.component
 			}
 			else if (_scrubber.name == 'volumeSlider') 
 			{
-				pct = int((Math.abs(_scrubber.icon.y) - _scrubber.icon.height*0.5) / actualHeight * 100);
-				_scrubber.done.height = Math.abs(_scrubber.icon.y);
-				_scrubber.volumeText.text = int(pct);
-				trumpetHandler(pct);
-				dispatchEvent(new ViewEvt(ViewEvt.VOLUME, {'save2cookie':true, 'pct':pct}));	
+				pct = int((Math.abs(_scrubber.icon.y) - _scrubber.icon.height*0.5) / actualHeight * 100);				
+				volumeChangeHandler(_scrubber.icon.y, pct, true);
 				_draggingVolumeSlider = false;
 			}	
 			
@@ -243,8 +243,11 @@ package com.xinguoedu.v.component
 		private function overHandler(evt:MouseEvent):void 
 		{
 			var slider:MovieClip = evt.currentTarget as MovieClip;
-			if(slider.name != "timeSlider")
+			if(slider.name == "volumeSlider")
+			{
+				_isMouseOverVolumeSlider = true;
 				return;		
+			}				
 			
 			showTimeTip(this.mouseX);
 			showVline(this.mouseX);		
@@ -400,6 +403,7 @@ package com.xinguoedu.v.component
 		
 		private function moveHandler(evt:MouseEvent):void
 		{
+			Mouse.show();
 			if(_controlbarTween != null)
 			{
 				TweenLite.killTweensOf(_controlbarTween, true);
@@ -426,6 +430,7 @@ package com.xinguoedu.v.component
 				}
 				
 				volumeSlider.visible = false;
+				_isMouseOverVolumeSlider = false;
 			}
 		}
 		
@@ -451,7 +456,7 @@ package com.xinguoedu.v.component
 			_stacker.rearrange(stageWidth);
 			fixTime();
 			
-			_totalText.x = timeSlider.rail.x + timeSlider.rail.width - _totalText.textWidth;
+			_totalText.x = timeSlider.x + timeSlider.rail.width - _totalText.width;
 			
 			this.x = 0;
 			this.y = stageHeight - _skin.height;
@@ -514,7 +519,7 @@ package com.xinguoedu.v.component
 			_skin.pauseButton.visible = true;
 		}
 		
-		private function playerStateChangeHandler(evt:PlayerStateEvt):void
+		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void
 		{
 			stateHandler();
 		}
@@ -660,9 +665,112 @@ package com.xinguoedu.v.component
 			}
 		}
 		
+		private function keyDownHandler(evt:KeyboardEvent):void
+		{
+			switch(evt.keyCode)
+			{
+				case Keyboard.SPACE:
+					dispatchEvent(new ViewEvt(ViewEvt.KEYDOWN_SPACE));
+					break;
+				case Keyboard.UP: //向上调节音量
+					keydownVolumeHandler('+');					
+					break;
+				case Keyboard.DOWN: //向下调节音量
+					keydownVolumeHandler('-');
+					break;
+				/*case Keyboard.LEFT: //快退	
+					keydownTimeHandler('-');
+					break;
+				case Keyboard.RIGHT: //快进
+					keydownTimeHandler('+');
+					break;*/
+				default:
+					break;
+					
+			}
+		}
+		
+		private function keyUpHandler(evt:KeyboardEvent):void
+		{
+			switch(evt.keyCode)
+			{
+				case Keyboard.UP: //向上调节音量
+					keydownVolumeHandler('+', true);					
+					break;
+				case Keyboard.DOWN: //向下调节音量
+					keydownVolumeHandler('-', true);
+					break;
+			}
+		}
+		
+		/** 鼠标over controlbar **/
+		private function mouseOverControlbarHandler(evt:MouseEvent):void
+		{
+			_isMouseOverControlbar = true;
+		}
+		
+		/** 鼠标out controlbar **/
+		private function mouseOutControlbarHandler(evt:MouseEvent):void
+		{
+			_isMouseOverControlbar = false;
+		}
+		
+		/**
+		 * 处理键盘按下音量的加减 
+		 * @param operator
+		 * @param save2Cookie 是否立即将音量值写入cookie
+		 * + 表示增加音量
+		 * - 表示减小音量
+		 */		
+		private function keydownVolumeHandler(operator:String, save2Cookie:Boolean=false):void
+		{
+			if(!save2Cookie) //key up时不需要继续调整icon位置
+			{
+				var pct:int = 0;
+				if(operator == '+')
+				{
+					volumeSlider.icon.y -= NumberConst.VOLUME_STEP_SIZE;				
+					if(volumeSlider.icon.y <= -volumeSlider.rail.height + volumeSlider.icon.height*0.5)
+						volumeSlider.icon.y = -volumeSlider.rail.height + volumeSlider.icon.height*0.5;
+				}
+				else if(operator == '-')
+				{
+					volumeSlider.icon.y += NumberConst.VOLUME_STEP_SIZE;
+					if(volumeSlider.icon.y >= -volumeSlider.icon.height*0.5)
+						volumeSlider.icon.x = -volumeSlider.icon.height*0.5;
+				}					
+			}
+			pct = int((Math.abs(volumeSlider.icon.y) - volumeSlider.icon.height*0.5)  / actualHeight * 100);
+			volumeChangeHandler(volumeSlider.icon.y, pct, save2Cookie);
+		}
+		
+		
+		/**
+		 * 音量发生改变后的处理函数
+		 * @param iconY icon的y坐标
+		 * @param pct 音量值
+		 * @param save2cookie 是否立即写入cookie
+		 * 
+		 */		
+		private function volumeChangeHandler(iconY:Number, pct:int, save2cookie:Boolean):void
+		{
+			volumeSlider.done.height = Math.abs(iconY);
+			volumeSlider.volumeText.text = pct + "%";
+			trumpetHandler(pct);
+			dispatchEvent(new ViewEvt(ViewEvt.VOLUME, {'save2cookie':save2cookie, 'pct':pct}));	
+		}
+		
+		
 		private function hideControlbar():void
 		{
-			_controlbarTween = TweenLite.to(this, 0.5, {y:stageHeight});
+			if(_m.state == PlayerState.PAUSED)
+				return;
+			
+			if(!_isMouseOverControlbar && !_isMouseOverVolumeSlider)
+			{
+				Mouse.hide();
+				_controlbarTween = TweenLite.to(this, 0.5, {y:stageHeight});
+			}
 		}
 		
 		private function mediaCompleteHandler(evt:MediaEvt):void
@@ -706,7 +814,6 @@ package com.xinguoedu.v.component
 		override public function get height():Number
 		{
 			return _skin.height;
-		}
-		
+		}		
 	}
 }

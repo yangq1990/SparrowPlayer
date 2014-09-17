@@ -181,6 +181,5 @@ package com.xinguoedu.m
 		{
 			_videoadVO = value;
 		}
-
 	}
 }

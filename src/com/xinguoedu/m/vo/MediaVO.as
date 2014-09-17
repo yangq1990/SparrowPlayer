@@ -10,5 +10,15 @@ package com.xinguoedu.m.vo
 		public var vid:String;
 		
 		public var type:String = "http";
+		
+		/**
+		 *  可忽略的长度，被加密的视频的前omittedLength个字节可以不用解密
+		 */		
+		public var omittedLength:int = 0;
+		
+		/**
+		 * 对视频字节数据进行混淆处理的seed 
+		 */		
+		public var seed:int;
 	}
 }
