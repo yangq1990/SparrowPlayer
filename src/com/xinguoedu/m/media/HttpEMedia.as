@@ -5,7 +5,7 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.vo.MediaVO;
-	import com.xinguoedu.utils.DecryptFlv;
+	import com.xinguoedu.utils.Decrypt;
 	
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -44,6 +44,8 @@ package com.xinguoedu.m.media
 		
 		override public function init(mediaVO:MediaVO):void
 		{
+			super.init(mediaVO);
+			
 			_nc = new NetConnection();
 			_nc.connect(null);
 			
@@ -122,23 +124,18 @@ package com.xinguoedu.m.media
 				);
 			}		*/
 			
-			var byteArr:ByteArray = new ByteArray();
 			while(_urlStream.bytesAvailable)
 			{
-				_urlStream.readBytes(byteArr, 0, _urlStream.bytesAvailable);
-				byteArr = DecryptFlv.decrypt(byteArr);
+				_urlStream.readBytes(_totalByteArray, _totalByteArray.length, _urlStream.bytesAvailable);
 			}
-			
-			//全部的二进制数据存到_totalByteArray里面
-			byteArr.readBytes(_totalByteArray, _totalByteArray.length, byteArr.length);
-			byteArr.position = 0;
-			
-			_stream.appendBytes(byteArr);
 		}  
 		
 		/** 加载完成 **/
 		private function completeHnd(e:Event):void
 		{
+			Decrypt.decrypt(_totalByteArray, _mediaVO.omittedLength, _mediaVO.seed);
+			_stream.appendBytes(_totalByteArray);
+			
 			dispatchMediaStateEvt(PlayerState.PLAYING);
 			destroyPosTimer();		
 			_posInterval = setInterval(positionInterval, 100); //每0.1s调用一次
