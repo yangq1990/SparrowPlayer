@@ -1,5 +1,6 @@
 package com.xinguoedu.c
 {
+	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.evt.view.ViewEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.StageReference;
@@ -32,6 +33,7 @@ package com.xinguoedu.c
 			_v.addEventListener(ViewEvt.NORMAL, normalHandler);
 			_v.addEventListener(ViewEvt.VOLUME, volumeHandler);
 			_v.addEventListener(ViewEvt.VIDEOADS_COMPLETE, videoadsCompleteHandler);
+			_v.addEventListener(ViewEvt.KEYDOWN_SPACE, keyDownSpaceHandler);
 		}
 		
 		private function playHandler(evt:ViewEvt):void
@@ -90,6 +92,19 @@ package com.xinguoedu.c
 		private function videoadsCompleteHandler(evt:ViewEvt):void
 		{
 			_m.setActiveMedia();
+		}
+		
+		/** 处理按下空格键 **/
+		private function keyDownSpaceHandler(evt:ViewEvt):void
+		{
+			if(_m.state == PlayerState.IDLE || _m.state == PlayerState.PAUSED)
+			{
+				_m.media.play();
+			}
+			else if(_m.state == PlayerState.PLAYING || _m.state == PlayerState.BUFFERING)
+			{
+				_m.media.pause();
+			}
 		}
 		
 		
