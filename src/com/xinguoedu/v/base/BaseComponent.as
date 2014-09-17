@@ -1,10 +1,12 @@
 package com.xinguoedu.v.base
 {
+	import com.greensock.TweenLite;
 	import com.xinguoedu.consts.PlayerColor;
+	import com.xinguoedu.evt.EventBus;
+	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.ShapeFactory;
 	import com.xinguoedu.utils.StageReference;
-	import com.greensock.TweenLite;
 	
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
@@ -47,11 +49,18 @@ package com.xinguoedu.v.base
 		protected function addListeners():void
 		{
 			StageReference.stage.addEventListener(Event.RESIZE, resizeHandler);
+			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
 		}
 		
 		private function resizeHandler(evt:Event):void
 		{
 			resize();
+		}
+		
+		/** 交给子类重写 **/
+		protected function playerStateChangeHandler(evt:PlayerStateEvt):void
+		{
+			
 		}
 		
 		protected function getSkinComponent(skin:MovieClip, compName:String):DisplayObject

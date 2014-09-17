@@ -40,15 +40,9 @@ package com.xinguoedu.v.component
 		override protected function addListeners():void
 		{
 			super.addListeners();
-			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
 		}
 		
-		private function playerStateChangeHandler(evt:PlayerStateEvt):void
-		{
-			stateHandler();
-		}
-		
-		private function stateHandler():void
+		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void
 		{
 			switch(_m.state) 
 			{
@@ -59,7 +53,7 @@ package com.xinguoedu.v.component
 				case PlayerState.IDLE:
 					break;
 				case PlayerState.PAUSED:
-				
+					
 					if(!_ad.numChildren)
 					{
 						var loader:MultifunctionalLoader = new MultifunctionalLoader();

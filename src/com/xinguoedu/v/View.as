@@ -8,6 +8,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.ControlBarComponent;
 	import com.xinguoedu.v.component.ErrorComponent;
 	import com.xinguoedu.v.component.LogoComponent;
+	import com.xinguoedu.v.component.StateHintComponent;
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
 	
@@ -27,6 +28,8 @@ package com.xinguoedu.v
 		private var _logoComp:BaseComponent;	
 		
 		private var _adComp:BaseComponent;
+		
+		private var _stateHintComp:BaseComponent;
 		
 		private var _errorHintComp:BaseComponent;
 		
@@ -56,6 +59,9 @@ package com.xinguoedu.v
 			
 			_adComp = new AdComponent(_m);
 			_root.addChild(_adComp);
+			
+			_stateHintComp = new StateHintComponent(_m);
+			_root.addChild(_stateHintComp);
 			
 			_errorHintComp = new ErrorComponent(_m);
 			_root.addChild(_errorHintComp);
@@ -89,6 +95,7 @@ package com.xinguoedu.v
 			_controlbarComp.addEventListener(ViewEvt.FULLSCREEN, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.NORMAL, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.VOLUME, function(evt:ViewEvt):void{ dispatchEvent(evt); });
+			_controlbarComp.addEventListener(ViewEvt.KEYDOWN_SPACE, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			
 			_videoComp.addEventListener(ViewEvt.PAUSE, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_videoComp.addEventListener(ViewEvt.PLAY, function(evt:ViewEvt):void{ dispatchEvent(evt); });
