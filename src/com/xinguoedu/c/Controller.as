@@ -34,6 +34,7 @@ package com.xinguoedu.c
 			_v.addEventListener(ViewEvt.VOLUME, volumeHandler);
 			_v.addEventListener(ViewEvt.VIDEOADS_COMPLETE, videoadsCompleteHandler);
 			_v.addEventListener(ViewEvt.KEYDOWN_SPACE, keyDownSpaceHandler);
+			_v.addEventListener(ViewEvt.PLAY_NEXT, playnextHandler);
 		}
 		
 		private function playHandler(evt:ViewEvt):void
@@ -107,7 +108,10 @@ package com.xinguoedu.c
 			}
 		}
 		
-		
-		
+		/** 播放下一集 **/
+		private function playnextHandler(evt:ViewEvt):void			
+		{
+			_m.js.playnext();
+		}		
 	}
 }
