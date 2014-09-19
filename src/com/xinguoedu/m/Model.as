@@ -1,10 +1,16 @@
 package com.xinguoedu.m
 {
+	import cn.wecoding.utils.YatsenLog;
+	
+	import com.adobe.images.PNGEncoder;
+	import com.hurlant.util.Base64;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.PlayerStateEvt;
+	import com.xinguoedu.evt.js.JSEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
+	import com.xinguoedu.m.js.JSAPI;
 	import com.xinguoedu.m.media.BaseMedia;
 	import com.xinguoedu.m.media.HLSMedia;
 	import com.xinguoedu.m.media.HttpEMedia;
@@ -16,13 +22,15 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
 	
+	import flash.display.BitmapData;
 	import flash.display.MovieClip;
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+	import flash.utils.ByteArray;
 	
-	public class Model extends EventDispatcher
+	public class Model
 	{		
 		public var playerconfig:Object;		
+		public var js:JSAPI = JSAPI.getInstance();
+		
 		public var media:BaseMedia;		
 		private var _mediaMap:Object = {};		
 		private var _mediaVO:MediaVO = new MediaVO();
@@ -34,10 +42,8 @@ package com.xinguoedu.m
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
 		
-		public function Model(target:IEventDispatcher=null)
+		public function Model()
 		{
-			super(target);
-			
 			setMedia();
 		}		
 		
@@ -52,6 +58,7 @@ package com.xinguoedu.m
 		{
 			media.addEventListener(MediaEvt.MEDIA_INFO, mediaInfoHandler);
 			media.addEventListener(MediaEvt.MEDIA_STATE, mediaStateHandler);
+			js.addEventListener(JSEvt.SCREENSHOT, screenshotHandler);
 		}
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
@@ -78,7 +85,7 @@ package com.xinguoedu.m
 					state = PlayerState.BUFFERING;
 					break;
 				case StreamStatus.PLAY_COMPLETE:
-					state = PlayerState.IDLE;
+					state = PlayerState.IDLE; 
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_COMPLETE));	
 					break;
 				default:
@@ -91,6 +98,42 @@ package com.xinguoedu.m
 		{
 			state = evt.data;
 		}
+		
+		/** 截图处理 **/
+		private function screenshotHandler(evt:JSEvt):void
+		{
+			media.pause();
+			var bitmapData:BitmapData;
+			var screenshotByteArray:ByteArray;
+			try
+			{
+				bitmapData = new BitmapData(media.display.width, media.display.height ,true, 0);
+				bitmapData.draw(media.display);
+				
+				screenshotByteArray = PNGEncoder.encode(bitmapData);
+				var imgstr:String = "data:image/png;base64," + (Base64.encodeByteArray(screenshotByteArray));
+				js.showScreenshot(imgstr);
+			}
+			catch(err:Error)
+			{
+				YatsenLog.info("Model", "截图出错" + err.toString());
+				
+				if(bitmapData != null)
+				{
+					bitmapData.dispose(); //释放内存
+					bitmapData = null;
+				}
+				
+				if(screenshotByteArray != null)
+				{
+					screenshotByteArray.clear(); //释放内存
+					screenshotByteArray = null;
+				}
+				
+				media.play();
+			}
+		}
+										   
 		
 		/**
 		 * 根据媒体类型 激活相应的媒体模块 

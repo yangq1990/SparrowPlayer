@@ -11,7 +11,7 @@ package com.xinguoedu.evt.view
 	{
 		public static const PLAY:String = "play_ve";
 		public static const PAUSE:String = "pause_ve";
-		public static const NEXT:String = "next_ve";
+		public static const PLAY_NEXT:String = "playnext_ve";
 		public static const FULLSCREEN:String = "fullscreen_ve";
 		public static const NORMAL:String = "normal_ve";
 		public static const MUTE:String = "mute_ve";
