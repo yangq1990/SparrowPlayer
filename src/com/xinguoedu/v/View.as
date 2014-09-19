@@ -96,6 +96,7 @@ package com.xinguoedu.v
 			_controlbarComp.addEventListener(ViewEvt.NORMAL, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.VOLUME, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.KEYDOWN_SPACE, function(evt:ViewEvt):void{ dispatchEvent(evt); });
+			_controlbarComp.addEventListener(ViewEvt.PLAY_NEXT, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			
 			_videoComp.addEventListener(ViewEvt.PAUSE, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_videoComp.addEventListener(ViewEvt.PLAY, function(evt:ViewEvt):void{ dispatchEvent(evt); });

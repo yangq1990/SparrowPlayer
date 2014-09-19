@@ -78,7 +78,7 @@ package com.xinguoedu.v.component
 			BUTTONS = {
 					playButton:ViewEvt.PLAY,
 					pauseButton: ViewEvt.PAUSE,
-					nextButton: ViewEvt.NEXT,
+					nextButton: ViewEvt.PLAY_NEXT,
 					fullscreenButton: ViewEvt.FULLSCREEN,
 					normalscreenButton: ViewEvt.NORMAL,
 					settingButton: "",
@@ -315,15 +315,7 @@ package com.xinguoedu.v.component
 		
 		/** Handle clicks from all buttons. **/
 		private function clickHandler(evt:MouseEvent):void
-		{		
-			//播放下一集
-			if(evt.target.name == "nextButton")
-			{
-				//KuaijiJSModel.getInstance().playNext();
-				//evt.stopImmediatePropagation();
-				return;
-			}
-			
+		{				
 			//点击设置按钮
 			if(evt.target.name == "settingButton")
 			{
@@ -454,7 +446,7 @@ package com.xinguoedu.v.component
 			}
 		
 			_stacker.rearrange(stageWidth);
-			fixTime();
+			//fixTime();
 			
 			_totalText.x = timeSlider.x + timeSlider.rail.width - _totalText.width;
 			
@@ -755,7 +747,6 @@ package com.xinguoedu.v.component
 		private function volumeChangeHandler(iconY:Number, pct:int, save2cookie:Boolean):void
 		{
 			volumeSlider.done.height = Math.abs(iconY);
-			volumeSlider.volumeText.text = pct + "%";
 			trumpetHandler(pct);
 			dispatchEvent(new ViewEvt(ViewEvt.VOLUME, {'save2cookie':save2cookie, 'pct':pct}));	
 		}
