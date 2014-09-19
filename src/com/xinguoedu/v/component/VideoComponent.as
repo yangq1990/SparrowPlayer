@@ -1,5 +1,6 @@
 package com.xinguoedu.v.component
 {
+	import com.greensock.TweenLite;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
@@ -7,7 +8,6 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.Stretcher;
 	import com.xinguoedu.v.base.BaseComponent;
-	import com.greensock.TweenLite;
 	
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
@@ -35,13 +35,13 @@ package com.xinguoedu.v.component
 		override protected function addListeners():void
 		{
 			super.addListeners();
-			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADED, onMediaLoadedHandler);
-			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_METADATA, onMediaMetaDataHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADED, mediaLoadedHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_METADATA, mediaMetaDataHandler);
 			this.addEventListener(MouseEvent.CLICK, clickHandler);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, doubleClickHandler);	
 		}
 		
-		private function onMediaLoadedHandler(evt:MediaEvt):void
+		private function mediaLoadedHandler(evt:MediaEvt):void
 		{
 			_media = _m.media.display;
 			addChild(_media);
@@ -51,7 +51,7 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 收到视频的metadata信息后调整视频 **/
-		private function onMediaMetaDataHandler(evt:MediaEvt):void
+		private function mediaMetaDataHandler(evt:MediaEvt):void
 		{
 			Stretcher.stretch(_media, stageWidth, stageHeight);
 		}

@@ -57,7 +57,11 @@ package com.xinguoedu.v.base
 			resize();
 		}
 		
-		/** 交给子类重写 **/
+		/**
+		 * 播放器状态处理函数 交给子类重写
+		 * @param evt
+		 * 
+		 */		
 		protected function playerStateChangeHandler(evt:PlayerStateEvt):void
 		{
 			
