@@ -144,7 +144,7 @@ package com.xinguoedu.m.media
 				return;
 			}			
 			
-			_stream.pause();
+			//_stream.pause();
 			
 			//已缓存到本地的视频长度
 			var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);
