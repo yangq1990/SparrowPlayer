@@ -14,9 +14,17 @@ package com.xinguoedu.evt.js
 		 */		
 		public static const SCREENSHOT:String = "screenshot";
 		
-		public function JSEvt(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public var data:*;
+		
+		public function JSEvt(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
 			super(type, bubbles, cancelable);
+			this.data = data;
+		}
+		
+		override public function clone():Event
+		{
+			return new JSEvt(type, data, bubbles, cancelable);
 		}
 	}
 }

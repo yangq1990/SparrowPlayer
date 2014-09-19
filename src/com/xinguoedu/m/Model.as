@@ -107,7 +107,7 @@ package com.xinguoedu.m
 			var screenshotByteArray:ByteArray;
 			try
 			{
-				bitmapData = new BitmapData(media.display.width, media.display.height ,true, 0);
+				bitmapData = new BitmapData(evt.data.width, evt.data.height ,true, 0);
 				bitmapData.draw(media.display);
 				
 				screenshotByteArray = PNGEncoder.encode(bitmapData);

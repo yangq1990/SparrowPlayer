@@ -28,11 +28,16 @@ package com.xinguoedu.m.js
 				ExternalInterface.addCallback("JS_screenshot", screenshotHandler);
 			}			
 		}
-		
-		/** 截图 **/
-		private function screenshotHandler():void
+	
+		/**
+		 * 截图
+		 * @param w 截图宽度
+		 * @param h 截图高度
+		 * 
+		 */		
+		private function screenshotHandler(w:Number, h:Number):void
 		{		
-			dispatchEvent(new JSEvt(JSEvt.SCREENSHOT));
+			dispatchEvent(new JSEvt(JSEvt.SCREENSHOT, {'width':w, 'height':h}));
 		}
 		
 		/**
