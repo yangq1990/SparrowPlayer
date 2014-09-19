@@ -74,21 +74,26 @@ package com.xinguoedu.utils
 				return;
 			
 			var lastclip:*  = _stack[len - 1].c;
+			var timeSlider_width:Number = 0;
 			//最后一个clip应该是kuaijiLogoButton
 			if(lastclip.name != "helpTip" && lastclip is MovieClip && lastclip.visible)
 			{
 				lastclip.x = wid - Layout.MARGIN_TO_STAGEBORDER - lastclip.width * 0.5;
-				_mc.timeSlider.width = wid - _mc.timeSlider.x - Layout.MARGIN_TO_STAGEBORDER - lastclip.width - (_mc.settingButton.width + Layout.MARGIN_BETWEEN_BUTTON) * num_simplebutton;
+				timeSlider_width = wid - _mc.timeSlider.x - Layout.MARGIN_TO_STAGEBORDER - lastclip.width - (_mc.settingButton.width + Layout.MARGIN_BETWEEN_BUTTON) * num_simplebutton;
 			}
 			else
 			{
-				_mc.timeSlider.width = wid - _mc.timeSlider.x - Layout.MARGIN_TO_STAGEBORDER - (_mc.settingButton.width + Layout.MARGIN_BETWEEN_BUTTON) * num_simplebutton;
+				timeSlider_width = wid - _mc.timeSlider.x - Layout.MARGIN_TO_STAGEBORDER - (_mc.settingButton.width + Layout.MARGIN_BETWEEN_BUTTON) * num_simplebutton;
 			}					
+			
+			var scale:Number = timeSlider_width / _mc.timeSlider.rail.width;
+			_mc.timeSlider.rail.width = _mc.timeSlider.hline.width = timeSlider_width;
+			_mc.timeSlider.done.width = _mc.timeSlider.mark.width *= scale; 
 			
 			var length:int = needAdjustArr.length;
 			for(var j:int = 0; j < length; j++)
 			{
-				needAdjustArr[j].c.x = _mc.timeSlider.x + _mc.timeSlider.width + Layout.MARGIN_BETWEEN_BUTTON * (j+1) + needAdjustArr[j].width * (j + 0.5);
+				needAdjustArr[j].c.x = _mc.timeSlider.x + timeSlider_width + Layout.MARGIN_BETWEEN_BUTTON * (j+1) + needAdjustArr[j].width * (j + 0.5);
 				trace('adjust--->', needAdjustArr[j].c.x, needAdjustArr[j].c.name);
 			}	
 			
