@@ -26,6 +26,7 @@ package com.xinguoedu.m.js
 			if(available)
 			{
 				ExternalInterface.addCallback("JS_screenshot", screenshotHandler);
+				ExternalInterface.addCallback("JS_qrcode", qrcodeHandler);
 			}			
 		}
 	
@@ -38,6 +39,12 @@ package com.xinguoedu.m.js
 		private function screenshotHandler(w:Number, h:Number):void
 		{		
 			dispatchEvent(new JSEvt(JSEvt.SCREENSHOT, {'width':w, 'height':h}));
+		}
+		
+		
+		private function qrcodeHandler():void
+		{
+			dispatchEvent(new JSEvt(JSEvt.QRCODE));
 		}
 		
 		/**

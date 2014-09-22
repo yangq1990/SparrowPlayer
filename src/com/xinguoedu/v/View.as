@@ -8,6 +8,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.ControlBarComponent;
 	import com.xinguoedu.v.component.ErrorComponent;
 	import com.xinguoedu.v.component.LogoComponent;
+	import com.xinguoedu.v.component.QrcodeComponent;
 	import com.xinguoedu.v.component.StateHintComponent;
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
@@ -28,6 +29,8 @@ package com.xinguoedu.v
 		private var _logoComp:BaseComponent;	
 		
 		private var _adComp:BaseComponent;
+		
+		private var _qrcodeComp:BaseComponent;
 		
 		private var _stateHintComp:BaseComponent;
 		
@@ -59,6 +62,9 @@ package com.xinguoedu.v
 			
 			_adComp = new AdComponent(_m);
 			_root.addChild(_adComp);
+			
+			_qrcodeComp = new QrcodeComponent(_m);
+			_root.addChild(_qrcodeComp);
 			
 			_stateHintComp = new StateHintComponent(_m);
 			_root.addChild(_stateHintComp);

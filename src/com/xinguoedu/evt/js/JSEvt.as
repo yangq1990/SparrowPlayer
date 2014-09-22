@@ -14,6 +14,11 @@ package com.xinguoedu.evt.js
 		 */		
 		public static const SCREENSHOT:String = "screenshot";
 		
+		/**
+		 * 二维码 
+		 */		
+		public static const QRCODE:String = "qrcode";
+		
 		public var data:*;
 		
 		public function JSEvt(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false)

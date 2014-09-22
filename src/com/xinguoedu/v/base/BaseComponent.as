@@ -31,7 +31,9 @@ package com.xinguoedu.v.base
 		private var _defaultShape:Shape;
 		private var _overShape:Shape;
 		/** 关闭按钮tweenlite对象的引用 **/
-		private var _tweenLite:TweenLite;
+		private var _btnTween:TweenLite;
+		/** 组件的tweenlite对象引用 **/
+		protected var _compTween:TweenLite;
 		
 		public function BaseComponent(m:Model)
 		{
@@ -135,14 +137,14 @@ package com.xinguoedu.v.base
 			evt.stopPropagation();
 			_overShape.visible = true;		
 			_defaultShape.visible = false;
-			destroyTween();			
-			_tweenLite = TweenLite.from(_overShape, 0.3,{rotation:-90}); //旋转效果			
+			destroyBtnTween();			
+			_btnTween = TweenLite.from(_overShape, 0.3,{rotation:-90}); //旋转效果			
 		}
 		
 		private function outCloseBtnHandler(evt:MouseEvent):void
 		{
 			evt.stopPropagation();
-			destroyTween();			
+			destroyBtnTween();			
 			_overShape.visible = false;
 			_defaultShape.visible = true;
 		}
@@ -156,15 +158,27 @@ package com.xinguoedu.v.base
 		/** 隐藏自己 **/
 		protected function hide():void
 		{
+			destroyCompTween();
 			visible = false;
 		}
 		
-		private function destroyTween():void
+		private function destroyBtnTween():void
 		{
-			if(_tweenLite != null)
+			if(_btnTween != null)
 			{
-				TweenLite.killTweensOf(_tweenLite, true);
-				_tweenLite = null;
+				TweenLite.killTweensOf(_btnTween, true);
+				_btnTween = null;
+				_overShape.rotation = 0;
+			}
+		}
+		
+		/** 清除组件缓动的引用 **/
+		private function destroyCompTween():void
+		{
+			if(_compTween != null)
+			{
+				TweenLite.killTweensOf(_compTween, true);
+				_compTween = null;
 			}
 		}
 		

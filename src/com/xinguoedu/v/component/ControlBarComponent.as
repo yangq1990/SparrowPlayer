@@ -58,9 +58,7 @@ package com.xinguoedu.v.component
 		/** 拖动的位置 **/
 		private var _draggingPos:Number;
 		/** 是否在拖动volumeSlider **/
-		private var _draggingVolumeSlider:Boolean = false;		
-		/** controlbar tween **/
-		private var _controlbarTween:TweenLite;
+		private var _draggingVolumeSlider:Boolean = false;	
 		/** 计时器  **/
 		private var _timeout:uint;		
 		/** identify mouseover controlbar **/
@@ -396,10 +394,10 @@ package com.xinguoedu.v.component
 		private function moveHandler(evt:MouseEvent):void
 		{
 			Mouse.show();
-			if(_controlbarTween != null)
+			if(_compTween != null)
 			{
-				TweenLite.killTweensOf(_controlbarTween, true);
-				_controlbarTween = null;
+				TweenLite.killTweensOf(_compTween, true);
+				_compTween = null;
 			}
 			
 			if(_timeout && _m.state != PlayerState.IDLE)
@@ -760,7 +758,7 @@ package com.xinguoedu.v.component
 			if(!_isMouseOverControlbar && !_isMouseOverVolumeSlider)
 			{
 				Mouse.hide();
-				_controlbarTween = TweenLite.to(this, 0.5, {y:stageHeight});
+				_compTween = TweenLite.to(this, 0.5, {y:stageHeight});
 			}
 		}
 		

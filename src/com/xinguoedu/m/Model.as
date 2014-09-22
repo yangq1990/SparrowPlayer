@@ -61,6 +61,7 @@ package com.xinguoedu.m
 			media.addEventListener(MediaEvt.MEDIA_INFO, mediaInfoHandler);
 			media.addEventListener(MediaEvt.MEDIA_STATE, mediaStateHandler);
 			js.addEventListener(JSEvt.SCREENSHOT, screenshotHandler);
+			js.addEventListener(JSEvt.QRCODE, qrcodeHandler);
 		}
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
@@ -138,6 +139,11 @@ package com.xinguoedu.m
 				
 				media.play();
 			}
+		}
+		
+		private function qrcodeHandler(evt:JSEvt):void
+		{
+			EventBus.getInstance().dispatchEvent(evt);
 		}
 										   
 		

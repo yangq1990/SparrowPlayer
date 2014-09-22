@@ -1,7 +1,6 @@
 package com.xinguoedu.v.component
 {
 	import com.xinguoedu.consts.PlayerState;
-	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.MultifunctionalLoader;

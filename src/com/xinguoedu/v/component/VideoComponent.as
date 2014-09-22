@@ -23,7 +23,6 @@ package com.xinguoedu.v.component
 	public class VideoComponent extends BaseComponent
 	{
 		private var _media:Sprite;
-		private var _tweenLite:TweenLite;
 		/** 是否双击 **/
 		private var _doubleClicked:Boolean = false;
 		
@@ -60,19 +59,19 @@ package com.xinguoedu.v.component
 		{
 			Stretcher.stretch(_media, stageWidth, stageHeight);
 			
-			if(_tweenLite != null)
+			if(_compTween != null)
 			{
 				TweenLite.killTweensOf(_media, true);
-				_tweenLite = null;
+				_compTween = null;
 			}
 			
 			if(displayState == StageDisplayState.NORMAL)
 			{
-				_tweenLite = TweenLite.from(_media, 0.3, {z:-200, alpha:0.3});
+				_compTween = TweenLite.from(_media, 0.3, {z:-200, alpha:0.3});
 			}
 			else if(displayState == StageDisplayState.FULL_SCREEN)
 			{
-				_tweenLite = TweenLite.from(_media, 0.3, {z:250, alpha:0.3});
+				_compTween = TweenLite.from(_media, 0.3, {z:250, alpha:0.3});
 			}
 		}	
 		
