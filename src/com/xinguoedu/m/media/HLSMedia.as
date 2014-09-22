@@ -41,6 +41,8 @@ package com.xinguoedu.m.media
 		
 		override public function init(mediaVO:MediaVO):void
 		{
+			super.init(mediaVO);
+			
 			_hls = new HLS();
 			_hls.addEventListener(HLSEvent.PLAYBACK_COMPLETE, completeHandler);
 			_hls.addEventListener(HLSEvent.ERROR, _errorHandler);
@@ -53,8 +55,13 @@ package com.xinguoedu.m.media
 			_display.addChild(_video);
 		
 			_level = 0;
+			
+			mediaVO.autostart && startLoadAndPlay();
+		}
 		
-			_hls.load(mediaVO.url);
+		override public function startLoadAndPlay():void
+		{
+			_hls.load(_mediaVO.url);
 			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
 		}
 		
@@ -69,7 +76,7 @@ package com.xinguoedu.m.media
 		/** Forward playback errors from the framework. **/
 		private function _errorHandler(event : HLSEvent) : void 
 		{
-			dispatchEvt(StreamStatus.lOAD_MEDIA_IOERROR);
+			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}
 		
 		/** Update video A/R on manifest load. **/

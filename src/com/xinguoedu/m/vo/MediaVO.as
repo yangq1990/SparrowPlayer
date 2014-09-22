@@ -20,5 +20,10 @@ package com.xinguoedu.m.vo
 		 * 对视频字节数据进行混淆处理的seed 
 		 */		
 		public var seed:int;
+		
+		/**
+		 * 是否自动播放 
+		 */		
+		public var autostart:Boolean = true;
 	}
 }

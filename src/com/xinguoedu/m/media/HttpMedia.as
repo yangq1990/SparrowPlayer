@@ -44,19 +44,23 @@ package com.xinguoedu.m.media
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 			_stream.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorHandler);
 			_stream.client = this;
-			_stream.bufferTime = 5;
-			_stream.play(mediaVO.url);
+			_stream.bufferTime = 5;			
 			
 			_video = new Video();
 			_video.smoothing = true;
 			_video.attachNetStream(_stream);			
 			_display.addChild(_video);
 			
-			destroyPosTimer();
-			_posInterval = setInterval(positionInterval, 100);
-			
-			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
+			mediaVO.autostart && startLoadAndPlay();
 		}	
+		
+		override public function startLoadAndPlay():void
+		{
+			_stream.play(_mediaVO.url);
+			destroyPosTimer();
+			_posInterval = setInterval(positionInterval, 100);				
+			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
+		}
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
@@ -68,7 +72,7 @@ package com.xinguoedu.m.media
 		
 		protected function onIOErrorHandler(evt:IOErrorEvent):void
 		{
-			dispatchEvt(StreamStatus.lOAD_MEDIA_IOERROR);
+			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}
 		
 		private function positionInterval():void

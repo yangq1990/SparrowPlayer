@@ -39,7 +39,14 @@ package com.xinguoedu.c
 		
 		private function playHandler(evt:ViewEvt):void
 		{
-			_m.media.play();
+			if(!_m.mediaVO.autostart && _m.state == PlayerState.IDLE)
+			{
+				_m.media.startLoadAndPlay();
+			}				
+			else
+			{
+				_m.media.play();
+			}
 		}
 		
 		private function pauseHandler(evt:ViewEvt):void

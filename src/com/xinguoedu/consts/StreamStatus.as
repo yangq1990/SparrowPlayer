@@ -9,7 +9,7 @@ package com.xinguoedu.consts
 	{
 		public static const START_LOAD_MEDIA:String = "start_load_media";
 		
-		public static const lOAD_MEDIA_IOERROR:String = "load_media_ioerror";
+		public static const LOAD_MEDIA_IOERROR:String = "load_media_ioerror";
 		
 		public static const PLAY_START:String = "NetStream.Play.Start";
 		

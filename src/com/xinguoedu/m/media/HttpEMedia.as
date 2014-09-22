@@ -60,8 +60,7 @@ package com.xinguoedu.m.media
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);			
 			_stream.play(null);//处于数据生成模式
 			//表示时间刻度不连续，请刷新 FIFO，告知字节分析程序需要分析文件标头或 FLV 标签的开头
-			_stream.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);	
-			
+			_stream.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);			
 		
 			_video.attachNetStream(_stream);
 			_display.addChild(_video);
@@ -72,8 +71,14 @@ package com.xinguoedu.m.media
 			_urlStream.addEventListener(ProgressEvent.PROGRESS,progressHandler);  
 			_urlStream.addEventListener(Event.COMPLETE,completeHnd);  
 			_urlStream.addEventListener(Event.CLOSE,closeHandler);
-			_urlStream.addEventListener(Event.OPEN, openHandler);
-			_urlStream.load(new URLRequest(mediaVO.url));			
+			_urlStream.addEventListener(Event.OPEN, openHandler);			
+			
+			mediaVO.autostart && startLoadAndPlay();		
+		}
+		
+		override public function startLoadAndPlay():void
+		{
+			_urlStream.load(new URLRequest(_mediaVO.url));		
 		}
 		
 		/** 开始加载 **/
@@ -85,13 +90,13 @@ package com.xinguoedu.m.media
 		/** security error  **/
 		private function securityErrorHandler(evt:SecurityErrorEvent):void
 		{
-			dispatchEvt(StreamStatus.lOAD_MEDIA_IOERROR);
+			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}		
 		
 		/** ioerror **/
 		private function ioErrorHandler(evt:IOErrorEvent):void
 		{
-			dispatchEvt(StreamStatus.lOAD_MEDIA_IOERROR);
+			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}
 		
 		private function closeHandler(evt:Event):void

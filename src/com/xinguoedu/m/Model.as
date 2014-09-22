@@ -4,10 +4,12 @@ package com.xinguoedu.m
 	
 	import com.adobe.images.PNGEncoder;
 	import com.hurlant.util.Base64;
+	import com.xinguoedu.consts.DebugConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.PlayerStateEvt;
+	import com.xinguoedu.evt.debug.DebugEvt;
 	import com.xinguoedu.evt.js.JSEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.js.JSAPI;
@@ -68,9 +70,13 @@ package com.xinguoedu.m
 				case StreamStatus.START_LOAD_MEDIA:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADED));	
 					break;
-				case StreamStatus.lOAD_MEDIA_IOERROR:
+				case StreamStatus.LOAD_MEDIA_IOERROR:
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR, evt.data));
+					EventBus.getInstance().dispatchEvent(new DebugEvt(DebugEvt.DEBUG, DebugConst.LOAD_MEDIA_IOERROR + ":" + mediaVO.url));
+					break;
 				case StreamStatus.STREAM_NOT_FOUND:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR, evt.data));
+					EventBus.getInstance().dispatchEvent(new DebugEvt(DebugEvt.DEBUG, DebugConst.STREAM_NOT_FOUND + ":" + mediaVO.url));
 					break;
 				case StreamStatus.PLAY_START:
 					state = PlayerState.PLAYING;
@@ -116,7 +122,7 @@ package com.xinguoedu.m
 			}
 			catch(err:Error)
 			{
-				YatsenLog.info("Model", "截图出错" + err.toString());
+				YatsenLog.error("Model", "截图出错",  err.toString());
 				
 				if(bitmapData != null)
 				{
@@ -145,10 +151,8 @@ package com.xinguoedu.m
 			if(!hasMedia(_mediaVO.type))
 				_mediaVO.type = MediaType.HTTP;
 			
-			media = _mediaMap[_mediaVO.type];
-			
-			addListeners();
-			
+			media = _mediaMap[_mediaVO.type];			
+			addListeners();			
 			media.init(_mediaVO);
 		}
 		
@@ -223,6 +227,26 @@ package com.xinguoedu.m
 		public function set videoadVO(value:VideoAdVO):void
 		{
 			_videoadVO = value;
+		}
+		
+		/**
+		 * 是否开启调试模式 
+		 * @return 
+		 * 
+		 */		
+		public function get debugmode():Boolean
+		{
+			return playerconfig.debugmode;
+		}
+		
+		/**
+		 * 版本号 
+		 * @return 
+		 * 
+		 */		
+		public function get version():String
+		{
+			return playerconfig.version;
 		}
 	}
 }

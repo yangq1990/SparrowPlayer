@@ -58,6 +58,15 @@ package com.xinguoedu.m.media
 		}
 		
 		/**
+		 * 开始加载流并播放 
+		 * 交给子类重写
+		 */		
+		public function startLoadAndPlay():void
+		{
+			
+		}
+		
+		/**
 		 * 视频metadata处理函数 
 		 * @param info
 		 * 
