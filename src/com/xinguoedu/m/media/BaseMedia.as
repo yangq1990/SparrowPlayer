@@ -1,6 +1,7 @@
 package com.xinguoedu.m.media
 {
 	import com.xinguoedu.consts.PlayerState;
+	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.vo.MediaVO;
@@ -44,6 +45,8 @@ package com.xinguoedu.m.media
 		protected var _kfFilePos:Number=0;
 		/** 是否mp4文件 **/
 		private var _mp4:Boolean;
+		/** 是否快要播放完 **/
+		protected var _isNearlyComplete:Boolean =  false;
 		
 		public function BaseMedia(mediaType:String)
 		{
@@ -203,6 +206,15 @@ package com.xinguoedu.m.media
 		protected function netStatusHandler(evt:NetStatusEvent):void
 		{
 			
+		}
+		
+		/**
+		 * 视频快要播放完 
+		 * 
+		 */		
+		protected function playbackNearlyComplete():void
+		{
+			dispatchEvt(StreamStatus.PLAY_NEARLY_COMPLETE);
 		}
 	}
 }

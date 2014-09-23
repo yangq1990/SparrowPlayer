@@ -1,5 +1,6 @@
 package com.xinguoedu.m.media
 {
+	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -119,6 +120,12 @@ package com.xinguoedu.m.media
 						_autoPlayNextFlag = true;
 					}				
 				}				*/
+				
+				if(!_isNearlyComplete && (_duration - _pos <= NumberConst.NEARLY_COMPLETE))
+				{
+					_isNearlyComplete = true;
+					super.playbackNearlyComplete();
+				}
 			}
 			
 		}

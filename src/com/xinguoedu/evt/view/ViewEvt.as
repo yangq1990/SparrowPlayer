@@ -17,11 +17,15 @@ package com.xinguoedu.evt.view
 		public static const MUTE:String = "mute_ve";
 		public static const TIME:String = "time_se";
 		public static const VOLUME:String = "volume_se";
-		public static const VIDEOADS_COMPLETE:String = "videoads_complete_se";
+		public static const VIDEOADS_COMPLETE:String = "videoads_complete_ve";
 		/**
 		 * 按下键盘空格键 
 		 */		
-		public static const KEYDOWN_SPACE:String = "keydown_space_se";
+		public static const KEYDOWN_SPACE:String = "keydown_space_ve";
+		
+		public static const SHOW_CONTROLBAR:String = "show_controlbar_ve";
+		
+		public static const HIDE_CONTROLBAR:String = "hide_controlbar_ve";
 		
 		public var data:*;
 		

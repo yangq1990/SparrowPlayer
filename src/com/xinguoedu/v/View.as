@@ -5,6 +5,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.utils.StageReference;
 	import com.xinguoedu.v.base.BaseComponent;
 	import com.xinguoedu.v.component.AdComponent;
+	import com.xinguoedu.v.component.BottomHintComponent;
 	import com.xinguoedu.v.component.ControlBarComponent;
 	import com.xinguoedu.v.component.ErrorComponent;
 	import com.xinguoedu.v.component.LogoComponent;
@@ -38,6 +39,8 @@ package com.xinguoedu.v
 		
 		private var _videoadsComp:VideoAdsComponent;
 		
+		private var _bottomHintComp:BaseComponent;
+		
 		public function View(m:Model)
 		{
 			super();
@@ -53,6 +56,9 @@ package com.xinguoedu.v
 			
 			_videoComp = new VideoComponent(_m);
 			_root.addChild(_videoComp);
+			
+			_bottomHintComp = new BottomHintComponent(_m);
+			_root.addChild(_bottomHintComp);
 			
 			_controlbarComp = new ControlBarComponent(_m);
 			_root.addChild(_controlbarComp);			
@@ -70,7 +76,7 @@ package com.xinguoedu.v
 			_root.addChild(_stateHintComp);
 			
 			_errorHintComp = new ErrorComponent(_m);
-			_root.addChild(_errorHintComp);
+			_root.addChild(_errorHintComp);			
 			
 			if(_m.videoadVO.enabled)
 			{

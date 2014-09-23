@@ -3,7 +3,6 @@ package com.xinguoedu.v.component
 	import com.greensock.TweenLite;
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
-	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.v.base.BaseComponent;
@@ -19,7 +18,6 @@ package com.xinguoedu.v.component
 	 */	
 	public class StateHintComponent extends BaseComponent
 	{
-		private var _timeout:uint;
 		private var _tweenlite:TweenLite;
 		
 		public function StateHintComponent(m:Model)

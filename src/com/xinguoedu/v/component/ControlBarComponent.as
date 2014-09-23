@@ -59,8 +59,6 @@ package com.xinguoedu.v.component
 		private var _draggingPos:Number;
 		/** 是否在拖动volumeSlider **/
 		private var _draggingVolumeSlider:Boolean = false;	
-		/** 计时器  **/
-		private var _timeout:uint;		
 		/** identify mouseover controlbar **/
 		private var _isMouseOverControlbar:Boolean;
 		/** identify mouseover volumeSlider **/
@@ -409,6 +407,7 @@ package com.xinguoedu.v.component
 			if(y != stageHeight - _skin.height)
 			{
 				y = stageHeight - _skin.height;
+				EventBus.getInstance().dispatchEvent(new ViewEvt(ViewEvt.SHOW_CONTROLBAR));
 			}
 			
 			if(volumeSlider.visible && !_draggingVolumeSlider)
@@ -758,6 +757,7 @@ package com.xinguoedu.v.component
 			if(!_isMouseOverControlbar && !_isMouseOverVolumeSlider)
 			{
 				Mouse.hide();
+				EventBus.getInstance().dispatchEvent(new ViewEvt(ViewEvt.HIDE_CONTROLBAR));
 				_compTween = TweenLite.to(this, 0.5, {y:stageHeight});
 			}
 		}

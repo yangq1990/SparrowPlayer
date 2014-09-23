@@ -1,5 +1,6 @@
 package com.xinguoedu.m.media
 {
+	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
@@ -113,6 +114,11 @@ package com.xinguoedu.m.media
 				 * 
 				 * **/			
 				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, {position: _pos, duration: _duration, bufferPercent:_bufferPercent}));
+				if(!_isNearlyComplete && (_duration - _pos <= NumberConst.NEARLY_COMPLETE))
+				{
+					_isNearlyComplete = true;
+					super.playbackNearlyComplete();
+				}
 			}
 			else if (_duration > 0) 
 			{

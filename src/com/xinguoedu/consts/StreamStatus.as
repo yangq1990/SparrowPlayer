@@ -33,5 +33,10 @@ package com.xinguoedu.consts
 		
 		public static const PLAY_COMPLETE:String = "media_play_complete";
 		
+		/**
+		 * 流快要结束 
+		 */		
+		public static const PLAY_NEARLY_COMPLETE:String = "play_nearly_complete";
+		
 	}
 }

@@ -95,6 +95,9 @@ package com.xinguoedu.m
 					state = PlayerState.IDLE; 
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_COMPLETE));	
 					break;
+				case StreamStatus.PLAY_NEARLY_COMPLETE:
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_NEARLY_COMPLETE));
+					break;
 				default:
 					break;
 			}

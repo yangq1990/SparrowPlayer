@@ -1,5 +1,6 @@
 package com.xinguoedu.m.media
 {
+	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -191,7 +192,12 @@ package com.xinguoedu.m.media
 			}		*/
 			
 			//播放完一次后重播，结束时不会派发buffer.empty，所以要显示调用playComplete
-			if(_stream.time + _kfTime >= _duration)
+			if(!_isNearlyComplete && (_duration - _stream.time - _kfTime <= NumberConst.NEARLY_COMPLETE))
+			{
+				_isNearlyComplete = true;
+				super.playbackNearlyComplete();
+			}
+			else if(_stream.time + _kfTime >= _duration)
 			{
 				playComplete();
 			}

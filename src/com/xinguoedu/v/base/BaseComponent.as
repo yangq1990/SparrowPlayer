@@ -15,6 +15,7 @@ package com.xinguoedu.v.base
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
+	import flash.utils.clearTimeout;
 	
 	/**
 	 * 可显示组件的基类 
@@ -34,6 +35,8 @@ package com.xinguoedu.v.base
 		private var _btnTween:TweenLite;
 		/** 组件的tweenlite对象引用 **/
 		protected var _compTween:TweenLite;
+		/** 超时计时器 **/
+		protected var _timeout:uint;
 		
 		public function BaseComponent(m:Model)
 		{
@@ -100,6 +103,11 @@ package com.xinguoedu.v.base
 			return StageReference.stage.stageHeight;
 		}
 		
+		protected function get controlbarHeight():Number
+		{
+			return _m.skin.controlbar.height;
+		}
+		
 		/**
 		 * StageDisplayState 
 		 * @return 
@@ -110,7 +118,12 @@ package com.xinguoedu.v.base
 			return StageReference.stage.displayState;
 		}
 		
-		protected function drawCloseBtn():void
+		/**
+		 * 画关闭按钮 
+		 * @param showCircle 是否显示背景圆，默认显示
+		 * 
+		 */		
+		protected function drawCloseBtn(showCircle:Boolean=true):void
 		{
 			_defaultShape = ShapeFactory.getShapeByColor(PlayerColor.MAIN_BG);
 			_defaultShape.name = "default";
@@ -121,14 +134,17 @@ package com.xinguoedu.v.base
 			_closeBtn = new Sprite();
 			_closeBtn.mouseChildren = false;
 			_closeBtn.buttonMode = true;
-			_closeBtn.filters = [new GlowFilter(PlayerColor.GLOW_FILTER_COLOR,1,8.0,8.0)];					
 			_closeBtn.name = "close";
 			_closeBtn.addChild(_overShape);
 			_overShape.visible = false;
-			_closeBtn.addChild(_defaultShape);
-			_closeBtn.addEventListener(MouseEvent.MOUSE_OVER, overCloseBtnHandler);
-			_closeBtn.addEventListener(MouseEvent.MOUSE_OUT, outCloseBtnHandler);
-			_closeBtn.addEventListener(MouseEvent.CLICK, clickCloseBtnHandler);			
+			_closeBtn.addChild(_defaultShape);			
+			_closeBtn.addEventListener(MouseEvent.CLICK, clickCloseBtnHandler);	
+			if(showCircle)
+			{
+				_closeBtn.filters = [new GlowFilter(PlayerColor.GLOW_FILTER_COLOR,1,8.0,8.0)];	
+				_closeBtn.addEventListener(MouseEvent.MOUSE_OVER, overCloseBtnHandler);
+				_closeBtn.addEventListener(MouseEvent.MOUSE_OUT, outCloseBtnHandler);
+			}
 			addChild(_closeBtn);
 		}
 		
@@ -159,7 +175,8 @@ package com.xinguoedu.v.base
 		protected function hide():void
 		{
 			destroyCompTween();
-			visible = false;
+			destroyTimer();
+			visible = false;			
 		}
 		
 		private function destroyBtnTween():void
@@ -180,6 +197,16 @@ package com.xinguoedu.v.base
 				TweenLite.killTweensOf(_compTween, true);
 				_compTween = null;
 			}
+		}
+		
+		/** 清除超时的计时器 **/
+		protected function destroyTimer():void
+		{
+			if(_timeout)
+			{
+				clearTimeout(_timeout);
+				_timeout = undefined;
+			}		
 		}
 		
 	}

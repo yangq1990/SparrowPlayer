@@ -22,6 +22,11 @@ package com.xinguoedu.evt.media
 		public static const MEDIA_STATE:String = "media_state";
 		
 		/**
+		 * 视频快要播放完 
+		 */		
+		public static const MEDIA_NEARLY_COMPLETE:String = "media_nearly_complete";
+		
+		/**
 		 * 视频播放完 
 		 */		
 		public static const MEDIA_COMPLETE:String = "media_complete";

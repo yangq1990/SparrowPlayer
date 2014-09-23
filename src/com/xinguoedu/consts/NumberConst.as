@@ -9,8 +9,14 @@ package com.xinguoedu.consts
 	{
 		/**
 		 * controlbar的timeout时间, 单位毫秒
+		 * 
 		 */		
 		public static const DELAY:int = 4000;
+		
+		/**
+		 * 底部提示文字的timeout时间，单位毫秒 
+		 */		
+		public static const BOTTOMHINT_DELAY:int = 15000;
 		
 		/**
 		 * 视频广告倒计时间隔，单位毫秒 
@@ -31,5 +37,11 @@ package com.xinguoedu.consts
 		 * 状态提示MC的超时时间，单位毫秒 
 		 */		
 		public static const STATEHINT_DELAY:int = 3000;
+		
+		/**
+		 * 当前播放头距离结束的时间 
+		 */		
+		public static const NEARLY_COMPLETE:int = 40;
+		
 	}
 }
