@@ -7,6 +7,7 @@ package com.xinguoedu.utils
 	import flash.events.IOErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.system.LoaderContext;
 
 	/**
 	 * 加载显示对象或者文本二进制数据的工具类 
@@ -44,7 +45,7 @@ package com.xinguoedu.utils
 				_loader = new Loader();
 				_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, completeHandler);
 				_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-				_loader.load(new URLRequest(url));
+				_loader.load(new URLRequest(url), new LoaderContext(true));
 			}
 			else
 			{
