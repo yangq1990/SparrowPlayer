@@ -45,6 +45,8 @@ package com.xinguoedu.m.media
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 			_stream.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorHandler);
 			_stream.client = this;
+			//检查策略文件
+			mediaVO.checkPolicyFile && (_stream.checkPolicyFile = true);
 			_stream.bufferTime = 5;			
 			
 			_video = new Video();

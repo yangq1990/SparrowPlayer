@@ -59,6 +59,7 @@ package com.xinguoedu.c
 			_m.mediaVO.type = _m.playerconfig.type;
 			_m.mediaVO.url = _m.playerconfig.url;
 			_m.mediaVO.autostart = int(_m.playerconfig.autostart) ? true : false;
+			_m.mediaVO.checkPolicyFile = int(_m.playerconfig.accesspx) ? true : false;
 			
 			//for encrypted video
 			_m.mediaVO.omittedLength = _m.playerconfig.omittedLength;
