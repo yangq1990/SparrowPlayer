@@ -51,8 +51,7 @@ package com.xinguoedu.v.component
 					break;
 				case PlayerState.IDLE:
 					break;
-				case PlayerState.PAUSED:
-					
+				case PlayerState.PAUSED:					
 					if(!_ad.numChildren)
 					{
 						var loader:MultifunctionalLoader = new MultifunctionalLoader();
@@ -70,13 +69,15 @@ package com.xinguoedu.v.component
 		
 		private function completeHandler(dp:DisplayObject):void
 		{
-			_ad.addChild(dp);			
-			
+			_ad.addChild(dp);						
 			drawCloseBtn();
 			this.addChild(_closeBtn);
-			this.visible = true;
 			
-			resize();
+			if(_m.state == PlayerState.PAUSED)
+			{
+				this.visible = true;			
+				resize();
+			}			
 		}
 		
 		override protected function resize():void
