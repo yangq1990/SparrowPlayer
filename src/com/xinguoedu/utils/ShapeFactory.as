@@ -1,8 +1,6 @@
 package com.xinguoedu.utils
 {
 	import flash.display.Shape;
-	import flash.display.Sprite;
-	import flash.display3D.IndexBuffer3D;
 
 	/**
 	 * 广告或者问卷右上角的关闭图形
@@ -25,17 +23,17 @@ package com.xinguoedu.utils
 		
 		/**
 		 * 根据不同的颜色值，生成不同颜色的叉号Shape 
-		 * @param color
+		 * @param bgColor 图形背景颜色
 		 * @return Shape
 		 * 
 		 */		
-		public static function getShapeByColor(bgColor:uint, a:int=1):Shape			
+		public static function getShapeByColor(bgColor:uint):Shape			
 		{
-			var t_shape:Shape = new Shape();
+			var t_shape:Shape = new Shape();	
 			
-			t_shape.graphics.beginFill(bgColor, a);
+			t_shape.graphics.beginFill(bgColor);
 			t_shape.graphics.drawCircle(0,0,RADIUS);
-			t_shape.graphics.endFill();
+			t_shape.graphics.endFill();	
 			
 			t_shape.graphics.lineStyle(2,0xffffff);
 			t_shape.graphics.moveTo(-WIDTH/2,-HEIGHT/2);
