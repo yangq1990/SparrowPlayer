@@ -1,0 +1,5 @@
+1，在FlashBuilder导出发行版
+
+2，把bin-release目录下的swf替换掉player目录下的swf
+
+3，编译player.fla生成SparrowPlayer.swf
