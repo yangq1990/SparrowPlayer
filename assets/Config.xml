@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 右键菜单相关 -->
+	<version>0.6.0</version>
+	<rightclickinfo>
+		<item>
+			<title>乐视</title>
+			<url>http://www.letv.com/</url>
+		</item>
+		<item>
+			<title>优酷</title>
+			<url>http://www.youku.com</url>
+		</item>
+	</rightclickinfo>
+	
+	<!-- logo 默认放在右上角 极少见logo放在左上角且动来动去的，所以不再考虑-->
+	<logo>
+		<!-- logo图片的地址 -->
+		<url>../assets/skin/logo.png</url>
+		<!-- 0logo不可点击 1 可点击 -->
+		<buttonMode>1</buttonMode>
+		<margin>10</margin>
+		<!-- 点击后跳转的地址 -->
+		<link>http://www.wecoding.cn</link>	
+	</logo>
+	
+	<!-- error hint -->
+	<errorHint>
+		<!-- icon url -->
+		<url>../assets/error/error.swf</url>
+	</errorHint>
+	
+	<!-- 了解详情button -->
+	<learnmore>
+		<url>../assets/skin/learnmore.png</url>
+	</learnmore>
+	
+	<!-- 默认音量 -->
+	<volume>70</volume>
+	
+	<decrypt>
+		<omittedLength>0</omittedLength>
+		<seed>128</seed>
+	</decrypt>
+	
+</config>
