@@ -114,7 +114,7 @@ package com.xinguoedu.v.component
 			_learnmoreBtn.buttonMode = true;
 			_learnmoreBtn.addEventListener(MouseEvent.CLICK, learnmoreHandler);		
 			
-			this.visible = false;
+			super.buildUI();
 		}
 		
 		public function play():void

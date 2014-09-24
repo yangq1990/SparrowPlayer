@@ -9,6 +9,8 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.utils.Stretcher;
 	import com.xinguoedu.v.base.BaseComponent;
 	
+	import flash.display.Graphics;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
 	import flash.events.MouseEvent;
@@ -22,6 +24,8 @@ package com.xinguoedu.v.component
 	 */	
 	public class VideoComponent extends BaseComponent
 	{
+		private var _back:Shape;
+		
 		private var _media:Sprite;
 		/** 是否双击 **/
 		private var _doubleClicked:Boolean = false;
@@ -29,6 +33,13 @@ package com.xinguoedu.v.component
 		public function VideoComponent(m:Model)
 		{
 			super(m);			
+		}
+		
+		override protected function buildUI():void
+		{
+			_back = new Shape();
+			drawBack();
+			this.addChild(_back);
 		}
 		
 		override protected function addListeners():void
@@ -57,6 +68,8 @@ package com.xinguoedu.v.component
 		
 		override protected function resize():void
 		{
+			drawBack();
+			
 			Stretcher.stretch(_media, stageWidth, stageHeight);
 			
 			if(_compTween != null)
@@ -108,6 +121,15 @@ package com.xinguoedu.v.component
 				dispatchEvent(new ViewEvt(ViewEvt.NORMAL));
 			else if(displayState == StageDisplayState.NORMAL)
 				dispatchEvent(new ViewEvt(ViewEvt.FULLSCREEN));			
+		}
+		
+		/** 画背景图形 **/
+		private function drawBack():void
+		{
+			var g:Graphics = _back.graphics;
+			g.beginFill(0x000000);
+			g.drawRect(0, 0, stageWidth, stageHeight);
+			g.endFill();
 		}
 	}
 }
