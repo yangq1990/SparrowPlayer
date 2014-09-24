@@ -32,7 +32,7 @@ package com.xinguoedu.v.component
 			_skin.y = stageHeight - NumberConst.STATEHINT_TO_STAGEBOTTOM;
 			addChild(_skin);	
 			
-			this.visible = false;			
+			super.buildUI();
 		}
 		
 		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void

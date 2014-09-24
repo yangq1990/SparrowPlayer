@@ -41,7 +41,7 @@ package com.xinguoedu.v.component
 			_hint.defaultTextFormat = new TextFormat(Font.YAHEI, Font.SIZE, Font.COLOR);
 			this.addChild(_hint);
 			
-			this.visible = false;
+			super.buildUI();
 		}
 		
 		override protected function addListeners():void

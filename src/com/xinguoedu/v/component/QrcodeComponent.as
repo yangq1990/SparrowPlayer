@@ -28,7 +28,8 @@ package com.xinguoedu.v.component
 		{
 			_qrcode = new Sprite();
 			addChild(_qrcode);
-			this.visible = false;
+			
+			super.buildUI();
 		}
 		
 		override protected function addListeners():void

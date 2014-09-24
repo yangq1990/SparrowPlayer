@@ -48,7 +48,7 @@ package com.xinguoedu.v.base
 		
 		protected function buildUI():void
 		{
-			
+			this.visible = false;
 		}
 		
 		protected function addListeners():void

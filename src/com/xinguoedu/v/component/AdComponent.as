@@ -33,7 +33,7 @@ package com.xinguoedu.v.component
 			_ad.addEventListener(MouseEvent.CLICK, clickHandler);
 			addChild(_ad);
 			
-			this.visible = false;
+			super.buildUI();
 		}
 		
 		override protected function addListeners():void
