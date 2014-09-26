@@ -7,6 +7,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.AdComponent;
 	import com.xinguoedu.v.component.BottomHintComponent;
 	import com.xinguoedu.v.component.ControlBarComponent;
+	import com.xinguoedu.v.component.DisplayComponent;
 	import com.xinguoedu.v.component.ErrorComponent;
 	import com.xinguoedu.v.component.LogoComponent;
 	import com.xinguoedu.v.component.QrcodeComponent;
@@ -24,6 +25,8 @@ package com.xinguoedu.v
 		private var _root:Sprite; 
 		
 		private var _videoComp:BaseComponent;
+		
+		private var _displayComp:BaseComponent;
 		
 		private var _controlbarComp:BaseComponent;
 		
@@ -56,6 +59,9 @@ package com.xinguoedu.v
 			
 			_videoComp = new VideoComponent(_m);
 			_root.addChild(_videoComp);
+			
+			_displayComp = new DisplayComponent(_m);
+			_root.addChild(_displayComp);
 			
 			_bottomHintComp = new BottomHintComponent(_m);
 			_root.addChild(_bottomHintComp);

@@ -1,7 +1,14 @@
 package com.xinguoedu.v.component
 {
+	import com.xinguoedu.consts.PlayerState;
+	import com.xinguoedu.evt.EventBus;
+	import com.xinguoedu.evt.PlayerStateEvt;
+	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.v.base.BaseComponent;
+	
+	import flash.display.MovieClip;
+	import flash.text.TextField;
 	
 	/**
 	 * 包括缓冲提示信息的组件
@@ -10,9 +17,78 @@ package com.xinguoedu.v.component
 	 */	
 	public class DisplayComponent extends BaseComponent
 	{
+		private var _buffer_mc:MovieClip;
+		private var _buffer_tf:TextField;
+		
 		public function DisplayComponent(m:Model)
 		{
 			super(m);
+		}
+		
+		override protected function buildUI():void
+		{
+			_skin = _m.skin.display as MovieClip;
+			_buffer_mc = _skin.buffer_mc as MovieClip;
+			_buffer_tf = _skin.buffer_tf as TextField;
+			this.addChild(_buffer_mc);
+			this.addChild(_buffer_tf);
+			resize();
+		}
+		
+		override protected function addListeners():void
+		{
+			super.addListeners();
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADING, mediaLoadingHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_BUFFER_FULL, bufferFullHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_ERROR, mediaErrorHandler);
+		}
+		
+		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void
+		{
+			switch(_m.state)
+			{
+				case PlayerState.IDLE:
+				case PlayerState.BUFFERING:
+					this.visible = true;
+					resize();
+					break;
+				case PlayerState.PAUSED:
+				case PlayerState.PLAYING:
+					this.visible = false;
+					break;
+			}
+		}
+		
+		/** 
+		 * 对于http视频，evt.data.bufferPercent 代表的是视频在内寸缓冲区的填满程度
+		 * 对于httpe视频，evt.data.bufferPercent 代表的是加密视频加载到本地的进度
+		 * **/
+		private function mediaLoadingHandler(evt:MediaEvt):void
+		{
+			_buffer_tf.text = "";
+			_buffer_tf.appendText(int(evt.data.bufferPercent*100) + "%"); //这样写更有效
+			!this.visible && (this.visible = true);
+		}
+		
+		private function bufferFullHandler(evt:MediaEvt):void
+		{
+			this.visible = false;
+		}
+		
+		private function mediaErrorHandler(evt:MediaEvt):void
+		{
+			this.visible = false;
+		}
+		
+		override protected function resize():void
+		{
+			if(this.visible)
+			{
+				_buffer_mc.x = (stageWidth - _buffer_mc.width) >> 1;
+				_buffer_tf.x = stageWidth >> 1;
+				_buffer_mc.y = (stageHeight - controlbarHeight) >> 1 ;
+				_buffer_tf.y = (stageHeight - controlbarHeight - _buffer_tf.height) >> 1;
+			}
 		}
 	}
 }
