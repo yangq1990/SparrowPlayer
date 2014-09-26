@@ -69,9 +69,7 @@ package com.xinguoedu.m.media
 		/** Forward completes from the framework. **/
 		private function completeHandler(event : HLSEvent) : void 
 		{
-			//_autoPlayNextFlag = false;
-			//complete();
-			
+			super.playbackComplete();
 		}
 		
 		/** Forward playback errors from the framework. **/

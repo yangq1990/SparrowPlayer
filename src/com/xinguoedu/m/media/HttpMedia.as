@@ -1,5 +1,7 @@
 package com.xinguoedu.m.media
 {
+	import cn.wecoding.utils.YatsenLog;
+	
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -63,12 +65,23 @@ package com.xinguoedu.m.media
 			destroyPosTimer();
 			_posInterval = setInterval(positionInterval, 100);				
 			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {bufferPercent:0}));
 		}
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
-			if(evt.info.code == StreamStatus.SEEK_COMPLETE)
-				play();
+			YatsenLog.info('HttpMedia', evt.info.code);
+			switch(evt.info.code)
+			{
+				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
+					!_posInterval && (_posInterval = setInterval(positionInterval, 100));
+					break;
+				case StreamStatus.SEEK_COMPLETE:
+					play();
+					break;
+				default:
+					break;
+			}
 			
 			dispatchEvt(evt.info.code);
 		}
@@ -80,7 +93,8 @@ package com.xinguoedu.m.media
 		
 		private function positionInterval():void
 		{
-			_pos = Math.round(_stream.time * 100) / 100;
+			!_ismp4 && (_kfTime = 0);
+			_pos = Math.round((_stream.time + _kfTime)* 100) / 100;
 			
 			if (_duration > 0 && _stream) 
 			{
@@ -94,16 +108,18 @@ package com.xinguoedu.m.media
 			
 			_bufferPercent = _stream.bytesTotal ? (_stream.bytesLoaded / _stream.bytesTotal) : 0;
 			
-			if (_bufferFill <= 50 && (_duration - _pos) > 5) 
+			if (_bufferFill <= 95 && (_duration - _pos) > 5) 
 			{
 				_bufferFull = false;
-				_stream.pause();
-				dispatchEvt(StreamStatus.BUFFERING);
+				_stream.pause();				
+				//此处的bufferPercent指的是内存区填满的程度
+				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {pos:_pos, bufferPercent:_bufferFill/100}));
+				//trace('dispatch--->', _pos, _bufferFill);
 			} 
 			else if (_bufferFill > 95 && !_bufferFull) 
 			{
 				_bufferFull = true;
-				//sendMediaEvent(MediaEvent.JWPLAYER_MEDIA_BUFFER_FULL);
+				_stream.resume();
 			}
 			
 			if (_pos < _duration) 
@@ -156,26 +172,25 @@ package com.xinguoedu.m.media
 				return;
 			}			
 			
-			//_stream.pause();
-			
 			//已缓存到本地的视频长度
-			var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);
+			//var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);
 			_kfTime = getOffset(sec, true); //离拖动点最近的关键帧的时间点
-			if((sec < cachedDuration))
-			{		
-				_stream.seek(_kfTime);//offset:Number — 要在视频文件中移动到的时间近似值（以秒为单位）。 
+			if(sec >= _duration)
+			{
+				complete();
 			}
 			else
 			{
-				if(sec >= _duration)
+				if(!_ismp4)
 				{
-					complete();
+					_stream.play(_mediaVO.url + "?start=" + getOffset(sec)); //从指定位置开始加载, 需要nginx支持start参数
 				}
 				else
 				{
-					_stream.play(_mediaVO.url + "?start=" + getOffset(sec)); //从指定位置开始加载, 需要nginx支持start参数
-				}				
-			}	
+					_stream.close();
+					_stream.play(_mediaVO.url + "?start=" + _kfTime);
+				}			
+			}		
 		}
 		
 		/**
@@ -196,15 +211,13 @@ package com.xinguoedu.m.media
 		private function complete():void
 		{
 			stop();			
-			dispatchEvt(StreamStatus.PLAY_COMPLETE);
+			super.playbackComplete();
 		}
 		
 		private function stop():void
 		{
-			_stream.close();
-			
-			destroyPosTimer();
-			
+			_stream.close();			
+			destroyPosTimer();			
 			_keyframes = null;
 		}
 	}

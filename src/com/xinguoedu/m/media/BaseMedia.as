@@ -44,7 +44,7 @@ package com.xinguoedu.m.media
 		/** 根据seek时间获取到的关键帧的fileposition **/
 		protected var _kfFilePos:Number=0;
 		/** 是否mp4文件 **/
-		private var _mp4:Boolean;
+		protected var _ismp4:Boolean;
 		/** 是否快要播放完 **/
 		protected var _isNearlyComplete:Boolean =  false;
 		
@@ -78,12 +78,12 @@ package com.xinguoedu.m.media
 		{
 			if (info['seekpoints']) 
 			{
-				_mp4 = true;
+				_ismp4 = true;
 				_keyframes = convertSeekpoints(info['seekpoints']);
 			}
 			else
 			{
-				_mp4 = false;
+				_ismp4 = false;
 				_keyframes = info['keyframes']; //记录关键帧的位置
 			}
 			
@@ -215,6 +215,14 @@ package com.xinguoedu.m.media
 		protected function playbackNearlyComplete():void
 		{
 			dispatchEvt(StreamStatus.PLAY_NEARLY_COMPLETE);
+		}
+		
+		/**
+		 *  视频播放完
+		 */		
+		protected function playbackComplete():void
+		{
+			dispatchEvt(StreamStatus.PLAY_COMPLETE);
 		}
 	}
 }

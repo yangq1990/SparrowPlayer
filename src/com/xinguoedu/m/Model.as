@@ -23,9 +23,11 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
+	import com.xinguoedu.utils.StageReference;
 	
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
+	import flash.display.StageDisplayState;
 	import flash.utils.ByteArray;
 	
 	public class Model
@@ -82,14 +84,17 @@ package com.xinguoedu.m
 				case StreamStatus.PLAY_START:
 					state = PlayerState.PLAYING;
 					break;
-				case StreamStatus.PAUSE_NOTIFY:
-					state = PlayerState.PAUSED;
+				case StreamStatus.PAUSE_NOTIFY: //不再处理这个状态
+					//state = PlayerState.PAUSED;
 					break;
 				case StreamStatus.UNPAUSE_NOTIFY:
 					state = PlayerState.PLAYING;
 					break;
 				case StreamStatus.BUFFERING:
 					state = PlayerState.BUFFERING;
+					break;
+				case StreamStatus.BUFFER_FULL:
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));	
 					break;
 				case StreamStatus.PLAY_COMPLETE:
 					state = PlayerState.IDLE; 
@@ -256,6 +261,30 @@ package com.xinguoedu.m
 		public function get version():String
 		{
 			return playerconfig.version;
+		}
+		
+		
+		/**
+		 * 在normal screen的情况下，计时器时间到后是否自动隐藏controlbar 
+		 * @return 
+		 * 
+		 */		
+		public function get autohide():Boolean
+		{
+			if(int(playerconfig.autohide))
+				return true;
+			else
+				return	false;
+		}
+		
+		/**
+		 * 是否全屏 
+		 * @return 
+		 * 
+		 */		
+		public function get isFullScreen():Boolean
+		{
+			return StageReference.stage.displayState == StageDisplayState.FULL_SCREEN;
 		}
 	}
 }

@@ -116,19 +116,8 @@ package com.xinguoedu.m.media
 		
 		/** 加载加密视频中 **/
 		private function progressHandler(evt:ProgressEvent):void
-		{	
-			/*if(evt.bytesLoaded / evt.bytesTotal >= 0.6)
-			{
-				sendMediaEvent(MediaEvent.JWPLAYER_MEDIA_BUFFER, 
-					{				
-						'bufferPercent':	evt.bytesLoaded / evt.bytesTotal,
-						'itemDuration': 	_totalDuration, //当前视频片断的长度
-						'duration': 		_totalDuration,  //视频总共的长度
-						'position': 		_stream.time, 
-						'elapsedDuration':  0
-					}
-				);
-			}		*/
+		{			
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {bufferPercent: evt.bytesLoaded / evt.bytesTotal}));
 			
 			while(_urlStream.bytesAvailable)
 			{
@@ -237,6 +226,7 @@ package com.xinguoedu.m.media
 			destroyPosTimer();
 			_kfFilePos = _kfTime = 0;
 			_keyframes = null;
+			super.playbackComplete();
 		}
 	}
 }
