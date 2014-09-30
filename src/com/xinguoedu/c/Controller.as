@@ -8,9 +8,8 @@ package com.xinguoedu.c
 	
 	import flash.display.StageDisplayState;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 
-	public class Controller extends EventDispatcher
+	public class Controller
 	{
 		private var _playersetup:PlayerSetup;
 		private var _v:View;
@@ -35,6 +34,8 @@ package com.xinguoedu.c
 			_v.addEventListener(ViewEvt.VIDEOADS_COMPLETE, videoadsCompleteHandler);
 			_v.addEventListener(ViewEvt.KEYDOWN_SPACE, keyDownSpaceHandler);
 			_v.addEventListener(ViewEvt.PLAY_NEXT, playnextHandler);
+			_v.addEventListener(ViewEvt.DRAG_TIMESLIDER_MOVING, dragTimeSliderMovingHandler);
+			_v.addEventListener(ViewEvt.MUTE, muteHandler);
 		}
 		
 		private function playHandler(evt:ViewEvt):void
@@ -120,5 +121,18 @@ package com.xinguoedu.c
 		{
 			_m.js.playnext();
 		}		
+		
+		/** 拖着timeslider icon移动  **/
+		private function dragTimeSliderMovingHandler(evt:ViewEvt):void
+		{
+			_m.media.dragTimeSliderMoving(evt.data);
+		}
+		
+		/** 静音或者取消静音 **/
+		private function muteHandler(evt:ViewEvt):void
+		{
+			_m.media.mute(evt.data, _m.volume);
+			_m.isMute = evt.data;
+		}
 	}
 }

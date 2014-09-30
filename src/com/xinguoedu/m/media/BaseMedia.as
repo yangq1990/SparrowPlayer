@@ -47,6 +47,8 @@ package com.xinguoedu.m.media
 		protected var _ismp4:Boolean;
 		/** 是否快要播放完 **/
 		protected var _isNearlyComplete:Boolean =  false;
+		/** 是否播放完 **/
+		protected var _isComplete:Boolean = false;
 		
 		public function BaseMedia(mediaType:String)
 		{
@@ -144,6 +146,7 @@ package com.xinguoedu.m.media
 		
 		public function play():void
 		{
+			_isComplete && (_isComplete = false);
 			dispatchMediaStateEvt(PlayerState.PLAYING);
 		}
 		
@@ -176,6 +179,17 @@ package com.xinguoedu.m.media
 			{
 				_stream.soundTransform = new SoundTransform(volume / 100);
 			}
+		}
+		
+		/**
+		 * 静音或者取消静音 
+		 * @param bool
+		 * @param volume 取消静音时，恢复的音量值
+		 * 
+		 */		
+		public function mute(bool:Boolean, volume:int):void
+		{
+			bool ? setVolume(0) : setVolume(volume);
 		}
 		
 		protected function dispatchEvt(type:String):void
@@ -222,7 +236,25 @@ package com.xinguoedu.m.media
 		 */		
 		protected function playbackComplete():void
 		{
+			_isComplete = true;
+			_isNearlyComplete = false;
 			dispatchEvt(StreamStatus.PLAY_COMPLETE);
+		}
+		
+		/**
+		 * 视频是否播放完 
+		 * @return 
+		 * 
+		 */		
+		public function get isComplete():Boolean
+		{
+			return _isComplete;
+		}
+		
+		
+		public function dragTimeSliderMoving(sec:Number):void
+		{
+			
 		}
 	}
 }

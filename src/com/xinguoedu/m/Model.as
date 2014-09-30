@@ -45,6 +45,7 @@ package com.xinguoedu.m
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
+		private var _isMute:Boolean = false;
 		
 		public function Model()
 		{
@@ -68,6 +69,7 @@ package com.xinguoedu.m
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
 		{
+			YatsenLog.info('Model', evt.data);
 			switch(evt.data)
 			{
 				case StreamStatus.START_LOAD_MEDIA:
@@ -285,6 +287,32 @@ package com.xinguoedu.m
 		public function get isFullScreen():Boolean
 		{
 			return StageReference.stage.displayState == StageDisplayState.FULL_SCREEN;
+		}
+		
+		/**
+		 * 视频是否播放完 
+		 * @return 
+		 * 
+		 */		
+		public function get isMediaComplete():Boolean
+		{
+			return media.isComplete;
+		}
+
+		/**
+		 * 视频是否处在静音状态 
+		 * @return 
+		 * 
+		 */		
+		public function get isMute():Boolean
+		{
+			return _isMute;
+		}
+
+		public function set isMute(value:Boolean):void
+		{
+			_isMute = value;
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_MUTE));
 		}
 	}
 }

@@ -19,6 +19,10 @@ package com.xinguoedu.evt.view
 		public static const VOLUME:String = "volume_se";
 		public static const VIDEOADS_COMPLETE:String = "videoads_complete_ve";
 		/**
+		 * 拖动timeslider icon移动 
+		 */		
+		public static const DRAG_TIMESLIDER_MOVING:String = "drag_timeslider_moving";
+		/**
 		 * 按下键盘空格键 
 		 */		
 		public static const KEYDOWN_SPACE:String = "keydown_space_ve";

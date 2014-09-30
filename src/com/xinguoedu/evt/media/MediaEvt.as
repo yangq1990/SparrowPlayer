@@ -41,6 +41,11 @@ package com.xinguoedu.evt.media
 		 */		
 		public static const MEDIA_COMPLETE:String = "media_complete";
 		
+		/**
+		 * 视频是否静音 
+		 */		
+		public static const MEDIA_MUTE:String = "media_mute";
+		
 		public var data:*;
 		
 		public function MediaEvt(type:String, d:*=null, bubbles:Boolean=false, cancelable:Boolean=false)
