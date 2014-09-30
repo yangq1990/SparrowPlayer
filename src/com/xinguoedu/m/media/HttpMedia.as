@@ -1,7 +1,5 @@
 package com.xinguoedu.m.media
 {
-	import cn.wecoding.utils.YatsenLog;
-	
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -30,6 +28,8 @@ package com.xinguoedu.m.media
 		private var _bufferTime:Number;	
 		/** 视频是否完全缓存到本地 **/
 		private var _bufferingComplete:Boolean;
+		/** 上一次拖动的时间 **/
+		private var _sec:Number = 0;
 		
 		public function HttpMedia(mediaType:String)
 		{
@@ -70,7 +70,6 @@ package com.xinguoedu.m.media
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
-			YatsenLog.info('HttpMedia', evt.info.code);
 			switch(evt.info.code)
 			{
 				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
@@ -78,6 +77,9 @@ package com.xinguoedu.m.media
 					break;
 				case StreamStatus.SEEK_COMPLETE:
 					play();
+					break;
+				case StreamStatus.PLAY_STOP:
+					complete();
 					break;
 				default:
 					break;
@@ -150,7 +152,16 @@ package com.xinguoedu.m.media
 			{
 				_posInterval = setInterval(positionInterval, 100);
 			}
-			_stream.resume();
+			
+			if(_isComplete)
+			{
+				_stream.play(_mediaVO.url);
+			}
+			else
+			{
+				_stream.resume();
+			}			
+		
 			super.play(); //防止出现netstatusHandler不被触发时导致无法播放的问题
 		}
 		
@@ -162,6 +173,10 @@ package com.xinguoedu.m.media
 		
 		override public function seek(sec:Number):void
 		{
+			if(Math.abs(_sec - sec) <= 0.01) //修复重复请求的bug
+				return;
+				
+			_sec = sec;
 			destroyPosTimer();
 			
 			if(sec <= 0) //play from start
@@ -173,8 +188,8 @@ package com.xinguoedu.m.media
 			}			
 			
 			//已缓存到本地的视频长度
-			//var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);
-			_kfTime = getOffset(sec, true); //离拖动点最近的关键帧的时间点
+			//var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);			
+			_kfTime == getOffset(sec, true);
 			if(sec >= _duration)
 			{
 				complete();
@@ -183,11 +198,11 @@ package com.xinguoedu.m.media
 			{
 				if(!_ismp4)
 				{
+					_stream.close();
 					_stream.play(_mediaVO.url + "?start=" + getOffset(sec)); //从指定位置开始加载, 需要nginx支持start参数
 				}
 				else
 				{
-					_stream.close();
 					_stream.play(_mediaVO.url + "?start=" + _kfTime);
 				}			
 			}		
@@ -219,6 +234,13 @@ package com.xinguoedu.m.media
 			_stream.close();			
 			destroyPosTimer();			
 			_keyframes = null;
+			_sec = 0;
+		}
+		
+		/** 拖动timeslider icon移动 **/
+		override public function dragTimeSliderMoving(sec:Number):void
+		{
+			seek(sec);	
 		}
 	}
 }

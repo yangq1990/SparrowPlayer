@@ -150,7 +150,12 @@ package com.xinguoedu.m.media
 		
 		override public function play():void
 		{
-			_hls.stream.resume();
+			if(_isComplete)
+				_hls.load(_mediaVO.url);
+			else
+				_hls.stream.resume();
+			
+			super.play();
 		}
 		
 		override public function pause():void

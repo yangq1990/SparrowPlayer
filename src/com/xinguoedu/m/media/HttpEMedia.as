@@ -209,7 +209,9 @@ package com.xinguoedu.m.media
 			{
 				_posInterval = setInterval(positionInterval, 100);
 			}
-			_stream.resume();
+			
+			//重播时相当于seek到头开始播放
+			_isComplete ? seek(0) : _stream.resume();			
 			super.play();
 		}
 		
@@ -222,10 +224,8 @@ package com.xinguoedu.m.media
 		/** 播放完成 **/
 		private function playComplete():void
 		{
-			_stream.close();
 			destroyPosTimer();
 			_kfFilePos = _kfTime = 0;
-			_keyframes = null;
 			super.playbackComplete();
 		}
 	}

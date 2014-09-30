@@ -63,6 +63,8 @@ package com.xinguoedu.v.component
 		private var _isMouseOverControlbar:Boolean;
 		/** identify mouseover volumeSlider **/
 		private var _isMouseOverVolumeSlider:Boolean;		
+		/** volumeslider icon y坐标**/
+		private var _iconY:Number;
 		
 		public function ControlBarComponent(m:Model)
 		{
@@ -93,17 +95,21 @@ package com.xinguoedu.v.component
 			stateHandler();		
 			volumeHandler();
 			
-			resize();	
+			resize();		
 		
-			_timeout = setTimeout(hideControlbar, NumberConst.DELAY);
+			if(_m.autohide || _m.isFullScreen)
+			{
+				_timeout = setTimeout(hideControlbar, NumberConst.DELAY);
+			}				
 		}
 		
 		override protected function addListeners():void
 		{
 			super.addListeners();
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_TIME, timeHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADING, mediaLoadingHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_ERROR, mediaErrorHandler);
-			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_COMPLETE, mediaCompleteHandler);	
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_MUTE, mediaMuteHandler);
 			StageReference.stage.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
 			StageReference.stage.addEventListener(Event.MOUSE_LEAVE, mouseLeftStageHandler);
 			StageReference.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
@@ -172,8 +178,11 @@ package com.xinguoedu.v.component
 				var rct:Rectangle;
 				if(_scrubber.name == 'timeSlider')
 				{
+					if(_m.state == PlayerState.IDLE)
+						return;
+					
 					rct = new Rectangle(_scrubber.rail.x+_scrubber.icon.width*0.5, _scrubber.icon.y, _scrubber.rail.width - _scrubber.icon.width, 0);	
-					_scrubber.done.width = evt.localX;					
+					_scrubber.mark.width = _scrubber.done.width = evt.localX;					
 				}
 				else if(_scrubber.name == 'volumeSlider')
 				{
@@ -181,10 +190,9 @@ package com.xinguoedu.v.component
 					_scrubber.done.height = Math.abs(evt.localY);						
 				}			
 				
-				stage.addEventListener(MouseEvent.MOUSE_MOVE, dragMovingHandler);
-				stage.addEventListener(MouseEvent.MOUSE_UP, upHandler);
-				_scrubber.icon.startDrag(true, rct);
-				
+				StageReference.stage.addEventListener(MouseEvent.MOUSE_MOVE, dragMovingHandler);
+				StageReference.stage.addEventListener(MouseEvent.MOUSE_UP, upHandler);
+				_scrubber.icon.startDrag(true, rct);				
 			}
 			else 
 			{
@@ -199,9 +207,9 @@ package com.xinguoedu.v.component
 			
 			if(_scrubber.name == 'timeSlider')
 			{				
-				_scrubber.done.width = _scrubber.icon.x;
+				_scrubber.mark.width = _scrubber.done.width = _scrubber.icon.x;
 				pct = (_scrubber.icon.x - _scrubber.icon.width*0.5) / actualWidth * _dur;
-				dispatchEvent(new ViewEvt(ViewEvt.TIME, pct));
+				dispatchEvent(new ViewEvt(ViewEvt.DRAG_TIMESLIDER_MOVING, pct));
 			}				
 			else if(_scrubber.name == 'volumeSlider')
 			{
@@ -214,15 +222,18 @@ package com.xinguoedu.v.component
 		/** Handle mouse releases on sliders. **/
 		private function upHandler(evt:MouseEvent):void 
 		{
-			_scrubber.icon.stopDrag();
-			StageReference.stage.removeEventListener(MouseEvent.MOUSE_UP, upHandler);
-			StageReference.stage.removeEventListener(MouseEvent.MOUSE_MOVE, dragMovingHandler);	
+			if(_scrubber != null)
+			{
+				_scrubber.icon.stopDrag();
+				StageReference.stage.removeEventListener(MouseEvent.MOUSE_UP, upHandler);
+				StageReference.stage.removeEventListener(MouseEvent.MOUSE_MOVE, dragMovingHandler);
+			}				
 			
 			var pct:Number = 0;			
 			if (_scrubber.name == 'timeSlider')
 			{
 				pct = (_scrubber.icon.x - _scrubber.icon.width*0.5) / actualWidth * _dur;
-				_scrubber.done.width = _scrubber.icon.x;	
+				_scrubber.mark.width = _scrubber.done.width = _scrubber.icon.x;	
 				_draggingPos = pct;
 				dispatchEvent(new ViewEvt(ViewEvt.TIME, pct));
 			}
@@ -327,15 +338,21 @@ package com.xinguoedu.v.component
 				return;
 			}				
 			
-			var act:String = BUTTONS[evt.target.name];			
+			var act:String = BUTTONS[evt.currentTarget.name];			
 			var data:Object = null;
 			if (!_blocking) 
 			{
-				if(ViewEvt.MUTE)
+				if(act == ViewEvt.MUTE)
 				{
-					data = Boolean(!_m.playerconfig.mute);
+					data = Boolean(!_m.isMute);
 				}
-
+				
+				if(_m.state == PlayerState.IDLE && !_m.isMediaComplete)
+				{
+					if(evt.target.name == "playButton" || evt.target.name == "pauseButton")
+						return;
+				}				
+				
 				dispatchEvent(new ViewEvt(act, data));
 			}
 		}
@@ -392,23 +409,26 @@ package com.xinguoedu.v.component
 		private function moveHandler(evt:MouseEvent):void
 		{
 			Mouse.show();
-			if(_compTween != null)
-			{
-				TweenLite.killTweensOf(_compTween, true);
-				_compTween = null;
-			}
-			
-			if(_timeout && _m.state != PlayerState.IDLE)
-			{
-				clearTimeout(_timeout);
+			if(_m.autohide || _m.isFullScreen)
+			{				
+				if(_compTween != null)
+				{
+					TweenLite.killTweensOf(_compTween, true);
+					_compTween = null;
+				}
+				
+				if(_timeout && _m.state != PlayerState.IDLE)
+				{
+					clearTimeout(_timeout);
+				}
 				_timeout = setTimeout(hideControlbar, NumberConst.DELAY);
-			}
-			
-			if(y != stageHeight - _skin.height)
-			{
-				y = stageHeight - _skin.height;
-				EventBus.getInstance().dispatchEvent(new ViewEvt(ViewEvt.SHOW_CONTROLBAR));
-			}
+				
+				if(y != stageHeight - _skin.height)
+				{
+					y = stageHeight - _skin.height;
+					EventBus.getInstance().dispatchEvent(new ViewEvt(ViewEvt.SHOW_CONTROLBAR));
+				}
+			}			
 			
 			if(volumeSlider.visible && !_draggingVolumeSlider)
 			{
@@ -526,6 +546,7 @@ package com.xinguoedu.v.component
 			{
 				_dur = evt.data.duration;
 				_pos = evt.data.position;
+				//trace('debug--->', _pos);
 			}
 			
 			_dur <= 0 ? (_pct = 0) : (_pct = _pos/_dur);
@@ -533,7 +554,7 @@ package com.xinguoedu.v.component
 			_totalText.text = Strings.digits(_dur);					
 			_elapsedText.text = Strings.digits(_pos); 
 			
-			bufferHandler(evt); //mark的设置放到前面
+			bufferHandler(evt, _pos); //mark的设置放到前面
 			
 			//这行代码的用意是这样子的，假如用户seek到20s(_draggingPos), 上一个关键帧的位置在18s
 			//那视频是从18s(pos)开始播的，为了增加用户体验，避免给人一种seek不准确的感觉
@@ -581,7 +602,7 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 设置timeSlider的mark **/
-		private function bufferHandler(evt:MediaEvt):void 
+		private function bufferHandler(evt:MediaEvt, pos:Number):void 
 		{			
 			if (!evt || evt.data.bufferPercent < 0)
 				return;
@@ -594,9 +615,27 @@ package com.xinguoedu.v.component
 			}
 			else
 			{
-				timeSlider.mark.width = evt.data.bufferPercent * timeSlider.rail.width;
+				timeSlider.mark.width = evt.data.bufferPercent * timeSlider.rail.width + (1-evt.data.bufferPercent)*pos*widthDurationScale;
 				timeSlider.mark.visible = true;
 			}
+		}
+		
+		/** 每秒对应的宽度 **/
+		private function get widthDurationScale():Number
+		{
+			return timeSlider.rail.width / _dur;
+		}
+		
+		private function mediaLoadingHandler(evt:MediaEvt):void
+		{
+			if(evt.data.pos != null)
+			{
+				timeSlider.mark.width = (evt.data.pos + evt.data.bufferPercent) * widthDurationScale;
+			}
+			else
+			{
+				timeSlider.mark.width = (evt.data.bufferPercent) * widthDurationScale;
+			}			
 		}
 		
 		/** Reflect the new volume in the controlbar **/
@@ -610,6 +649,8 @@ package com.xinguoedu.v.component
 					volumeSlider.icon.y = -volumeSlider.icon.height * 0.5; //静音时也显示icon
 				else if(volumeSlider.icon.y <= -(volumeSlider.rail.height - volumeSlider.icon.height * 0.5))
 					volumeSlider.icon.y = -(volumeSlider.rail.height - volumeSlider.icon.height * 0.5);
+				
+				_iconY = volumeSlider.icon.y;
 			}	
 			
 			trumpetHandler();			
@@ -647,6 +688,9 @@ package com.xinguoedu.v.component
 		
 		private function mouseLeftStageHandler(evt:Event):void
 		{
+			if(!_m.autohide && !_m.isFullScreen)
+				return;
+			
 			if(_timeout)
 			{
 				clearTimeout(_timeout);
@@ -743,6 +787,7 @@ package com.xinguoedu.v.component
 		 */		
 		private function volumeChangeHandler(iconY:Number, pct:int, save2cookie:Boolean):void
 		{
+			_iconY = iconY;
 			volumeSlider.done.height = Math.abs(iconY);
 			trumpetHandler(pct);
 			dispatchEvent(new ViewEvt(ViewEvt.VOLUME, {'save2cookie':save2cookie, 'pct':pct}));	
@@ -754,6 +799,9 @@ package com.xinguoedu.v.component
 			if(_m.state == PlayerState.PAUSED)
 				return;
 			
+			if(!_m.autohide && !_m.isFullScreen)
+				return;
+			
 			if(!_isMouseOverControlbar && !_isMouseOverVolumeSlider)
 			{
 				Mouse.hide();
@@ -762,10 +810,12 @@ package com.xinguoedu.v.component
 			}
 		}
 		
-		private function mediaCompleteHandler(evt:MediaEvt):void
+		/** 视频播放完 **/
+		override protected function mediaCompleteHandler(evt:MediaEvt):void
 		{
 			timeSlider.icon.x = timeSlider.icon.width * 0.5;
 			timeSlider.done.width = timeSlider.mark.width = 1;
+			_elapsedText.text = Strings.digits(0); 
 		}
 		
 		/** 时间进度条实际的宽度，要减去icon所占的宽度 **/
@@ -804,5 +854,22 @@ package com.xinguoedu.v.component
 		{
 			return _skin.height;
 		}		
+		
+		/** 播放器静音状态改变处理函数 **/
+		private function mediaMuteHandler(evt:MediaEvt):void
+		{
+			if(_m.isMute)
+			{
+				trumpetHandler(0);
+				volumeSlider.icon.y = -volumeSlider.icon.height*0.5;
+				volumeSlider.done.height = 0;
+			}
+			else
+			{
+				volumeSlider.icon.y = _iconY;
+				volumeSlider.done.height = Math.abs(_iconY);;
+				trumpetHandler(_m.volume);
+			}
+		}										  
 	}
 }

@@ -4,6 +4,7 @@ package com.xinguoedu.v.base
 	import com.xinguoedu.consts.PlayerColor;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.PlayerStateEvt;
+	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.ShapeFactory;
 	import com.xinguoedu.utils.StageReference;
@@ -55,6 +56,7 @@ package com.xinguoedu.v.base
 		{
 			StageReference.stage.addEventListener(Event.RESIZE, resizeHandler);
 			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_COMPLETE, mediaCompleteHandler);
 		}
 		
 		private function resizeHandler(evt:Event):void
@@ -71,6 +73,16 @@ package com.xinguoedu.v.base
 		{
 			
 		}
+		
+		/**
+		 * 视频播放完成处理函数 交给子类重写 
+		 * @param evt
+		 * 
+		 */		
+		protected function mediaCompleteHandler(evt:MediaEvt):void
+		{
+			
+		}												
 		
 		protected function getSkinComponent(skin:MovieClip, compName:String):DisplayObject
 		{

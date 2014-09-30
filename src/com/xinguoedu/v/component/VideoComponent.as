@@ -63,14 +63,14 @@ package com.xinguoedu.v.component
 		/** 收到视频的metadata信息后调整视频 **/
 		private function mediaMetaDataHandler(evt:MediaEvt):void
 		{
-			Stretcher.stretch(_media, stageWidth, stageHeight);
+			stretchMedia();	
 		}
 		
 		override protected function resize():void
 		{
 			drawBack();
 			
-			Stretcher.stretch(_media, stageWidth, stageHeight);
+			stretchMedia();	
 			
 			if(_compTween != null)
 			{
@@ -87,6 +87,18 @@ package com.xinguoedu.v.component
 				_compTween = TweenLite.from(_media, 0.3, {z:250, alpha:0.3});
 			}
 		}	
+		
+		private function stretchMedia():void
+		{
+			if(_m.autohide || (!_m.autohide && _m.isFullScreen))
+			{
+				Stretcher.stretch(_media, stageWidth, stageHeight);	
+			}
+			else
+			{
+				Stretcher.stretch(_media, stageWidth, stageHeight - controlbarHeight);
+			}
+		}
 		
 		private function clickHandler(evt:MouseEvent):void
 		{

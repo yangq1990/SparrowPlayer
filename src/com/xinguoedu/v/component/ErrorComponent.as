@@ -55,7 +55,7 @@ package com.xinguoedu.v.component
 		
 		private function mediaErrorHandler(evt:MediaEvt):void
 		{
-			_errorInfo.text = evt.data;
+			_errorInfo.text = "无法播放视频，杯了个具";
 			_errorInfo.width = _errorInfo.textWidth + 20;
 			_errorInfo.height = _errorInfo.textHeight + 20;
 			
@@ -66,7 +66,7 @@ package com.xinguoedu.v.component
 		
 		override protected function resize():void
 		{
-			if(this.visible)
+			if(this.visible && _errorIcon != null)
 			{
 				_errorIcon.x = (stageWidth - _errorIcon.width) >> 1;
 				_errorIcon.y = 100;

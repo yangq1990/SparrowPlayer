@@ -64,6 +64,12 @@ package com.xinguoedu.v.component
 			_timeout = setTimeout(timeoutHandler, NumberConst.BOTTOMHINT_DELAY);
 		}
 		
+		override protected function mediaCompleteHandler(evt:MediaEvt):void
+		{
+			this.visible = false;
+			super.destroyTimer();
+		}
+		
 		override protected function resize():void
 		{
 			if(this.visible)

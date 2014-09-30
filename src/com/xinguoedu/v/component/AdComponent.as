@@ -51,7 +51,7 @@ package com.xinguoedu.v.component
 					break;
 				case PlayerState.IDLE:
 					break;
-				case PlayerState.PAUSED:					
+				case PlayerState.PAUSED:	
 					if(!_ad.numChildren)
 					{
 						var loader:MultifunctionalLoader = new MultifunctionalLoader();

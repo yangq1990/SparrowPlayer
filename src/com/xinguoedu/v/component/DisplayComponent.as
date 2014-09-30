@@ -46,12 +46,12 @@ package com.xinguoedu.v.component
 		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void
 		{
 			switch(_m.state)
-			{
-				case PlayerState.IDLE:
+			{			
 				case PlayerState.BUFFERING:
 					this.visible = true;
 					resize();
 					break;
+				case PlayerState.IDLE:
 				case PlayerState.PAUSED:
 				case PlayerState.PLAYING:
 					this.visible = false;
