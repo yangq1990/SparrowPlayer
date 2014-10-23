@@ -1,12 +1,11 @@
 package com.xinguoedu.c
 {
-	import cn.wecoding.utils.YatsenLog;
-	
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.m.skin.BaseSkin;
 	import com.xinguoedu.m.skin.DefaultSkin;
 	import com.xinguoedu.utils.Configger;
 	import com.xinguoedu.utils.JSONUtil;
+	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.v.View;
 	
 	import flash.events.Event;
@@ -57,9 +56,17 @@ package com.xinguoedu.c
 			//media
 			_m.mediaVO.vid = _m.playerconfig.vid;
 			_m.mediaVO.type = _m.playerconfig.type;
-			_m.mediaVO.url = _m.playerconfig.url;
 			_m.mediaVO.autostart = int(_m.playerconfig.autostart) ? true : false;
 			_m.mediaVO.checkPolicyFile = int(_m.playerconfig.accesspx) ? true : false;
+			//_m.mediaVO.url = _m.playerconfig.url;
+			if(_m.playerconfig.urls) //多段视频
+			{
+				_m.mediaVO.urlArray = (JSONUtil.decode(_m.playerconfig.urls)) as Array;
+			}
+			else
+			{
+				_m.mediaVO.url = _m.playerconfig.url;
+			}
 			
 			//for encrypted video
 			_m.mediaVO.omittedLength = _m.playerconfig.omittedLength;
@@ -72,8 +79,7 @@ package com.xinguoedu.c
 			_m.videoadVO.btnurl = _m.playerconfig.learnmore;
 			
 			//ad
-			_m.adVO.url = _m.playerconfig.adurl;
-			_m.adVO.link = _m.playerconfig.adlink;
+			_m.adVO.adArray =  (JSONUtil.decode(_m.playerconfig.ads) as Array);		
 			
 			//logo
 			_m.logoVO.url = _m.playerconfig.logo.url; //这里应该是logo的url
@@ -107,7 +113,7 @@ package com.xinguoedu.c
 			}
 			catch(err:Error)
 			{
-				YatsenLog.error('PlayerSetup', 'setup view出错', err.toString());
+				Logger.error('PlayerSetup', 'setup view出错', err.toString());
 			}
 		
 			_taskQueue.success();
