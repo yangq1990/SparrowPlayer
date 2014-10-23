@@ -32,5 +32,10 @@ package com.xinguoedu.m.vo
 		 * 不然在某些情况下会导致安全沙箱错误 
 		 */		
 		public var checkPolicyFile:Boolean = false;
+		
+		/**
+		 * 存放多段视频地址的数组 
+		 */		
+		public var urlArray:Array;
 	}
 }
