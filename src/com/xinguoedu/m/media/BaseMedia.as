@@ -5,9 +5,11 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.vo.MediaVO;
+	import com.xinguoedu.utils.MetadataUtil;
 	
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.media.SoundTransform;
 	import flash.media.Video;
@@ -27,7 +29,7 @@ package com.xinguoedu.m.media
 		/** 流的当前位置 **/
 		protected var _pos:Number;
 		/** 视频时长 **/
-		protected var _duration:Number;
+		protected var _duration:Number = 0;
 		protected var _mediaVO:MediaVO;
 		protected var _nc:NetConnection;
 		protected var _stream:NetStream;
@@ -116,27 +118,7 @@ package com.xinguoedu.m.media
 		 */		
 		protected function getOffset(sec:Number, tme:Boolean=false):Number 
 		{
-			if (!_keyframes) 
-			{
-				return 0;
-			}
-			
-			for (var i:Number = 0; i < _keyframes.times.length - 1; i++) 
-			{
-				if (_keyframes.times[i] <= sec && _keyframes.times[i + 1] >= sec) 
-				{
-					break;
-				}
-			}
-			
-			if(!tme)
-			{
-				return _keyframes.filepositions[i];
-			}
-			else
-			{
-				return _keyframes.times[i];
-			}
+			return MetadataUtil.getOffset(_keyframes, sec, tme);
 		}
 		
 		public function get display():Sprite
@@ -153,6 +135,15 @@ package com.xinguoedu.m.media
 		public function pause():void
 		{
 			dispatchMediaStateEvt(PlayerState.PAUSED);
+		}
+		
+		/**
+		 * mouse down timeslider 准备拖动 
+		 * 
+		 */		
+		public function mouseDownToSeek():void
+		{
+			destroyPosTimer();
 		}
 		
 		/**
@@ -220,6 +211,16 @@ package com.xinguoedu.m.media
 		protected function netStatusHandler(evt:NetStatusEvent):void
 		{
 			
+		}
+		
+		/**
+		 * 加载视频IOError, 由子类继承调用 
+		 * @param evt
+		 * 
+		 */		
+		protected function ioErrorHandler(evt:IOErrorEvent=null):void
+		{
+			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}
 		
 		/**
