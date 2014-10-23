@@ -110,7 +110,8 @@ package com.xinguoedu.v
 		{
 			_controlbarComp.addEventListener(ViewEvt.PAUSE, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.PLAY, function(evt:ViewEvt):void{ dispatchEvent(evt); });
-			_controlbarComp.addEventListener(ViewEvt.TIME, function(evt:ViewEvt):void{ dispatchEvent(evt); });
+			_controlbarComp.addEventListener(ViewEvt.MOUSEDOWN_TO_SEEK, function(evt:ViewEvt):void{ dispatchEvent(evt); });
+			_controlbarComp.addEventListener(ViewEvt.SEEK, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.FULLSCREEN, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.NORMAL, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_controlbarComp.addEventListener(ViewEvt.VOLUME, function(evt:ViewEvt):void{ dispatchEvent(evt); });
