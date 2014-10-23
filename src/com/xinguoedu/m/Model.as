@@ -1,7 +1,5 @@
 package com.xinguoedu.m
 {
-	import cn.wecoding.utils.YatsenLog;
-	
 	import com.adobe.images.PNGEncoder;
 	import com.hurlant.util.Base64;
 	import com.xinguoedu.consts.DebugConst;
@@ -17,12 +15,14 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.media.HLSMedia;
 	import com.xinguoedu.m.media.HttpEMedia;
 	import com.xinguoedu.m.media.HttpMedia;
+	import com.xinguoedu.m.media.httpm.HttpMMedia;
 	import com.xinguoedu.m.vo.AdVO;
 	import com.xinguoedu.m.vo.ErrorHintVO;
 	import com.xinguoedu.m.vo.LogoVO;
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
+	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.utils.StageReference;
 	
 	import flash.display.BitmapData;
@@ -56,7 +56,8 @@ package com.xinguoedu.m
 		{
 			_mediaMap[MediaType.HTTP] = new HttpMedia(MediaType.HTTP);			
 			_mediaMap[MediaType.HLS] = new HLSMedia(MediaType.HLS);
-			_mediaMap[MediaType.HTTPE] = new HttpEMedia(MediaType.HTTPE);			
+			_mediaMap[MediaType.HTTPE] = new HttpEMedia(MediaType.HTTPE);		
+			_mediaMap[MediaType.HTTPM] = new HttpMMedia(MediaType.HTTPM);
 		}
 		
 		private function addListeners():void
@@ -69,11 +70,11 @@ package com.xinguoedu.m
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
 		{
-			YatsenLog.info('Model', evt.data);
+			Logger.info('Model', evt.data);
 			switch(evt.data)
 			{
 				case StreamStatus.START_LOAD_MEDIA:
-					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADED));	
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.LOAD_MEDIA));	
 					break;
 				case StreamStatus.LOAD_MEDIA_IOERROR:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR, evt.data));
@@ -85,18 +86,17 @@ package com.xinguoedu.m
 					break;
 				case StreamStatus.PLAY_START:
 					state = PlayerState.PLAYING;
-					break;
-				case StreamStatus.PAUSE_NOTIFY: //不再处理这个状态
-					//state = PlayerState.PAUSED;
-					break;
-				case StreamStatus.UNPAUSE_NOTIFY:
-					state = PlayerState.PLAYING;
-					break;
+					break;			
 				case StreamStatus.BUFFERING:
 					state = PlayerState.BUFFERING;
 					break;
+				/*case StreamStatus.PAUSE_NOTIFY: //视频缓冲中在某些情况下也会触发，所以不再处理这个状态
+					state = PlayerState.PAUSED;
+					break;*/
+				case StreamStatus.UNPAUSE_NOTIFY:	//unpause和bufferfull可认为是一致的			
 				case StreamStatus.BUFFER_FULL:
-					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));	
+					state = PlayerState.PLAYING;
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));
 					break;
 				case StreamStatus.PLAY_COMPLETE:
 					state = PlayerState.IDLE; 
@@ -133,7 +133,7 @@ package com.xinguoedu.m
 			}
 			catch(err:Error)
 			{
-				YatsenLog.error("Model", "截图出错",  err.toString());
+				Logger.error("Model", "截图出错",  err.toString());
 				
 				if(bitmapData != null)
 				{
