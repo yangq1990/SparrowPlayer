@@ -75,7 +75,7 @@ package com.xinguoedu.m.media
 		/** Forward playback errors from the framework. **/
 		private function _errorHandler(event : HLSEvent) : void 
 		{
-			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
+			super.ioErrorHandler();
 		}
 		
 		/** Update video A/R on manifest load. **/
@@ -107,7 +107,12 @@ package com.xinguoedu.m.media
 				_pos = event.mediatime.position;
 				_bufferPercent = (_pos + event.mediatime.buffer) / event.mediatime.duration;
 
-				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, {position: _pos, duration: _duration, bufferPercent:_bufferPercent}));
+				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, 
+					{
+						position: _pos, 
+						duration: _duration, 
+						bufferDuration:_bufferPercent*_duration
+					}));
 				
 				//自动连播提示
 				/*if(_config.playNextEnabled && event.mediatime.duration >= 30 && (event.mediatime.duration - _pos <= 30))

@@ -94,12 +94,6 @@ package com.xinguoedu.m.media
 			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
 		}		
 		
-		/** ioerror **/
-		private function ioErrorHandler(evt:IOErrorEvent):void
-		{
-			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
-		}
-		
 		private function closeHandler(evt:Event):void
 		{  
 			_urlStream.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, securityErrorHandler);
@@ -117,7 +111,7 @@ package com.xinguoedu.m.media
 		/** 加载加密视频中 **/
 		private function progressHandler(evt:ProgressEvent):void
 		{			
-			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {bufferPercent: evt.bytesLoaded / evt.bytesTotal}));
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {percent: evt.bytesLoaded / evt.bytesTotal}));
 			
 			while(_urlStream.bytesAvailable)
 			{
@@ -167,7 +161,12 @@ package com.xinguoedu.m.media
 		{
 			if(_stream.time >= 0)
 			{				
-				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, {position: _stream.time + _kfTime, duration: _duration, bufferPercent:1}));
+				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, 
+					{
+						position: _stream.time + _kfTime, 
+						duration: _duration, 
+						bufferDuration:_duration
+					}));
 			}
 			
 			//自动连播提示

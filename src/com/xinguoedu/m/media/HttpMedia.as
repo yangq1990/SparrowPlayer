@@ -5,6 +5,7 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.vo.MediaVO;
+	import com.xinguoedu.utils.Logger;
 	
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
@@ -45,7 +46,7 @@ package com.xinguoedu.m.media
 			
 			_stream = new NetStream(_nc);
 			_stream.addEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
-			_stream.addEventListener(IOErrorEvent.IO_ERROR, onIOErrorHandler);
+			_stream.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 			_stream.client = this;
 			//检查策略文件
 			mediaVO.checkPolicyFile && (_stream.checkPolicyFile = true);
@@ -70,6 +71,7 @@ package com.xinguoedu.m.media
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
+			trace('httpmideia---->', evt.info.code);
 			switch(evt.info.code)
 			{
 				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
@@ -88,35 +90,36 @@ package com.xinguoedu.m.media
 			dispatchEvt(evt.info.code);
 		}
 		
-		protected function onIOErrorHandler(evt:IOErrorEvent):void
-		{
-			dispatchEvt(StreamStatus.LOAD_MEDIA_IOERROR);
-		}
-		
 		private function positionInterval():void
 		{
-			!_ismp4 && (_kfTime = 0);
-			_pos = Math.round((_stream.time + _kfTime)* 100) / 100;
+			//!_ismp4 && (_kfTime = 0);
+			if(_duration <= 0)
+				return;
 			
-			if (_duration > 0 && _stream) 
+			_pos = _stream.time;
+			
+			/*if (_duration > 0 && _stream) 
 			{
 				_bufferTime = _stream.bufferTime < (_duration - _pos) ? _stream.bufferTime : Math.ceil(_duration - _pos);
 				_bufferFill = _stream.bufferTime ? Math.ceil(Math.ceil(_stream.bufferLength) / _bufferTime * 100) : 0;
-			} 
-			else 
+			}*/
+			if(_kfTime > 0) //拖动过
 			{
-				_bufferFill = _stream.bufferTime ? _stream.bufferLength/_stream.bufferTime * 100 : 0;
+				_bufferTime = _stream.bufferTime < (_pos - _kfTime) ? _stream.bufferTime : Math.ceil(_pos - _kfTime);
+			}
+			else
+			{
+				_bufferTime = _stream.bufferTime < (_duration - _pos) ? _stream.bufferTime : Math.ceil(_duration - _pos);				
 			}
 			
+			_bufferFill = _stream.bufferTime ? (_stream.bufferLength/_stream.bufferTime) * 100 : 0;		
 			_bufferPercent = _stream.bytesTotal ? (_stream.bytesLoaded / _stream.bytesTotal) : 0;
 			
 			if (_bufferFill <= 95 && (_duration - _pos) > 5) 
 			{
 				_bufferFull = false;
-				_stream.pause();				
-				//此处的bufferPercent指的是内存区填满的程度
-				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {pos:_pos, bufferPercent:_bufferFill/100}));
-				//trace('dispatch--->', _pos, _bufferFill);
+				//_stream.pause();				
+				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {percent:_bufferFill/100}));
 			} 
 			else if (_bufferFill > 95 && !_bufferFull) 
 			{
@@ -130,10 +133,15 @@ package com.xinguoedu.m.media
 				 * 数据结构,为提高效率，事件直接派发，由controlbarComp接收处理
 				 * position 播放头的位置,以秒为单位
 				 * duration 视频时长
-				 * bufferPercent 视频缓存到本地的比例
+				 * bufferDuration 视频缓存到本地的时长
 				 * 
-				 * **/			
-				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, {position: _pos, duration: _duration, bufferPercent:_bufferPercent}));
+				 * **/		
+				EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, 
+					{
+						position: _pos, 
+						duration: _duration, 
+						bufferDuration:_kfTime + _bufferPercent * (_duration - _kfTime)
+					}));
 				if(!_isNearlyComplete && (_duration - _pos <= NumberConst.NEARLY_COMPLETE))
 				{
 					_isNearlyComplete = true;
@@ -177,7 +185,6 @@ package com.xinguoedu.m.media
 				return;
 				
 			_sec = sec;
-			destroyPosTimer();
 			
 			if(sec <= 0) //play from start
 			{
@@ -189,22 +196,37 @@ package com.xinguoedu.m.media
 			
 			//已缓存到本地的视频长度
 			//var cachedDuration:Number = (_bufferPercent >= 1 ? _duration : _stream.time + _bufferPercent * _duration);			
-			_kfTime == getOffset(sec, true);
+			_kfTime = getOffset(sec, true);
 			if(sec >= _duration)
 			{
 				complete();
 			}
 			else
 			{
-				if(!_ismp4)
+				//匹配start
+				var url:String = _mediaVO.url;
+				var newurl:String;
+				if(_mediaVO.url.indexOf("start=") == -1)
 				{
+					newurl = url + "?start=" + getOffset(sec);
+				}
+				else
+				{
+					var temp:String = _mediaVO.url.slice(0,url.lastIndexOf('=')+1);	
+					newurl = (temp += getOffset(sec));
+				}			
+				
+				if(!_ismp4)
+				{				
 					_stream.close();
-					_stream.play(_mediaVO.url + "?start=" + getOffset(sec)); //从指定位置开始加载, 需要nginx支持start参数
+					_stream.play(newurl);
 				}
 				else
 				{
 					_stream.play(_mediaVO.url + "?start=" + _kfTime);
-				}			
+				}		
+				
+				Logger.info("HttpMedia", "newurl:" + newurl);
 			}		
 		}
 		
