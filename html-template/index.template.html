@@ -22,7 +22,7 @@
         -->
         <style type="text/css" media="screen"> 
             html, body  { height:100%; }
-            body { margin:0; padding:10px 50px; overflow:auto; text-align:left; 
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
                    background-color: ${bgcolor}; }   
             object:focus { outline:none; }
             #flashContent { display:none; }
@@ -30,8 +30,8 @@
         
         <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
         <!-- BEGIN Browser History required section ${useBrowserHistory}>
-        <!-- <link rel="stylesheet" type="text/css" href="history/history.css" /> -->
-        <!-- <script type="text/javascript" src="history/history.js"></script> -->
+        <link rel="stylesheet" type="text/css" href="history/history.css" />
+        <script type="text/javascript" src="history/history.js"></script>
         <!${useBrowserHistory} END Browser History required section -->  
             
         <script type="text/javascript" src="swfobject.js"></script>
@@ -40,6 +40,7 @@
             var swfVersionStr = "${version_major}.${version_minor}.${version_revision}";
             // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
             var xiSwfUrlStr = "${expressInstallSwf}";
+            var flashvars = {};
             
             var flashvars = {};
             flashvars.vid = '123123123123';
@@ -51,30 +52,37 @@
             //http
            //flashvars.type = 'http';
            // flashvars.url = 'http://www.xinguoedu.com/sparrow/video/gameofcode.mp4';
-           //flashvars.url = 'http://www.xinguoedu.com/sparrow/video/google.flv';
+           //flashvars.url = encodeURIComponent("http://220.161.209.60/plvod01.videocc.net/cdea789162/6/cdea789162ae62e006f461f6c3adc766_1.flv");
+           //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/qingshu-dota/06.flv");
             
             //hls
-            flashvars.type = 'hls';
-            flashvars.url = 'http://my.tv.sohu.com/ipad/74393984.m3u8';
+            //flashvars.type = 'hls';
+           // flashvars.url = 'http://my.tv.sohu.com/ipad/74393984.m3u8';
             
             //httpe
             //flashvars.type = 'httpe';
             //flashvars.url = 'http://www.xinguoedu.com.com/sparrow/video/jiangnan.flv';
            // flashvars.url = 'http://192.168.1.202:8140/sparrow/jiangnan.flv';
+           
+           	//httpm  http multi-segments  多段视频
+           	flashvars.type = "httpm";
+           	//flashvars.urls = '[{"duration":408.0674829931973,"url":"http://www.xinguoedu.com/qingshu-dota/01.flv"},{"duration":362,"url":"http://www.xinguoedu.com/qingshu-dota/02.flv"},{"duration":393.53333333333336,"url":"http://www.xinguoedu.com/qingshu-dota/03.flv"},{"duration":411.1333333333333,"url":"http://www.xinguoedu.com/qingshu-dota/04.flv"},{"duration":373.4697505668934,"url":"http://www.xinguoedu.com/qingshu-dota/05.flv"},{"duration":387.26666666666665,"url":"http://www.xinguoedu.com/qingshu-dota/06.flv"},{"duration":362.8,"url":"http://www.xinguoedu.com/qingshu-dota/07.flv"}]';
+           	flashvars.urls = '[{"duration":236.5,"url":"http://220.161.209.60/plvod01.videocc.net/cdea789162/6/cdea789162ae62e006f461f6c3adc766_1.flv"},{"duration":408.0674829931973,"url":"http://www.xinguoedu.com/qingshu-dota/01.flv"}, {"duration":236.5,"url":"http://220.161.209.60/plvod01.videocc.net/cdea789162/6/cdea789162ae62e006f461f6c3adc766_1.flv"},{"duration":393.53333333333336,"url":"http://www.xinguoedu.com/qingshu-dota/03.flv"}]';
             
             //是否打开视频广告功能，1打开 0关闭
             flashvars.vads_enabled = 0;
             //片头的视频广告, 包含相关信息的json string
-            flashvars.videoads = '[{"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv"}]';
+            flashvars.videoads ='[{"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv"}]';
             
             //视频暂停时候的广告
-            flashvars.adurl = 'http://www.xinguoedu.com/sparrow/ad.png';
-            flashvars.adlink = 'http://www.wecoding.cn';            
+            flashvars.ads = '[{"url":"http://www.xinguoedu.com/sparrow/ad0.jpg","link":"http://www.xinguoedu.com/"},{"url":"http://www.xinguoedu.com/sparrow/ad1.jpg","link":"http://www.xinguoedu.com/"},{"url":"http://www.xinguoedu.com/sparrow/ad2.jpg","link":"http://www.xinguoedu.com/"}, {"url":"http://www.xinguoedu.com/sparrow/ad3.jpg","link":"http://www.xinguoedu.com/"}]';  
+            
+            
             
             var params = {};
             params.quality = "high";
-            params.bgcolor = "#000000";
-            params.allowscriptaccess = "always";
+            params.bgcolor = "${bgcolor}";
+            params.allowscriptaccess = "sameDomain";
             params.allowfullscreen = "true";
             var attributes = {};
             attributes.id = "${application}";
@@ -88,39 +96,6 @@
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
         </script>
-        
-         <script type="text/javascript">
-    		function thisMovie(movieName) 
-    		{
-        		 if (navigator.appName.indexOf("Microsoft") != -1) 
-        		 {
-             		return window[movieName];
-         		 }
-         		 else 
-         		 {
-             		return document[movieName];
-         		}
-     		}
-     		
-     		/** 通知flash截图, 并且设定截图的宽高 **/
-     		function screenshot_handler()
-     		{
-     			thisMovie("SparrowPlayer").JS_screenshot(document.getElementById('screenshot').getAttribute("width"), document.getElementById('screenshot').getAttribute("height"));	  
-     		}
-     		
-     		/** 显示二维码 **/
-     		function qrcode_handler()
-     		{
-     			thisMovie("SparrowPlayer").JS_qrcode();
-     		}
-     		
-     		/** 在html页面上显示截图 **/
-     		function showScreenshot(str)
-    		{
-        		document.getElementById('screenshot').setAttribute('src', str);
-    		}
-         
-         </script>
     </head>
     <body>
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
@@ -132,12 +107,11 @@
                 To view this page ensure that Adobe Flash Player version 
                 ${version_major}.${version_minor}.${version_revision} or greater is installed. 
             </p>
-            <!--
             <script type="text/javascript"> 
                 var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
                 document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
                                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
-            </script> --> 
+            </script> 
         </div>
         
         <noscript>
@@ -168,9 +142,5 @@
                 <!--<![endif]-->
             </object>
         </noscript>     
-        
-         <input type="button" onclick="screenshot_handler();" value="截图">
-         <input type="button" onclick="qrcode_handler();" value="二维码">
-         <img id="screenshot" width="320" height="240">
    </body>
 </html>
