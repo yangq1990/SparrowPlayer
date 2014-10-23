@@ -60,14 +60,18 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 
-		 * 对于http视频，evt.data.bufferPercent 代表的是视频在内寸缓冲区的填满程度
-		 * 对于httpe视频，evt.data.bufferPercent 代表的是加密视频加载到本地的进度
+		 * 对于http视频，evt.data.percent 代表的是视频在内寸缓冲区的填满程度
+		 * 对于httpe视频，evt.data.percent 代表的是加密视频加载到本地的进度
 		 * **/
 		private function mediaLoadingHandler(evt:MediaEvt):void
 		{
 			_buffer_tf.text = "";
-			_buffer_tf.appendText(int(evt.data.bufferPercent*100) + "%"); //这样写更有效
-			!this.visible && (this.visible = true);
+			_buffer_tf.appendText(int(evt.data.percent*100) + "%"); //这样写更有效
+			if(!this.visible)
+			{
+				this.visible = true;
+				resize();
+			}
 		}
 		
 		private function bufferFullHandler(evt:MediaEvt):void
