@@ -27,7 +27,8 @@ package com.xinguoedu.c
 		{
 			_v.addEventListener(ViewEvt.PLAY, playHandler);
 			_v.addEventListener(ViewEvt.PAUSE, pauseHandler);
-			_v.addEventListener(ViewEvt.TIME, seekHandler);
+			_v.addEventListener(ViewEvt.MOUSEDOWN_TO_SEEK, mouseDownToSeekHandler);
+			_v.addEventListener(ViewEvt.SEEK, seekHandler);
 			_v.addEventListener(ViewEvt.FULLSCREEN, fullScreenHandler);
 			_v.addEventListener(ViewEvt.NORMAL, normalHandler);
 			_v.addEventListener(ViewEvt.VOLUME, volumeHandler);
@@ -53,6 +54,11 @@ package com.xinguoedu.c
 		private function pauseHandler(evt:ViewEvt):void
 		{
 			_m.media.pause();
+		}
+		
+		private function mouseDownToSeekHandler(evt:ViewEvt):void
+		{
+			_m.media.mouseDownToSeek();
 		}
 		
 		private function seekHandler(evt:ViewEvt):void

@@ -15,7 +15,7 @@ package com.xinguoedu.evt.view
 		public static const FULLSCREEN:String = "fullscreen_ve";
 		public static const NORMAL:String = "normal_ve";
 		public static const MUTE:String = "mute_ve";
-		public static const TIME:String = "time_se";
+		public static const SEEK:String = "seek_se";
 		public static const VOLUME:String = "volume_se";
 		public static const VIDEOADS_COMPLETE:String = "videoads_complete_ve";
 		/**
@@ -30,6 +30,11 @@ package com.xinguoedu.evt.view
 		public static const SHOW_CONTROLBAR:String = "show_controlbar_ve";
 		
 		public static const HIDE_CONTROLBAR:String = "hide_controlbar_ve";
+		
+		/**
+		 * mouse down timeslider, 准备拖动 
+		 */		
+		public static const MOUSEDOWN_TO_SEEK:String = "mousedown_to_seek";
 		
 		public var data:*;
 		
