@@ -9,7 +9,7 @@ package com.xinguoedu.evt.media
 	 */	
 	public class MediaEvt extends Event
 	{
-		public static const MEDIA_LOADED:String = "media_loaded";
+		public static const LOAD_MEDIA:String = "load_media";
 		
 		public static const MEDIA_METADATA:String = "media_metadata";
 		
