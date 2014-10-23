@@ -137,9 +137,12 @@ package com.xinguoedu.m.media.httpm
 		
 		private function preloadNextHandler(evt:SegmentEvt):void
 		{
-			var segment:Segment = _dict[_currentIndex+1] as Segment;
-			segment.load();
 			Logger.info("HttpMMedia", _mediaVO.urlArray[_currentIndex].url + "即将播放完");
+			if(_currentIndex >= _mediaVO.urlArray.length-1)
+				return;
+			
+			var segment:Segment = _dict[_currentIndex+1] as Segment;
+			segment.load();			
 			Logger.info("HttpMMedia", _mediaVO.urlArray[_currentIndex+1].url + "开始后台加载");
 		}
 		
