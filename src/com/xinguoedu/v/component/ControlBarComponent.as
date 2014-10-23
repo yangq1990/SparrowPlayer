@@ -107,7 +107,7 @@ package com.xinguoedu.v.component
 		{
 			super.addListeners();
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_TIME, timeHandler);
-			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADING, mediaLoadingHandler);
+			//EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADING, mediaLoadingHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_ERROR, mediaErrorHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_MUTE, mediaMuteHandler);
 			StageReference.stage.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
@@ -182,7 +182,8 @@ package com.xinguoedu.v.component
 						return;
 					
 					rct = new Rectangle(_scrubber.rail.x+_scrubber.icon.width*0.5, _scrubber.icon.y, _scrubber.rail.width - _scrubber.icon.width, 0);	
-					_scrubber.mark.width = _scrubber.done.width = evt.localX;					
+					_scrubber.mark.width = _scrubber.done.width = evt.localX;		
+					dispatchEvent(new ViewEvt(ViewEvt.MOUSEDOWN_TO_SEEK));
 				}
 				else if(_scrubber.name == 'volumeSlider')
 				{
@@ -235,7 +236,7 @@ package com.xinguoedu.v.component
 				pct = (_scrubber.icon.x - _scrubber.icon.width*0.5) / actualWidth * _dur;
 				_scrubber.mark.width = _scrubber.done.width = _scrubber.icon.x;	
 				_draggingPos = pct;
-				dispatchEvent(new ViewEvt(ViewEvt.TIME, pct));
+				dispatchEvent(new ViewEvt(ViewEvt.SEEK, pct));
 			}
 			else if (_scrubber.name == 'volumeSlider') 
 			{
@@ -534,10 +535,10 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 
-		 * evt.data 数据结构,为提高效率，事件直接派发，由controlbarComp接收处理
+		 * evt.data 数据结构,为提高效率，事件直接在BaseMedia的子类中派发，由controlbarComp接收处理
 		 * position 播放头的位置,以秒为单位
-		 * duration 视频时长
-		 * bufferPercent 视频缓存到本地的比例
+		 * duration 视频总时长
+		 * bufferDuration 视频缓存到本地的时长
 		 * 
 		 * **/			
 		private function timeHandler(evt:MediaEvt):void
@@ -546,7 +547,6 @@ package com.xinguoedu.v.component
 			{
 				_dur = evt.data.duration;
 				_pos = evt.data.position;
-				//trace('debug--->', _pos);
 			}
 			
 			_dur <= 0 ? (_pct = 0) : (_pct = _pos/_dur);
@@ -554,7 +554,8 @@ package com.xinguoedu.v.component
 			_totalText.text = Strings.digits(_dur);					
 			_elapsedText.text = Strings.digits(_pos); 
 			
-			bufferHandler(evt, _pos); //mark的设置放到前面
+			bufferHandler(evt);
+			//bufferHandler(evt, _pos); //mark的设置放到前面
 			
 			//这行代码的用意是这样子的，假如用户seek到20s(_draggingPos), 上一个关键帧的位置在18s
 			//那视频是从18s(pos)开始播的，为了增加用户体验，避免给人一种seek不准确的感觉
@@ -602,7 +603,8 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 设置timeSlider的mark **/
-		private function bufferHandler(evt:MediaEvt, pos:Number):void 
+		//private function bufferHandler(evt:MediaEvt, pos:Number):void 
+		private function bufferHandler(evt:MediaEvt):void
 		{			
 			if (!evt || evt.data.bufferPercent < 0)
 				return;
@@ -615,27 +617,19 @@ package com.xinguoedu.v.component
 			}
 			else
 			{
-				timeSlider.mark.width = evt.data.bufferPercent * timeSlider.rail.width + (1-evt.data.bufferPercent)*pos*widthDurationScale;
+				//trace("bufferpercent--->", evt.data.bufferDuration);
+				//timeSlider.mark.width = evt.data.position * widthDurationScale + evt.data.bufferDuration;
+				timeSlider.mark.width = evt.data.bufferDuration * widthDurationScale;
+				//timeSlider.mark.width = evt.data.bufferPercent * timeSlider.rail.width + (1-evt.data.bufferPercent)*pos*widthDurationScale;
 				timeSlider.mark.visible = true;
 			}
+			//trace('width-->', _m.state, timeSlider.mark.width);
 		}
 		
 		/** 每秒对应的宽度 **/
 		private function get widthDurationScale():Number
 		{
 			return timeSlider.rail.width / _dur;
-		}
-		
-		private function mediaLoadingHandler(evt:MediaEvt):void
-		{
-			if(evt.data.pos != null)
-			{
-				timeSlider.mark.width = (evt.data.pos + evt.data.bufferPercent) * widthDurationScale;
-			}
-			else
-			{
-				timeSlider.mark.width = (evt.data.bufferPercent) * widthDurationScale;
-			}			
 		}
 		
 		/** Reflect the new volume in the controlbar **/
