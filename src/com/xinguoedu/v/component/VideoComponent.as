@@ -45,7 +45,7 @@ package com.xinguoedu.v.component
 		override protected function addListeners():void
 		{
 			super.addListeners();
-			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADED, mediaLoadedHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.LOAD_MEDIA, mediaLoadedHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_METADATA, mediaMetaDataHandler);
 			this.addEventListener(MouseEvent.CLICK, clickHandler);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, doubleClickHandler);	

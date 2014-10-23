@@ -1,12 +1,9 @@
 package com.xinguoedu.utils
 {
-	import cn.wecoding.utils.YatsenLog;
-	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.net.SharedObject;
-	import flash.utils.ByteArray;
 	
 	/**
 	 * 加载配置信息 
@@ -27,7 +24,7 @@ package com.xinguoedu.utils
 		{
 			//先加载配置文件
 			var loader:MultifunctionalLoader = new MultifunctionalLoader(false);
-			loader.registerCompleteFunc(loadXMLCompleteHandler);
+			loader.registerFunctions(loadXMLCompleteHandler);
 			loader.load("../assets/Config.xml");
 		}
 		
@@ -83,7 +80,7 @@ package com.xinguoedu.utils
 			} 
 			catch (err:Error) 
 			{
-				YatsenLog.error('Configger','写入数据到本地sharedobject出错', err.toString());
+				Logger.error('Configger','写入数据到本地sharedobject出错', err.toString());
 			}
 		}
 		
@@ -107,7 +104,7 @@ package com.xinguoedu.utils
 			} 
 			catch (err:Error) 
 			{
-				YatsenLog.error('Configger','从本地sharedobject读取数据出错',err.toString());
+				Logger.error('Configger','从本地sharedobject读取数据出错',err.toString());
 			}
 			
 			dispatchEvent(new Event(Event.COMPLETE));

@@ -34,7 +34,7 @@ package com.xinguoedu.v.component
 			addChild(_errorInfo);
 			
 			var loader:MultifunctionalLoader = new MultifunctionalLoader();
-			loader.registerCompleteFunc(completeHandler);
+			loader.registerFunctions(completeHandler);
 			loader.load(_m.errorHintVO.url);
 		}
 		

@@ -33,7 +33,7 @@ package com.xinguoedu.v.component
 		override protected function buildUI():void			
 		{			
 			var loader:MultifunctionalLoader = new MultifunctionalLoader();
-			loader.registerCompleteFunc(completeHandler);
+			loader.registerFunctions(completeHandler);
 			loader.load(_m.logoVO.url);
 		}
 		

@@ -1,12 +1,11 @@
 package com.xinguoedu.v.component
 {
-	import cn.wecoding.utils.YatsenLog;
-	
 	import com.xinguoedu.consts.Layout;
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.view.ViewEvt;
 	import com.xinguoedu.m.Model;
+	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.utils.MultifunctionalLoader;
 	import com.xinguoedu.utils.Stretcher;
 	import com.xinguoedu.v.base.BaseComponent;
@@ -127,7 +126,7 @@ package com.xinguoedu.v.component
 			_interval = setInterval(countdownHandler, NumberConst.COUNTDOWN_INTERVAL);
 			
 			var loader:MultifunctionalLoader = new MultifunctionalLoader();
-			loader.registerCompleteFunc(loadCompleteHandler);
+			loader.registerFunctions(loadCompleteHandler);
 			loader.load(_m.videoadVO.btnurl);
 			
 			_nc = new NetConnection();
@@ -151,12 +150,12 @@ package com.xinguoedu.v.component
 		
 		private function ioErrorHandler(evt:IOErrorEvent):void
 		{
-			YatsenLog.error('VideoAdsComponent', '加载视频ioError', evt.toString());
+			Logger.error('VideoAdsComponent', '加载视频ioError', evt.toString());
 		}
 		
 		private function statusHandler(evt:NetStatusEvent):void
 		{
-			YatsenLog.info('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur);
+			Logger.info('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur);
 			switch(evt.info.code)
 			{
 				case StreamStatus.PLAY_START:
