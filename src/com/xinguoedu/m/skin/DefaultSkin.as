@@ -1,6 +1,6 @@
 package com.xinguoedu.m.skin
 {
-	import cn.wecoding.utils.YatsenLog;
+	import com.xinguoedu.utils.Logger;
 	
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
@@ -45,7 +45,7 @@ package com.xinguoedu.m.skin
 			}
 			catch(err:Error)
 			{
-				YatsenLog.error('DefaultSkin', '获取皮肤内容出错', evt.toString());
+				Logger.error('DefaultSkin', '获取皮肤内容出错', evt.toString());
 			}
 			
 			dispatchEvent(new Event(Event.COMPLETE));
@@ -53,7 +53,7 @@ package com.xinguoedu.m.skin
 		
 		protected function loadError(evt:IOErrorEvent):void 
 		{
-			YatsenLog.error('DefaultSkin','加载默认皮肤出错', evt.toString());
+			Logger.error('DefaultSkin','加载默认皮肤出错', evt.toString());
 		}
 	}
 }
