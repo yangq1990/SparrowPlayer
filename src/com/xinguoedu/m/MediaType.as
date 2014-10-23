@@ -13,6 +13,8 @@ package com.xinguoedu.m
 		
 		public static const HLS:String = "hls";
 		
+		public static const HTTPM:String = "httpm";
+		
 		public function MediaType()
 		{
 		}
