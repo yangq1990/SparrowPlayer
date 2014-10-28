@@ -146,7 +146,7 @@ package com.xinguoedu.m.media.httpm
 			Logger.info("HttpMMedia", _mediaVO.urlArray[_currentIndex+1].url + "开始后台加载");
 		}
 		
-		private function segmentCompleteHandler(evt:SegmentEvt):void
+		private function segmentCompleteHandler(evt:SegmentEvt=null):void
 		{
 			currentSegment.destroy();
 			removeSegmentListeners(currentSegment);
@@ -158,22 +158,18 @@ package com.xinguoedu.m.media.httpm
 			else
 			{
 				_currentIndex += 1;
-				var segment:Segment = _dict[_currentIndex] as Segment;
-				addSegmentListeners(segment);
-				segment.isActive = true;	
-				segment.isToSwitch = true;
+				addSegmentListeners(currentSegment);
+				currentSegment.isActive = currentSegment.isToSwitch = true;
 			}
 		}
 		
 		/** video切换画面 **/
 		private function switchFrame():void
 		{
-			trace("setvolume-->", _volume);
-			currentSegment.setVolume(_volume);
-			_video.attachNetStream(null);
+			//_video.attachNetStream(null); 可能有bug，所以就注释掉了
 			_video.clear();			
 			_video.attachNetStream(currentSegment.stream);
-			_video.smoothing = true;
+			currentSegment.setVolume(_volume);
 		}
 		
 		
@@ -235,15 +231,13 @@ package com.xinguoedu.m.media.httpm
 			else
 			{
 				currentSegment.destroy();
-				removeSegmentListeners(currentSegment);
+				removeSegmentListeners(currentSegment);		
 			
 				_currentIndex = index;
 				
-				var segment:Segment = _dict[_currentIndex] as Segment
-				addSegmentListeners(segment);	
-				segment.isActive = true;
-				segment.isToSwitch = true;
-				segment.load(sec - elapsedDuration);
+				addSegmentListeners(currentSegment);	
+				currentSegment.isActive = currentSegment.isToSwitch = true;
+				currentSegment.load(sec - elapsedDuration);
 			}		
 		}
 		

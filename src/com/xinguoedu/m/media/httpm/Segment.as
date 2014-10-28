@@ -47,15 +47,15 @@ package com.xinguoedu.m.media.httpm
 		/** 分段是否播放完**/
 		private var _isComplete:Boolean;
 		/** 上次seek的时间点 **/
-		private var _sec:Number;
+		private var _sec:Number = 0;
 		/** 等到缓冲区满后是否要切换画面 **/
 		private var _isToSwitch:Boolean;
 		/** 是否需要提前加载下一个segment **/
 		private var _isToPreloadNext:Boolean;
 		/** 根据seek时间获取到的关键帧的timestamp **/
 		private var _kfTime:Number=0;
-		/** 获取到metadata后开始seek**/
-		private var _seekAfterMetadata:Boolean;
+		/** bufferfull后seek**/
+		private var _seekAfterBufferFull:Boolean;
 		/** 分段是否播放完 **/
 		private var _isPlaybackComplete:Boolean;
 		
@@ -96,12 +96,6 @@ package com.xinguoedu.m.media.httpm
 			_hasMetadata = true;
 			_duration = info.duration;
 			dispatchEvent(new SegmentEvt(SegmentEvt.METADATA, {w:info.width, h:info.height}));
-			
-			if(_seekAfterMetadata)
-			{
-				seek(_kfTime);
-				_seekAfterMetadata = false;
-			}
 		}
 		
 		protected function convertSeekpoints(dat:Object):Object 
@@ -138,12 +132,9 @@ package com.xinguoedu.m.media.httpm
 		 */		
 		public function load(start:Number=0):void
 		{
-			if(!_stream.hasEventListener(NetStatusEvent.NET_STATUS))
-			{
-				addStreamListeners();
-			}
+			!_stream.hasEventListener(NetStatusEvent.NET_STATUS) && addStreamListeners(); 
 			
-			if(_hasMetadata && start > 0)
+			if(_hasMetadata && (start > 0))
 			{
 				seek(start);
 			}
@@ -152,9 +143,10 @@ package com.xinguoedu.m.media.httpm
 				if(start > 0)
 				{
 					_kfTime = start;
-					_seekAfterMetadata = true;
-				}				
-				_stream.play(_url);
+					_seekAfterBufferFull = true;
+				}		
+				
+				_stream.play(_url); //没有metadata的时候先加载视频获取视频的metadata
 			}
 			
 			dispatchEvent(new SegmentEvt(SegmentEvt.LOAD_SEGMENT));
@@ -175,9 +167,9 @@ package com.xinguoedu.m.media.httpm
 		{
 			if(!_hasMetadata || _duration <= 0)
 				return;
-			
+		
 			if(_isBufferFull && _isToSwitch) //避免segment切换时画面不切换的bug
-			{
+			{				
 				_isToSwitch = false;
 				dispatchEvent(new SegmentEvt(SegmentEvt.SWITCH));
 				_stream.resume();
@@ -271,24 +263,13 @@ package com.xinguoedu.m.media.httpm
 				_stream.close();
 			}		
 			
-			_isActive = _isToSwitch = _isToPreloadNext = _seekAfterMetadata = _isPlaybackComplete = false;
+			_isActive = _isToSwitch = _isToPreloadNext = _seekAfterBufferFull = _isPlaybackComplete = false;
 		}
 		
 		public function play():void
 		{
-			if(!_posInterval)
-			{
-				_posInterval = setInterval(positionInterval, 100);
-			}
-			
-			if(_isComplete)
-			{
-				_stream.play(_url);
-			}
-			else
-			{
-				_stream.resume();
-			}		
+			!_posInterval && (_posInterval = setInterval(positionInterval, 100)); 			
+			_isComplete ? _stream.play(_url) : _stream.resume(); 
 		}
 		
 		public function pause():void
@@ -316,7 +297,6 @@ package com.xinguoedu.m.media.httpm
 			
 			if(sec <= 0) //play from start
 			{
-				trace("play from start");
 				_stream.close();
 				_stream.play(_url);
 				return;
@@ -333,7 +313,6 @@ package com.xinguoedu.m.media.httpm
 			{
 				if(!_ismp4)
 				{
-					_stream.close();
 					_stream.play(_url + "?start=" + MetadataUtil.getOffset(_keyframes, sec, false)); //从指定位置开始加载, 需要nginx支持start参数
 				}
 			}		
@@ -341,31 +320,42 @@ package com.xinguoedu.m.media.httpm
 		
 		private function netStatusHandler(evt:NetStatusEvent):void
 		{
-			//trace("evt.info.code--->", evt.info.code, _url);
+			//trace("evt.info.code--->", evt.info.code, _url, _hasMetadata);
 			switch(evt.info.code)
 			{
-				case StreamStatus.PLAY_START: //开始播放
+				case StreamStatus.PLAY_START:
 					if(_isActive)
 					{
 						dispatchEvent(new SegmentEvt(SegmentEvt.PLAY_START, _bufferFill >= 100 ? 100 : _bufferFill));
-					}
+					}				
 					break;
-				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
-					if(_isToSwitch)
+				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满					
+					if(_seekAfterBufferFull)
 					{
-						_isToSwitch = false;
-						dispatchEvent(new SegmentEvt(SegmentEvt.SWITCH));
-					}
-					
-					if(_isActive)
-					{
-						!_posInterval && (_posInterval = setInterval(positionInterval, 100));
+						if(!_hasMetadata) //偶尔在bufferfull的时候仍然没有收到metadata，adobe的netstream问题真是多多
+							return;
+						
+						_seekAfterBufferFull = false;
+						seek(_kfTime);						
 					}
 					else
 					{
-						_stream.pause();
-					}
-					_isBufferFull = true;
+						if(_isToSwitch)
+						{
+							_isToSwitch = false;
+							dispatchEvent(new SegmentEvt(SegmentEvt.SWITCH));
+						}
+						
+						if(_isActive)
+						{
+							!_posInterval && (_posInterval = setInterval(positionInterval, 100));
+						}
+						else
+						{
+							_stream.pause();
+						}
+						_isBufferFull = true;
+					}					
 					break;
 				case StreamStatus.PAUSE_NOTIFY:
 					//某些情况下，视频离结束还有几秒的时候，会触发
