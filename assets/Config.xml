@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<!-- 右键菜单相关 -->
-	<version>0.8.5</version>
+	<version>0.8.6</version>
 	<rightclickinfo>
 		<item>
-			<title>乐视</title>
-			<url>http://www.letv.com/</url>
+			<title>Home元素</title>
+			<url>http://wd.koudai.com/?userid=221705143&wfr=c</url>
 		</item>
 		<item>
-			<title>优酷</title>
-			<url>http://www.youku.com</url>
+			<title>日新小店</title>
+			<url>http://wd.koudai.com/s/211263956?wfr=c</url>
 		</item>
 	</rightclickinfo>
 	
