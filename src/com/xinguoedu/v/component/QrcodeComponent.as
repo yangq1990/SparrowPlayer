@@ -45,7 +45,7 @@ package com.xinguoedu.v.component
 			
 			if(!_qrcode.numChildren)
 			{
-				var bitmap:Bitmap = QRCodeUtil.getQRCode(_m.mediaVO.url);
+				var bitmap:Bitmap = QRCodeUtil.getQRCode(_m.qrcodeVO.url);
 				bitmap.x = -bitmap.width * 0.5;
 				bitmap.y = -bitmap.height * 0.5;
 				_qrcode.addChild(bitmap);
