@@ -16,6 +16,8 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.VideoComponent;
 	
 	import flash.display.Sprite;
+	import flash.ui.ContextMenu;
+	import flash.ui.ContextMenuItem;
 	
 	public class View extends Sprite
 	{
@@ -54,7 +56,7 @@ package com.xinguoedu.v
 		public function setup():void
 		{
 			_root = new Sprite();
-			_root.mouseEnabled = false;
+			//_root.mouseEnabled = false; 设置为false会导致自定义右键菜单无法显示
 			StageReference.stage.addChildAt(_root, 0);
 			
 			
@@ -91,9 +93,9 @@ package com.xinguoedu.v
 				_root.addChild(_videoadsComp);
 			}			
 			
-			var rightclickmenu:RightClickMenuView = new RightClickMenuView(_m, _root);
+			var rightclickmenu:RightClickMenu = new RightClickMenu(_m, _root);
 			rightclickmenu.initializeMenu();
-			
+		
 			addListeners();
 		}
 		

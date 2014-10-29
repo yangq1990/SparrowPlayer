@@ -20,6 +20,7 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.ErrorHintVO;
 	import com.xinguoedu.m.vo.LogoVO;
 	import com.xinguoedu.m.vo.MediaVO;
+	import com.xinguoedu.m.vo.QrcodeVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
 	import com.xinguoedu.utils.Logger;
@@ -42,6 +43,7 @@ package com.xinguoedu.m
 		private var _errorHintVO:ErrorHintVO = new ErrorHintVO();
 		private var _adVO:AdVO = new AdVO();
 		private var _videoadVO:VideoAdVO = new VideoAdVO();
+		private var _qrcodeVO:QrcodeVO = new QrcodeVO();
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
@@ -314,5 +316,11 @@ package com.xinguoedu.m
 			_isMute = value;
 			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_MUTE));
 		}
+
+		public function get qrcodeVO():QrcodeVO
+		{
+			return _qrcodeVO;
+		}
+
 	}
 }

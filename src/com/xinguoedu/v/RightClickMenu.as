@@ -18,20 +18,20 @@ package com.xinguoedu.v
 	 * @author yatsen_yang
 	 * 
 	 */	
-	public class RightClickMenuView extends Sprite
+	public class RightClickMenu
 	{
-		private var context:ContextMenu;
+		private var _context:ContextMenu;
 		private var _m:Model;
 		private var _debuggingInfo:String;
 		
-		public function RightClickMenuView(m:Model, parent:Sprite)
+		public function RightClickMenu(m:Model, parent:Sprite)
 		{
 			super();
 			
 			this._m = m;		
-			context = new ContextMenu();
-			context.hideBuiltInItems();
-			parent.contextMenu = context; //Stage不实现此属性
+			_context = new ContextMenu();
+			_context.hideBuiltInItems();
+			parent.contextMenu = _context; //Stage不实现此属性
 			
 			if(m.debugmode)
 			{
@@ -61,7 +61,7 @@ package com.xinguoedu.v
 		protected function addItem(itm:ContextMenuItem, fcn:Function=null):void 
 		{
 			itm.separatorBefore = true;
-			context.customItems.push(itm);
+			_context.customItems.push(itm);
 			fcn && itm.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, fcn);								
 		}
 		

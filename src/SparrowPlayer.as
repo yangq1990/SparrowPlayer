@@ -3,10 +3,8 @@ package
 	import com.xinguoedu.c.Controller;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.StageReference;
-	import com.xinguoedu.v.base.BaseInitView;
 	import com.xinguoedu.v.View;
-	
-	import flash.display.Sprite;
+	import com.xinguoedu.v.base.BaseInitView;
 	
 	/**
 	 * sparrow player入口类 
