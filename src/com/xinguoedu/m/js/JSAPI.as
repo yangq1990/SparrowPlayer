@@ -25,8 +25,8 @@ package com.xinguoedu.m.js
 		{
 			if(available)
 			{
-				ExternalInterface.addCallback("JS_screenshot", screenshotHandler);
-				ExternalInterface.addCallback("JS_qrcode", qrcodeHandler);
+				ExternalInterface.addCallback("fl_screenshot", screenshotHandler);
+				ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
 			}			
 		}
 	

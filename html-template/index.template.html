@@ -22,7 +22,7 @@
         -->
         <style type="text/css" media="screen"> 
             html, body  { height:100%; }
-            body { margin:0; padding:0; overflow:auto; text-align:center; 
+            body { margin:0; padding:10px 50px; overflow:auto; text-align:left; 
                    background-color: ${bgcolor}; }   
             object:focus { outline:none; }
             #flashContent { display:none; }
@@ -30,8 +30,8 @@
         
         <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
         <!-- BEGIN Browser History required section ${useBrowserHistory}>
-        <link rel="stylesheet" type="text/css" href="history/history.css" />
-        <script type="text/javascript" src="history/history.js"></script>
+        <!-- <link rel="stylesheet" type="text/css" href="history/history.css" /> -->
+        <!-- <script type="text/javascript" src="history/history.js"></script> -->
         <!${useBrowserHistory} END Browser History required section -->  
             
         <script type="text/javascript" src="swfobject.js"></script>
@@ -48,9 +48,11 @@
             flashvars.autohide = 0; //在normal screen的情况下，计时器时间到后是否自动隐藏controlbar
             flashvars.debugmode = 1; //1 打开调试模式 0 关闭调试模式
             flashvars.accesspx  = 1; //1 需要对视频截图时设置为1，检查策略文件
+            
+            flashvars.qrcodeurl = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c");
         
             //http
-          // flashvars.type = 'http';
+           //flashvars.type = 'http';
            // flashvars.url = 'http://112.124.4.231/sparrow/video/gameofcode.mp4';
            //flashvars.url = encodeURIComponent("http://112.124.4.231/sparrow/video/xiaojibibi.flv");            
             
@@ -78,8 +80,8 @@
             
             var params = {};
             params.quality = "high";
-            params.bgcolor = "${bgcolor}";
-            params.allowscriptaccess = "sameDomain";
+            params.bgcolor = "#000000";
+            params.allowscriptaccess = "always";
             params.allowfullscreen = "true";
             var attributes = {};
             attributes.id = "${application}";
@@ -93,6 +95,40 @@
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
         </script>
+        
+         <script type="text/javascript">
+    	   function thisMovie(movieName) 
+   		   {
+       		     if (navigator.appName.indexOf("Microsoft") != -1) 
+        		 {
+             		return window[movieName];
+         		 }
+         		 else 
+         		 {
+             		return document[movieName];
+         		 }
+     		}
+     		
+     		/** 通知flash截图, 并且设定截图的宽高 **/
+     		function screenshot_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_screenshot(document.getElementById('screenshot').getAttribute("width"), document.getElementById('screenshot').getAttribute("height"));	  
+     		}
+     		
+     		/** 显示二维码 **/
+     		function qrcode_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_qrcode();
+     		}
+     		
+     		/** 在html页面上显示截图 **/
+     		function showScreenshot(str)
+    		{
+        		document.getElementById('screenshot').setAttribute('src', str);
+    		}
+         
+         </script>
+
     </head>
     <body>
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
@@ -116,13 +152,13 @@
                 <param name="movie" value="${swf}.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="${bgcolor}" />
-                <param name="allowScriptAccess" value="sameDomain" />
+                <param name="allowScriptAccess" value="always" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
                 <object type="application/x-shockwave-flash" data="${swf}.swf" width="${width}" height="${height}">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="${bgcolor}" />
-                    <param name="allowScriptAccess" value="sameDomain" />
+                    <param name="allowScriptAccess" value="always" />
                     <param name="allowFullScreen" value="true" />
                 <!--<![endif]-->
                 <!--[if gte IE 6]>-->
@@ -139,5 +175,10 @@
                 <!--<![endif]-->
             </object>
         </noscript>     
+        
+        <input type="button" onclick="screenshot_handler()" value="截图">
+        <input type="button" onclick="qrcode_handler()" value="二维码">
+        <img id="screenshot" width="320" height="240">
+
    </body>
 </html>
