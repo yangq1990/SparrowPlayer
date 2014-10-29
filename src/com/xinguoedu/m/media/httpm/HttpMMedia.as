@@ -1,5 +1,6 @@
 package com.xinguoedu.m.media.httpm
 {
+	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
@@ -103,6 +104,7 @@ package com.xinguoedu.m.media.httpm
 		/** 从play start到bull full， 视频处在加载状态 buffer full之后视频才开始真正播放 **/
 		private function segmentPlayStartHandler(evt:SegmentEvt):void
 		{
+			dispatchMediaStateEvt(PlayerState.BUFFERING);
 			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {percent:evt.data/100}));
 		}
 		
