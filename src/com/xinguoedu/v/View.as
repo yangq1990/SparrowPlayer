@@ -16,10 +16,9 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.VideoComponent;
 	
 	import flash.display.Sprite;
-	import flash.ui.ContextMenu;
-	import flash.ui.ContextMenuItem;
+	import flash.events.EventDispatcher;
 	
-	public class View extends Sprite
+	public class View extends EventDispatcher
 	{
 		private var _m:Model;
 		
