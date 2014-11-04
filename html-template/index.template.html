@@ -46,7 +46,7 @@
             flashvars.vid = '123123123123';
             flashvars.autostart = 1; //1 自动播放 0 需要点击后才能播放
             flashvars.autohide = 0; //在normal screen的情况下，计时器时间到后是否自动隐藏controlbar
-            flashvars.developermode = 0; //1 打开开发者模式 0 关闭开发者模式
+            flashvars.developermode = 1; //1 打开开发者模式 0 关闭开发者模式
             flashvars.accesspx  = 1; //1 需要对视频截图时设置为1，检查策略文件
             
             flashvars.qrcodeurl = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c");
@@ -126,6 +126,18 @@
      			thisMovie("SparrowPlayer").fl_qrcode();
      		}
      		
+     		/** 控制播放器暂停 **/
+     		function pause_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_pause();
+     		}
+     		
+     		/** 控制播放器播放 **/
+     		function play_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_play();
+     		}
+     		
      		/** 在html页面上显示截图 **/
      		function showScreenshot(str)
     		{
@@ -183,6 +195,8 @@
         
         <input type="button" onclick="screenshot_handler()" value="截图">
         <input type="button" onclick="qrcode_handler()" value="二维码">
+        <input type="button" onclick="pause_handler()" value="暂停">
+        <input type="button" onclick="play_handler()" value="播放">
         <img id="screenshot" width="320" height="240">
 
    </body>
