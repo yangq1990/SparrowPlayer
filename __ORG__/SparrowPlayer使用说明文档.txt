@@ -1,0 +1,70 @@
+对于AS3开发者，将项目clone下来之后，在Flash Builder里选择导入Flash Builder项目，即可方便查看和调试源代码
+
+下面详细介绍SparrowPlayer的相关参数
+
+/**
+* 视频id，实际应用场景中，flash需要跟后台有很多的交互，一般来说，都是根据vid拿到对应的视频信息，比如地址，广告，描述什么的,然后做相应的处理
+* 但在开源SparrowPlayer项目里，将这种需求具体化是不太现实的，所以只是提供了vid这样一个参数，方便二次开发的时候使用
+*/
+vid 
+
+/**
+* 是否自动播放，值设置为1可自动播放，设置为0非自动播放
+*/
+autostart 
+
+/**
+* 在normal screen的情况下，计时器时间到后是否自动隐藏controlbar  1隐藏 0一直显示
+*/
+autohide 
+
+/**
+* 值设为1，表示SparrowPlayer处于开发者模式，可在浏览器的console看到调试信息
+* 值设为0，不输出调试信息
+*/
+developermode 
+
+/**
+* 需要对视频截图时设置为1，检查策略文件, 表明需要对视频进行像素级别的访问
+*/
+accesspx  
+
+/**
+* 二维码信息，可以是一个url地址，也可以是文字什么的, SparrowPlayer根据这些内容生成相应的二维码
+*/
+qrcodeurl
+
+/**
+* 视频类型，目前支持SparrowPlayer支持4种类型的视频
+* type = "http"   播放普通的flv视频
+* type = "hls"    播放HLS视频
+* type = "httpe"  播放加密的flv视频
+* type = "httpm"  播放多段拼接起来的flv视频
+*/
+type 
+
+/**
+* 视频地址，对应视频类型http, httpe, hls, 
+*/
+url
+
+/**
+* 视频地址json字符串 对应视频类型httpm
+*/
+urls = '[{"duration": , "url": }, {"duration": , "url": }]'
+
+
+/**
+* 是否开启广告视频功能 1开启0关闭
+*/
+vads_enabled 
+
+/**
+* 广告视频json字符串，格式和urls一致
+*/
+videoads 
+
+/**
+* 暂停时的广告信息json字符串，格式如下
+*/
+ads = '[{"url": ,"link": }, {"url": ,"link": }]'

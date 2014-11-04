@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> 
+    <!-- 
+    Smart developers always View Source. 
+    
+    This application was built using Adobe Flex, an open source framework
+    for building rich Internet applications that get delivered via the
+    Flash Player or to desktops via Adobe AIR. 
+    
+    Learn more about Flex at http://flex.org 
+    // -->
+    <head>
+        <title></title>
+        <meta name="google" value="notranslate" />         
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
+             the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
+             the percentage of the height of its parent container, which has to be set explicitly.  Fix for
+             Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show 
+             if JavaScript disabled.
+        -->
+        <style type="text/css" media="screen"> 
+            html, body  { height:100%; }
+            body { margin:0; padding:10px 50px; overflow:auto; text-align:left; 
+                   background-color: #ffffff; }   
+            object:focus { outline:none; }
+            #flashContent { display:none; }
+        </style>
+        
+        <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
+        <!-- BEGIN Browser History required section -->
+        <!-- <link rel="stylesheet" type="text/css" href="history/history.css" /> -->
+        <!-- <script type="text/javascript" src="history/history.js"></script> -->
+        <!-- END Browser History required section -->  
+            
+        <script type="text/javascript" src="swfobject.js"></script>
+        <script type="text/javascript">
+            // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+            var swfVersionStr = "11.1.0";
+            // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+            var xiSwfUrlStr = "playerProductInstall.swf";
+            var flashvars = {};
+            
+            var flashvars = {};
+            flashvars.vid = '123123123123';
+            flashvars.autostart = 1; //1 自动播放 0 需要点击后才能播放
+            flashvars.autohide = 0; //在normal screen的情况下，计时器时间到后是否自动隐藏controlbar
+            flashvars.developermode = 1; //1 打开开发者模式 0 关闭开发者模式
+            flashvars.accesspx  = 1; //1 需要对视频截图时设置为1，检查策略文件
+            
+            flashvars.qrcodeurl = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c");
+        
+            //hls
+            flashvars.type = 'hls';
+            flashvars.url = "http://my.tv.sohu.com/ipad/75266300.m3u8";            
+        
+            
+            //是否打开视频广告功能，1打开 0关闭
+            flashvars.vads_enabled = 0;
+            //片头的视频广告, 包含相关信息的json string
+            flashvars.videoads ='[{"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv"}]';
+            
+            //视频暂停时候的广告
+            var str = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c"); //需要先encodeURIComponent，不然json解析会出错
+            var arr = new Array();
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad4.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad0.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad3.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad1.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad2.jpg","link": str});            
+            flashvars.ads = JSON.stringify(arr);       
+            
+            var params = {};
+            params.quality = "high";
+            params.bgcolor = "#000000";
+            params.allowscriptaccess = "always";
+            params.allowfullscreen = "true";
+            var attributes = {};
+            attributes.id = "SparrowPlayer";
+            attributes.name = "SparrowPlayer";
+            attributes.align = "middle";
+            swfobject.embedSWF(
+                "SparrowPlayer.swf", "flashContent", 
+                "860", "520", 
+                swfVersionStr, xiSwfUrlStr, 
+                flashvars, params, attributes);
+            // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+            swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+        
+         <script type="text/javascript">
+    	   function thisMovie(movieName) 
+   		   {
+       		     if (navigator.appName.indexOf("Microsoft") != -1) 
+        		 {
+             		return window[movieName];
+         		 }
+         		 else 
+         		 {
+             		return document[movieName];
+         		 }
+     		}
+     		
+     		/** 通知flash截图, 并且设定截图的宽高 **/
+     		function screenshot_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_screenshot(document.getElementById('screenshot').getAttribute("width"), document.getElementById('screenshot').getAttribute("height"));	  
+     		}
+     		
+     		/** 显示二维码 **/
+     		function qrcode_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_qrcode();
+     		}
+     		
+     		/** 控制播放器暂停 **/
+     		function pause_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_pause();
+     		}
+     		
+     		/** 控制播放器播放 **/
+     		function play_handler()
+     		{
+     			thisMovie("SparrowPlayer").fl_play();
+     		}
+     		
+     		/** 在html页面上显示截图 **/
+     		function showScreenshot(str)
+    		{
+        		document.getElementById('screenshot').setAttribute('src', str);
+    		}
+         
+         </script>
+
+    </head>
+    <body>
+        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
+             JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+             when JavaScript is disabled.
+        -->
+        <div id="flashContent">
+            <p>
+                To view this page ensure that Adobe Flash Player version 
+                11.1.0 or greater is installed. 
+            </p>
+            <script type="text/javascript"> 
+                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+            </script> 
+        </div>
+        
+        <noscript>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="SparrowPlayer">
+                <param name="movie" value="SparrowPlayer.swf" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#ffffff" />
+                <param name="allowScriptAccess" value="always" />
+                <param name="allowFullScreen" value="true" />
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="SparrowPlayer.swf" width="100%" height="100%">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#ffffff" />
+                    <param name="allowScriptAccess" value="always" />
+                    <param name="allowFullScreen" value="true" />
+                <!--<![endif]-->
+                <!--[if gte IE 6]>-->
+                    <p> 
+                        Either scripts and active content are not permitted to run or Adobe Flash Player version
+                        11.1.0 or greater is not installed.
+                    </p>
+                <!--<![endif]-->
+                    <a href="http://www.adobe.com/go/getflashplayer">
+                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                    </a>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+            </object>
+        </noscript>     
+        
+        <input type="button" onclick="screenshot_handler()" value="截图">
+        <input type="button" onclick="qrcode_handler()" value="二维码">
+        <input type="button" onclick="pause_handler()" value="暂停">
+        <input type="button" onclick="play_handler()" value="播放">
+        <img id="screenshot" width="320" height="240">
+
+   </body>
+</html>
