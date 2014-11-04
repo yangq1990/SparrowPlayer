@@ -155,7 +155,13 @@ package com.xinguoedu.m.media.httpm
 			
 			if(_currentIndex >= _mediaVO.urlArray.length-1)
 			{
-				trace("all complete");
+				Logger.info("HttpMMedia", "all complete");
+				_video.clear();
+				_currentIndex = 0;
+				currentSegment.isToSwitch = true;
+				addSegmentListeners(currentSegment);
+				_isComplete = true;
+				dispatchEvt(StreamStatus.PLAY_COMPLETE);
 			}
 			else
 			{
