@@ -346,14 +346,7 @@ package com.xinguoedu.v.component
 				if(act == ViewEvt.MUTE)
 				{
 					data = Boolean(!_m.isMute);
-				}
-				
-				if(_m.state == PlayerState.IDLE && !_m.isMediaComplete)
-				{
-					if(evt.target.name == "playButton" || evt.target.name == "pauseButton")
-						return;
 				}				
-				
 				dispatchEvent(new ViewEvt(act, data));
 			}
 		}

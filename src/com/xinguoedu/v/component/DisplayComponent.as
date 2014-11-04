@@ -33,6 +33,7 @@ package com.xinguoedu.v.component
 			this.addChild(_buffer_mc);
 			this.addChild(_buffer_tf);
 			resize();
+			super.buildUI(); //默认是隐藏状态
 		}
 		
 		override protected function addListeners():void
