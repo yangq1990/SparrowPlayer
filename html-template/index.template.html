@@ -46,37 +46,42 @@
             flashvars.vid = '123123123123';
             flashvars.autostart = 1; //1 自动播放 0 需要点击后才能播放
             flashvars.autohide = 0; //在normal screen的情况下，计时器时间到后是否自动隐藏controlbar
-            flashvars.debugmode = 1; //1 打开调试模式 0 关闭调试模式
+            flashvars.developermode = 0; //1 打开开发者模式 0 关闭开发者模式
             flashvars.accesspx  = 1; //1 需要对视频截图时设置为1，检查策略文件
             
             flashvars.qrcodeurl = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c");
         
             //http
-           //flashvars.type = 'http';
-           // flashvars.url = 'http://112.124.4.231/sparrow/video/gameofcode.mp4';
-           //flashvars.url = encodeURIComponent("http://112.124.4.231/sparrow/video/xiaojibibi.flv");            
+           flashvars.type = 'http';
+           // flashvars.url = 'http://www.xinguoedu.com/sparrow/video/gameofcode.mp4';
+           flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");            
             
             //hls
            // flashvars.type = 'hls';
-           // flashvars.url = 'http://my.tv.sohu.com/ipad/74393984.m3u8';
+           // flashvars.url = 'http://my.tv.sohu.com/ipad/75266300.m3u8';
             
             //httpe
             //flashvars.type = 'httpe';
-            //flashvars.url = 'http://112.124.4.231/sparrow/video/jiangnan.flv';
-           
+            //flashvars.url = 'http://www.xinguoedu.com/sparrow/video/jiangnan.flv';
+            
            	//httpm  http multi-segments  多段视频
-            flashvars.type = "httpm";
-           	flashvars.urls = '[{"duration":305.52816326530615,"url":"http://112.124.4.231/sparrow/video/pingfanzhilu.flv"},{"duration":335.6,"url":"http://112.124.4.231/sparrow/video/nfgn.flv"}, {"duration":251.23990929705215,"url":"http://112.124.4.231/sparrow/video/star.flv"}]';
+            //flashvars.type = "httpm";
+           	//flashvars.urls = '[{"duration":305.52816326530615,"url":"http://www.xinguoedu.com/sparrow/video/pingfanzhilu.flv"},{"duration":335.6,"url":"http://www.xinguoedu.com/sparrow/video/nfgn.flv"}, {"duration":251.23990929705215,"url":"http://www.xinguoedu.com/sparrow/video/star.flv"}]';
             
             //是否打开视频广告功能，1打开 0关闭
             flashvars.vads_enabled = 0;
             //片头的视频广告, 包含相关信息的json string
-            flashvars.videoads ='[{"duration":15.09,"url":"http://112.124.4.231/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://112.124.4.231/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://112.124.4.231/sparrow/videoads/biyou.flv"}]';
+            flashvars.videoads ='[{"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv"}]';
             
             //视频暂停时候的广告
-            flashvars.ads = '[{"url":"http://112.124.4.231/sparrow/ad0.jpg","link":"http://112.124.4.231/"},{"url":"http://112.124.4.231/sparrow/ad1.jpg","link":"http://112.124.4.231/"},{"url":"http://112.124.4.231/sparrow/ad2.jpg","link":"http://112.124.4.231/"}, {"url":"http://112.124.4.231/sparrow/ad3.jpg","link":"http://112.124.4.231/"}]';  
-            
-            
+            var str = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c"); //需要先encodeURIComponent，不然json解析会出错
+            var arr = new Array();
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad4.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad0.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad3.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad1.jpg","link": str});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad2.jpg","link": str});            
+            flashvars.ads = JSON.stringify(arr);       
             
             var params = {};
             params.quality = "high";
