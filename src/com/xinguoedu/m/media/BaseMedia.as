@@ -49,7 +49,7 @@ package com.xinguoedu.m.media
 		protected var _ismp4:Boolean;
 		/** 是否快要播放完 **/
 		protected var _isNearlyComplete:Boolean =  false;
-		/** 是否播放完 **/
+		/** 是否播放完标识，对于分段视频，指的是全部分段播放complete,或者最后一个分段播放complete **/
 		protected var _isComplete:Boolean = false;
 		
 		public function BaseMedia(mediaType:String)

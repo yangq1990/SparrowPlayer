@@ -62,6 +62,7 @@ package com.xinguoedu.m.media
 		
 		override public function startLoadAndPlay():void
 		{
+			trace("url--->", _mediaVO.url);
 			_stream.play(_mediaVO.url);
 			destroyPosTimer();
 			_posInterval = setInterval(positionInterval, 100);				
@@ -204,21 +205,18 @@ package com.xinguoedu.m.media
 			else
 			{
 				//匹配start
-				var url:String = _mediaVO.url;
 				var newurl:String;
 				if(_mediaVO.url.indexOf("start=") == -1)
 				{
-					newurl = url + "?start=" + getOffset(sec);
+					newurl = _mediaVO.url + "?start=" + getOffset(sec);
 				}
 				else
 				{
-					var temp:String = _mediaVO.url.slice(0,url.lastIndexOf('=')+1);	
-					newurl = (temp += getOffset(sec));
+					newurl = _mediaVO.url.replace(/start=([0-9]+)/i, 'start='+getOffset(sec));
 				}			
 				
 				if(!_ismp4)
 				{				
-					_stream.close();
 					_stream.play(newurl);
 				}
 				else
