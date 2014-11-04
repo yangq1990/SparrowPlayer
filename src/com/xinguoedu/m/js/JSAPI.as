@@ -27,6 +27,8 @@ package com.xinguoedu.m.js
 			{
 				ExternalInterface.addCallback("fl_screenshot", screenshotHandler);
 				ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
+				ExternalInterface.addCallback("fl_pause", pauseHandler);
+				ExternalInterface.addCallback("fl_play", playeHandler);
 			}			
 		}
 	
@@ -45,6 +47,16 @@ package com.xinguoedu.m.js
 		private function qrcodeHandler():void
 		{
 			dispatchEvent(new JSEvt(JSEvt.QRCODE));
+		}
+		
+		private function pauseHandler():void
+		{
+			dispatchEvent(new JSEvt(JSEvt.PAUSE));
+		}
+		
+		private function playeHandler():void
+		{
+			dispatchEvent(new JSEvt(JSEvt.PLAY));
 		}
 		
 		/**

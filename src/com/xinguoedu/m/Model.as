@@ -68,6 +68,8 @@ package com.xinguoedu.m
 			media.addEventListener(MediaEvt.MEDIA_STATE, mediaStateHandler);
 			js.addEventListener(JSEvt.SCREENSHOT, screenshotHandler);
 			js.addEventListener(JSEvt.QRCODE, qrcodeHandler);
+			js.addEventListener(JSEvt.PAUSE, pauseHandler);
+			js.addEventListener(JSEvt.PLAY, playHandler);
 		}
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
@@ -156,6 +158,16 @@ package com.xinguoedu.m
 		private function qrcodeHandler(evt:JSEvt):void
 		{
 			EventBus.getInstance().dispatchEvent(evt);
+		}
+		
+		private function pauseHandler(evt:JSEvt):void
+		{
+			media.pause();
+		}
+		
+		private function playHandler(evt:JSEvt):void
+		{
+			media.play();
 		}
 										   
 		
