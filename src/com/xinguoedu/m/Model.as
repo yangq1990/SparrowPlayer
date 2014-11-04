@@ -72,7 +72,7 @@ package com.xinguoedu.m
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
 		{
-			Logger.info('Model', evt.data);
+			developermode && (Logger.info('Model', evt.data));
 			switch(evt.data)
 			{
 				case StreamStatus.START_LOAD_MEDIA:
@@ -135,7 +135,7 @@ package com.xinguoedu.m
 			}
 			catch(err:Error)
 			{
-				Logger.error("Model", "截图出错",  err.toString());
+				developermode && (Logger.error("Model", "截图出错",  err.toString()));
 				
 				if(bitmapData != null)
 				{
@@ -248,13 +248,13 @@ package com.xinguoedu.m
 		}
 		
 		/**
-		 * 是否开启调试模式 
+		 * 是否开启开发者模式 
 		 * @return 
 		 * 
 		 */		
-		public function get debugmode():Boolean
+		public function get developermode():Boolean
 		{
-			return playerconfig.debugmode;
+			return playerconfig.developermode;
 		}
 		
 		/**

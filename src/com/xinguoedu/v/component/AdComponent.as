@@ -143,7 +143,7 @@ package com.xinguoedu.v.component
 			}
 			catch(err:Error)
 			{
-				Logger.error("AdComponent","获取广告数组length失败");
+				_m.developermode && (Logger.error("AdComponent","获取广告数组length失败"));
 				num = 0;
 			}
 			return num;

@@ -150,12 +150,12 @@ package com.xinguoedu.v.component
 		
 		private function ioErrorHandler(evt:IOErrorEvent):void
 		{
-			Logger.error('VideoAdsComponent', '加载视频ioError', evt.toString());
+			_m.developermode && (Logger.error('VideoAdsComponent', '加载视频ioError', evt.toString()));
 		}
 		
 		private function statusHandler(evt:NetStatusEvent):void
 		{
-			Logger.info('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur);
+			_m.developermode && (Logger.info('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur));
 			switch(evt.info.code)
 			{
 				case StreamStatus.PLAY_START:

@@ -33,7 +33,7 @@ package com.xinguoedu.v
 			_context.hideBuiltInItems();
 			parent.contextMenu = _context; //Stage不实现此属性
 			
-			if(m.debugmode)
+			if(m.developermode)
 			{
 				_debuggingInfo = "";
 				EventBus.getInstance().addEventListener(DebugEvt.DEBUG, debugHandler);
@@ -54,7 +54,7 @@ package com.xinguoedu.v
 				addItem(new ContextMenuItem(obj.title), menuItemSelectHandler);
 			}
 			
-			_m.debugmode && addItem(new ContextMenuItem(DebugConst.COPY_DEBUG_INFO), menuItemSelectHandler);
+			_m.developermode && addItem(new ContextMenuItem(DebugConst.COPY_DEBUG_INFO), menuItemSelectHandler);
 		}
 		
 		/** Add an item to the contextmenu.**/

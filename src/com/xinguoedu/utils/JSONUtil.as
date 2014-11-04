@@ -21,7 +21,18 @@ package com.xinguoedu.utils
 		 */		
 		public static function decode(result:*):*
 		{
-			return (new JSONDecoder(result, true)).getValue();
+			var result:*;
+			try
+			{
+				result = (new JSONDecoder(result, true)).getValue();
+			}
+			catch(err:Error)
+			{
+				trace("json string error");
+				result = {};
+			}
+			
+			return result;
 		}
 	}
 }

@@ -115,7 +115,7 @@ package com.xinguoedu.c
 			}
 			catch(err:Error)
 			{
-				Logger.error('PlayerSetup', 'setup view出错', err.toString());
+				_m.developermode && (Logger.error('PlayerSetup', 'setup view出错', err.toString()));
 			}
 		
 			_taskQueue.success();
