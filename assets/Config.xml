@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
 	<!-- 右键菜单相关 -->
-	<version>0.8.6</version>
+	<version>0.8.8</version>
 	<rightclickinfo>
 		<item>
 			<title>Home元素</title>
