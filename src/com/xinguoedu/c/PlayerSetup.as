@@ -83,6 +83,9 @@ package com.xinguoedu.c
 			//ad
 			_m.adVO.adArray =  (JSONUtil.decode(_m.playerconfig.ads) as Array);		
 			
+			//node
+			_m.nodeVO.nodeArray = (JSONUtil.decode(_m.playerconfig.nodes) as Array);
+			
 			//logo
 			_m.logoVO.url = _m.playerconfig.logo.url; //这里应该是logo的url
 			_m.logoVO.buttonMode = _m.playerconfig.logo.buttonMode;

@@ -43,5 +43,19 @@ package com.xinguoedu.consts
 		 */		
 		public static const NEARLY_COMPLETE:int = 40;
 		
+		/**
+		 * 节点圆形的半径 
+		 */		
+		public static const NODE_RADIUS:int = 4;
+		
+		/**
+		 * 节点提示的圆角矩形
+		 */		
+		public static const NODE_HINT_ROUNDED_REC:int = 10;
+		
+		/**
+		 * 节点提示的三角形边长 
+		 */		
+		public static const TRIANGLE_SIDE:int = 10;
 	}
 }

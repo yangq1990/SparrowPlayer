@@ -13,9 +13,12 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.utils.StageReference;
 	import com.xinguoedu.utils.Strings;
 	import com.xinguoedu.v.base.BaseComponent;
+	import com.xinguoedu.v.node.Node;
+	import com.xinguoedu.v.node.NodeHintSpt;
 	
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
+	import flash.display.SimpleButton;
 	import flash.display.StageDisplayState;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
@@ -24,7 +27,9 @@ package com.xinguoedu.v.component
 	import flash.text.TextField;
 	import flash.ui.Keyboard;
 	import flash.ui.Mouse;
+	import flash.utils.clearInterval;
 	import flash.utils.clearTimeout;
+	import flash.utils.setInterval;
 	import flash.utils.setTimeout;
 	
 	/**
@@ -65,6 +70,12 @@ package com.xinguoedu.v.component
 		private var _isMouseOverVolumeSlider:Boolean;		
 		/** volumeslider icon y坐标**/
 		private var _iconY:Number;
+		/** 节点是否已放置好 **/
+		private var _isNodePlaced:Boolean;
+		/** 放置节点时用的定时器，因为buffering的时候不一定能取到视频的长度，所以需要定时去查询	 **/
+		private var _positionNodesInterval:uint;
+		/** 显示节点信息的spt **/
+		private var _nodeHintSpt:NodeHintSpt;
 		
 		public function ControlBarComponent(m:Model)
 		{
@@ -73,6 +84,7 @@ package com.xinguoedu.v.component
 		
 		override protected function buildUI():void
 		{
+			this.focusRect = false;
 			BUTTONS = {
 					playButton:ViewEvt.PLAY,
 					pauseButton: ViewEvt.PAUSE,
@@ -94,6 +106,10 @@ package com.xinguoedu.v.component
 			setSliders();
 			stateHandler();		
 			volumeHandler();
+			
+			_nodeHintSpt = new NodeHintSpt();
+			_nodeHintSpt.visible = false;
+			!_positionNodesInterval && (_positionNodesInterval = setInterval(showTimelineNode, 500));
 			
 			resize();		
 		
@@ -360,6 +376,11 @@ package com.xinguoedu.v.component
 				volumeSlider.x = evt.target.parent.x;
 				volumeSlider.y = stageHeight - _skin.height;
 				volumeSlider.visible = true;
+				
+				if(stage.focus == null || stage.focus is SimpleButton) //修复鼠标over trumpt时监听不到键盘事件的bug
+				{
+					stage.focus = this;
+				}
 				return;
 			}
 			
@@ -463,6 +484,8 @@ package com.xinguoedu.v.component
 			
 			this.x = 0;
 			this.y = stageHeight - _skin.height;
+			
+			replaceNodes();
 		}
 		
 		/** Fix the timeline display. **/
@@ -489,18 +512,10 @@ package com.xinguoedu.v.component
 			switch(_m.state) 
 			{
 				case PlayerState.BUFFERING:
-					bufferingPlayingHandler();					
-					//_positionNodesInterval = setInterval(showTimelineNode, 100);					
+					bufferingPlayingHandler();										
 					break;
 				case PlayerState.PLAYING:
-					bufferingPlayingHandler();
-					
-					/*if(_playbackTime)
-					{
-						dispatchTimeSeekEvent(_playbackTime);
-						_playbackTime = undefined;	
-					}*/
-					
+					bufferingPlayingHandler();					
 					break;
 				case PlayerState.IDLE:
 					timeSlider.done.width = 1;
@@ -512,6 +527,86 @@ package com.xinguoedu.v.component
 					_skin.playButton.visible = true;
 					_skin.pauseButton.visible = false;
 					break;
+			}
+		}
+		
+		/** 显示时间线节点 **/
+		private function showTimelineNode():void
+		{
+			if(!_isNodePlaced)
+			{
+				if(_m.nodeVO.nodeArray == null || _m.nodeVO.nodeArray.length == 0) //没有节点
+					return;
+				
+				var ratio:Number = widthDurationScale;
+				if(!ratio)
+					return;
+				
+				var length:int = _m.nodeVO.nodeArray.length;			
+				var node:Node; 
+				for(var i:int=0; i < length; i++)
+				{
+					node = new Node(_m.nodeVO.nodeArray[i]);
+					node.x = _m.nodeVO.nodeArray[i].time * ratio + timeSlider.x;
+					node.y = timeSlider.y;
+					node.mouseChildren = false;
+					node.buttonMode = true;
+					node.addEventListener(MouseEvent.MOUSE_OVER, mouseOverNodeHandler);
+					node.addEventListener(MouseEvent.MOUSE_OUT, mouseOutNodeHandler);
+					node.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownNodeHandler);
+					_skin.addChild(node);
+				}
+				
+				_isNodePlaced = true;
+			}	
+			else
+			{
+				if(_positionNodesInterval)
+				{
+					clearInterval(_positionNodesInterval);
+					_positionNodesInterval = undefined;
+				}
+			}
+		}
+		
+		/** 鼠标over到node上，显示提示文字 **/
+		private function mouseOverNodeHandler(evt:MouseEvent):void
+		{
+			evt.stopPropagation();
+			if(_nodeHintSpt && !_nodeHintSpt.visible)
+			{	
+				var node:Node = evt.currentTarget as Node;				
+				_nodeHintSpt.hint= node.hint;
+				_nodeHintSpt.x = node.x - _nodeHintSpt.width * 0.5;				
+				_nodeHintSpt.y = StageReference.stage.stageHeight - _skin.height - _nodeHintSpt.height - 2;
+				StageReference.stage.addChild(_nodeHintSpt);
+				_nodeHintSpt.visible = true;
+			}
+		}
+		
+		private function mouseOutNodeHandler(evt:MouseEvent):void
+		{
+			(_nodeHintSpt != null) && (_nodeHintSpt.visible = false);			
+		}
+		
+		private function mouseDownNodeHandler(evt:MouseEvent):void
+		{
+			timeSlider.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN));	
+		}
+		
+		/** 界面resize的时候，重新计算node位置 **/
+		private function replaceNodes():void
+		{
+			var ratio:Number = widthDurationScale;
+			if(!ratio)
+				return;
+			
+			var num:int = _skin.numChildren;
+			var child:DisplayObject;
+			for(var i:int = 0; i < num; i++)
+			{
+				child = _skin.getChildAt(i);
+				(child is Node) && (child.x = Node(child).time * ratio + timeSlider.x);
 			}
 		}
 		
@@ -548,7 +643,6 @@ package com.xinguoedu.v.component
 			_elapsedText.text = Strings.digits(_pos); 
 			
 			bufferHandler(evt);
-			//bufferHandler(evt, _pos); //mark的设置放到前面
 			
 			//这行代码的用意是这样子的，假如用户seek到20s(_draggingPos), 上一个关键帧的位置在18s
 			//那视频是从18s(pos)开始播的，为了增加用户体验，避免给人一种seek不准确的感觉
@@ -596,7 +690,6 @@ package com.xinguoedu.v.component
 		}
 		
 		/** 设置timeSlider的mark **/
-		//private function bufferHandler(evt:MediaEvt, pos:Number):void 
 		private function bufferHandler(evt:MediaEvt):void
 		{			
 			if (!evt || evt.data.bufferPercent < 0)
@@ -610,13 +703,9 @@ package com.xinguoedu.v.component
 			}
 			else
 			{
-				//trace("bufferpercent--->", evt.data.bufferDuration);
-				//timeSlider.mark.width = evt.data.position * widthDurationScale + evt.data.bufferDuration;
 				timeSlider.mark.width = evt.data.bufferDuration * widthDurationScale;
-				//timeSlider.mark.width = evt.data.bufferPercent * timeSlider.rail.width + (1-evt.data.bufferPercent)*pos*widthDurationScale;
 				timeSlider.mark.visible = true;
 			}
-			//trace('width-->', _m.state, timeSlider.mark.width);
 		}
 		
 		/** 每秒对应的宽度 **/
