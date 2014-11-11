@@ -42,6 +42,11 @@ package com.xinguoedu.evt.media
 		public static const MEDIA_COMPLETE:String = "media_complete";
 		
 		/**
+		 * 视频尚未达到快要播放结束界限 
+		 */		
+		public static const NOT_NEARLY_COMPLETE:String = "media_not_nearly_complete";
+		
+		/**
 		 * 视频是否静音 
 		 */		
 		public static const MEDIA_MUTE:String = "media_mute";
