@@ -38,5 +38,11 @@ package com.xinguoedu.consts
 		 */		
 		public static const PLAY_NEARLY_COMPLETE:String = "play_nearly_complete";
 		
+		/**
+		 * 流播放位置未到快要结束界限，比如距离播放结束40s以内认为是play_nearly_complete
+		 * 距离播放结束超过40s就是not_nearly_complete 
+		 */		
+		public static const NOT_NEARLY_COMPLETE:String = "not_nearly_complete";
+		
 	}
 }
