@@ -20,6 +20,7 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.ErrorHintVO;
 	import com.xinguoedu.m.vo.LogoVO;
 	import com.xinguoedu.m.vo.MediaVO;
+	import com.xinguoedu.m.vo.NodeVO;
 	import com.xinguoedu.m.vo.QrcodeVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
@@ -44,6 +45,7 @@ package com.xinguoedu.m
 		private var _adVO:AdVO = new AdVO();
 		private var _videoadVO:VideoAdVO = new VideoAdVO();
 		private var _qrcodeVO:QrcodeVO = new QrcodeVO();
+		private var _nodeVO:NodeVO = new NodeVO();
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
@@ -108,6 +110,9 @@ package com.xinguoedu.m
 					break;
 				case StreamStatus.PLAY_NEARLY_COMPLETE:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_NEARLY_COMPLETE));
+					break;
+				case StreamStatus.NOT_NEARLY_COMPLETE:
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.NOT_NEARLY_COMPLETE));
 					break;
 				default:
 					break;
@@ -181,7 +186,8 @@ package com.xinguoedu.m
 			if(!hasMedia(_mediaVO.type))
 				_mediaVO.type = MediaType.HTTP;
 			
-			media = _mediaMap[_mediaVO.type];			
+			media = _mediaMap[_mediaVO.type];	
+			media.vol = volume;
 			addListeners();			
 			media.init(_mediaVO);
 		}
@@ -334,5 +340,9 @@ package com.xinguoedu.m
 			return _qrcodeVO;
 		}
 
+		public function get nodeVO():NodeVO
+		{
+			return _nodeVO;
+		}
 	}
 }

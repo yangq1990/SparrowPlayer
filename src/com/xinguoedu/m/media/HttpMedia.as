@@ -51,6 +51,7 @@ package com.xinguoedu.m.media
 			//检查策略文件
 			mediaVO.checkPolicyFile && (_stream.checkPolicyFile = true);
 			_stream.bufferTime = 5;			
+			setVolume(_volume);
 			
 			_video = new Video();
 			_video.smoothing = true;
@@ -143,11 +144,8 @@ package com.xinguoedu.m.media
 						duration: _duration, 
 						bufferDuration:_kfTime + _bufferPercent * (_duration - _kfTime)
 					}));
-				if(!_isNearlyComplete && (_duration - _pos <= NumberConst.NEARLY_COMPLETE))
-				{
-					_isNearlyComplete = true;
-					super.playbackNearlyComplete();
-				}
+				
+				checkIsNearlyComplete(_duration, _pos);
 			}
 			else if (_duration > 0) 
 			{
@@ -223,6 +221,8 @@ package com.xinguoedu.m.media
 				{
 					_stream.play(_mediaVO.url + "?start=" + _kfTime);
 				}		
+				
+				checkIsNearlyComplete(_duration, _kfTime, true);
 				
 				Logger.info("HttpMedia", "newurl:" + newurl);
 			}		

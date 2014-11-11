@@ -62,6 +62,7 @@ package com.xinguoedu.m.media
 			_stream.play(null);//处于数据生成模式
 			//表示时间刻度不连续，请刷新 FIFO，告知字节分析程序需要分析文件标头或 FLV 标签的开头
 			_stream.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);			
+			setVolume(_volume);
 		
 			_video.attachNetStream(_stream);
 			_display.addChild(_video);
@@ -169,25 +170,13 @@ package com.xinguoedu.m.media
 					}));
 			}
 			
-			//自动连播提示
-			/*if(_config.playNextEnabled && _totalDuration >= 30 && (_totalDuration - _stream.time - _kfTime <= 30))
-			{
-				if(!_autoPlayNextFlag)
-				{
-					sendMediaEvent(MediaEvent.JWPLAYER_MEDIA_AUTOPLAYNEXT);
-					_autoPlayNextFlag = true;
-				}				
-			}		*/
-			
-			//播放完一次后重播，结束时不会派发buffer.empty，所以要显示调用playComplete
-			if(!_isNearlyComplete && (_duration - _stream.time - _kfTime <= NumberConst.NEARLY_COMPLETE))
-			{
-				_isNearlyComplete = true;
-				super.playbackNearlyComplete();
-			}
-			else if(_stream.time + _kfTime >= _duration)
+			if(_stream.time + _kfTime >= _duration)
 			{
 				playComplete();
+			}
+			else
+			{
+				checkIsNearlyComplete(_duration, _stream.time + _kfTime);
 			}
 		}
 		
@@ -196,6 +185,8 @@ package com.xinguoedu.m.media
 		{			
 			_seekFlag = true;
 			destroyPosTimer();
+			
+			checkIsNearlyComplete(_duration, sec, true);
 			
 			_kfFilePos = getOffset(sec, false);
 			_kfTime = getOffset(sec, true)

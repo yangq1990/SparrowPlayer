@@ -44,8 +44,6 @@ package com.xinguoedu.m.media.httpm
 		private var _bufferPercent:Number;
 		/** 缓冲区是否被填满 **/
 		private var _isBufferFull:Boolean;
-		/** 分段是否播放完**/
-		private var _isComplete:Boolean;
 		/** 上次seek的时间点 **/
 		private var _sec:Number = 0;
 		/** 等到缓冲区满后是否要切换画面 **/
@@ -65,7 +63,7 @@ package com.xinguoedu.m.media.httpm
 			_url = url;
 			_stream = new NetStream(nc);			
 			_stream.bufferTime = 5;		
-			_stream.client = this;		
+			_stream.client = this;
 			addStreamListeners();
 		}
 		
@@ -261,15 +259,24 @@ package com.xinguoedu.m.media.httpm
 				_stream.removeEventListener(NetStatusEvent.NET_STATUS, netStatusHandler);
 				_stream.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
 				_stream.close();
+				_isPlaybackComplete = true; //stream close可认为播放complete
 			}		
 			
-			_isActive = _isToSwitch = _isToPreloadNext = _seekAfterBufferFull = _isPlaybackComplete = false;
+			_isActive = _isToSwitch = _isToPreloadNext = _seekAfterBufferFull = false;
 		}
 		
 		public function play():void
 		{
 			!_posInterval && (_posInterval = setInterval(positionInterval, 100)); 			
-			_isComplete ? _stream.play(_url) : _stream.resume(); 
+			if(_isPlaybackComplete)
+			{
+				_stream.play(_url); //从头开始播放
+				_isPlaybackComplete = false;
+			}
+			else
+			{
+				_stream.resume();	
+			}
 		}
 		
 		public function pause():void
@@ -313,14 +320,23 @@ package com.xinguoedu.m.media.httpm
 			{
 				if(!_ismp4)
 				{
-					_stream.play(_url + "?start=" + MetadataUtil.getOffset(_keyframes, sec, false)); //从指定位置开始加载, 需要nginx支持start参数
+					var newurl:String;
+					if(_url.indexOf("start=") == -1)
+					{
+						newurl = _url + "?start=" + MetadataUtil.getOffset(_keyframes, sec, false);
+					}
+					else
+					{
+						newurl = _url.replace(/start=([0-9]+)/i, 'start='+MetadataUtil.getOffset(_keyframes, sec, false));
+					}
+					_stream.play(newurl);
 				}
 			}		
 		}
 		
 		private function netStatusHandler(evt:NetStatusEvent):void
 		{
-			//trace("evt.info.code--->", evt.info.code, _url, _hasMetadata);
+			//trace("evt.info.code--->", evt.info.code, _url, _hasMetadata, _seekAfterBufferFull);
 			switch(evt.info.code)
 			{
 				case StreamStatus.PLAY_START:
@@ -357,11 +373,9 @@ package com.xinguoedu.m.media.httpm
 						_isBufferFull = true;
 					}					
 					break;
-				case StreamStatus.PAUSE_NOTIFY:
-					//某些情况下，视频离结束还有几秒的时候，会触发
-				case StreamStatus.PLAY_STOP:
-					//complete();
-					break;
+				//case StreamStatus.PAUSE_NOTIFY: //某些情况下，视频离结束还有几秒的时候，会触发					
+				//case StreamStatus.PLAY_STOP: //在Buffer Empty之前偶尔也会触发，所以这两个类型都不做处理
+					//break;
 				default:
 					break;
 			}

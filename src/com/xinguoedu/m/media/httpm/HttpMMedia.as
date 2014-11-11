@@ -26,8 +26,6 @@ package com.xinguoedu.m.media.httpm
 		private var _currentIndex:int = 0;
 		/** 存储分段对象引用的字典 **/
 		private var _dict:Dictionary;
-		/** 音量 **/
-		private var _volume:int = 70;
 		
 		public function HttpMMedia(mediaType:String)
 		{
@@ -94,6 +92,7 @@ package com.xinguoedu.m.media.httpm
 		private function loadSegmentHandler(evt:SegmentEvt):void
 		{
 			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
+			currentSegment.setVolume(_volume);
 		}
 		
 		private function segmentMetadataHandler(evt:SegmentEvt):void
@@ -130,6 +129,8 @@ package com.xinguoedu.m.media.httpm
 			obj.duration = _totalDuration;
 			obj.bufferDuration = elapsedDuration + evt.data.bufferDuration;
 			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_TIME, obj));
+			
+			checkIsNearlyComplete(_totalDuration, obj.position);		
 		}
 		
 		private function segmentSwitchHandler(evt:SegmentEvt):void
@@ -231,6 +232,7 @@ package com.xinguoedu.m.media.httpm
 		
 		override public function seek(sec:Number):void
 		{
+			checkIsNearlyComplete(_totalDuration, sec, true);
 			var index:int = findIndex(sec);
 			if(index == _currentIndex)
 			{

@@ -1,5 +1,6 @@
 package com.xinguoedu.m.media
 {
+	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -51,6 +52,7 @@ package com.xinguoedu.m.media
 		protected var _isNearlyComplete:Boolean =  false;
 		/** 是否播放完标识，对于分段视频，指的是全部分段播放complete,或者最后一个分段播放complete **/
 		protected var _isComplete:Boolean = false;
+		protected var _volume:int = 70;
 		
 		public function BaseMedia(mediaType:String)
 		{
@@ -224,12 +226,31 @@ package com.xinguoedu.m.media
 		}
 		
 		/**
-		 * 视频快要播放完 
+		 * 检查视频是否快要播放结束 
+		 * @param totalDuration 视频总时长
+		 * @param currentPos 当前位置
+		 * @param checkAfterSeeking 是否拖动后验证，默认false, 即在播放进行中验证
 		 * 
 		 */		
-		protected function playbackNearlyComplete():void
-		{
-			dispatchEvt(StreamStatus.PLAY_NEARLY_COMPLETE);
+		protected function checkIsNearlyComplete(totalDuration:Number, currentPos:Number, checkAfterSeeking:Boolean=false):void
+		{		
+			if(!checkAfterSeeking)
+			{
+				if(!_isNearlyComplete && (totalDuration - currentPos <= NumberConst.NEARLY_COMPLETE))
+				{
+					_isNearlyComplete = true;
+					dispatchEvt(StreamStatus.PLAY_NEARLY_COMPLETE);
+					return;
+				}
+			}
+			else
+			{
+				if(_isNearlyComplete && (totalDuration - currentPos > NumberConst.NEARLY_COMPLETE))
+				{
+					_isNearlyComplete = false;
+					dispatchEvt(StreamStatus.NOT_NEARLY_COMPLETE);
+				}
+			}
 		}
 		
 		/**
@@ -257,5 +278,20 @@ package com.xinguoedu.m.media
 		{
 			
 		}
+
+		/** 音量，默认值为70 **/
+		public function get vol():int
+		{
+			return _volume;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set vol(value:int):void
+		{
+			_volume = value;
+		}
+
 	}
 }

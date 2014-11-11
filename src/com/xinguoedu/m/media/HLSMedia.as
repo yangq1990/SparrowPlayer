@@ -49,6 +49,7 @@ package com.xinguoedu.m.media
 			_hls.addEventListener(HLSEvent.ERROR, _errorHandler);
 			_hls.addEventListener(HLSEvent.MANIFEST_LOADED, manifestHandler);
 			_hls.addEventListener(HLSEvent.STATE, stateHandler);
+			setVolume(_volume);
 		
 			_video = new Video(320, 240);
 			_video.smoothing = true;
@@ -114,21 +115,7 @@ package com.xinguoedu.m.media
 						bufferDuration:_bufferPercent*_duration
 					}));
 				
-				//自动连播提示
-				/*if(_config.playNextEnabled && event.mediatime.duration >= 30 && (event.mediatime.duration - _pos <= 30))
-				{
-					if(!_autoPlayNextFlag)
-					{
-						sendMediaEvent(MediaEvent.JWPLAYER_MEDIA_AUTOPLAYNEXT);
-						_autoPlayNextFlag = true;
-					}				
-				}				*/
-				
-				if(!_isNearlyComplete && (_duration - _pos <= NumberConst.NEARLY_COMPLETE))
-				{
-					_isNearlyComplete = true;
-					super.playbackNearlyComplete();
-				}
+				checkIsNearlyComplete(_duration, _pos);
 			}
 			
 		}
@@ -170,6 +157,7 @@ package com.xinguoedu.m.media
 		
 		override public function seek(sec:Number):void
 		{
+			checkIsNearlyComplete(_duration, sec, true);
 			_hls.stream.seek(sec);
 		}
 		
