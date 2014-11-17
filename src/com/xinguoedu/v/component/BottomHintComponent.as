@@ -51,18 +51,13 @@ package com.xinguoedu.v.component
 			EventBus.getInstance().addEventListener(MediaEvt.NOT_NEARLY_COMPLETE, notNearlyCompleteHandler);
 			EventBus.getInstance().addEventListener(ViewEvt.HIDE_CONTROLBAR, hideControlbarHandler);
 			EventBus.getInstance().addEventListener(ViewEvt.SHOW_CONTROLBAR, showControlbarHandler);
+			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_PREVIEW_HINT, mediaPreviewHintHandler);
 		}
 		
 		private function nearlyCompleteHandler(evt:MediaEvt):void
 		{
 			_hint.text = "当前视频即将播放完";
-			drawCloseBtn(false);
-			this.addChild(_closeBtn);
-			this.visible = true;
-			resize();
-			
-			super.destroyTimer();
-			_timeout = setTimeout(timeoutHandler, NumberConst.BOTTOMHINT_DELAY);
+			showSelf();
 		}
 		
 		private function notNearlyCompleteHandler(evt:MediaEvt):void
@@ -75,6 +70,27 @@ package com.xinguoedu.v.component
 			this.visible && hide();
 		}
 		
+		private function mediaPreviewHintHandler(evt:MediaEvt):void
+		{
+			_hint.text = evt.data;			
+			showSelf();
+		}
+		
+		private function showSelf():void
+		{
+			if(_closeBtn == null)
+			{
+				drawCloseBtn(false);
+				this.addChild(_closeBtn);
+			}
+			
+			this.visible = true;
+			resize();
+			
+			super.destroyTimer();
+			_timeout = setTimeout(timeoutHandler, NumberConst.BOTTOMHINT_DELAY);
+		}
+		
 		override protected function resize():void
 		{
 			if(this.visible)
@@ -85,6 +101,7 @@ package com.xinguoedu.v.component
 				_hint.y = 3;
 				
 				var g:Graphics = _back.graphics;
+				g.clear();
 				g.beginFill(PlayerColor.MAIN_BG, 0.5); //跟controlbar的背景色保持一致
 				g.drawRect(0, 0, stageWidth, _hint.height);
 				g.endFill();	
