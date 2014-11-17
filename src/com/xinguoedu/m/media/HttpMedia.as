@@ -63,17 +63,16 @@ package com.xinguoedu.m.media
 		
 		override public function startLoadAndPlay():void
 		{
-			trace("url--->", _mediaVO.url);
 			_stream.play(_mediaVO.url);
 			destroyPosTimer();
 			_posInterval = setInterval(positionInterval, 100);				
 			dispatchEvt(StreamStatus.START_LOAD_MEDIA);
-			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING, {bufferPercent:0}));
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING));
 		}
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
-			trace('httpmideia---->', evt.info.code);
+			//trace('httpmideia---->', evt.info.code);
 			switch(evt.info.code)
 			{
 				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
@@ -100,11 +99,6 @@ package com.xinguoedu.m.media
 			
 			_pos = _stream.time;
 			
-			/*if (_duration > 0 && _stream) 
-			{
-				_bufferTime = _stream.bufferTime < (_duration - _pos) ? _stream.bufferTime : Math.ceil(_duration - _pos);
-				_bufferFill = _stream.bufferTime ? Math.ceil(Math.ceil(_stream.bufferLength) / _bufferTime * 100) : 0;
-			}*/
 			if(_kfTime > 0) //拖动过
 			{
 				_bufferTime = _stream.bufferTime < (_pos - _kfTime) ? _stream.bufferTime : Math.ceil(_pos - _kfTime);
@@ -187,7 +181,6 @@ package com.xinguoedu.m.media
 			
 			if(sec <= 0) //play from start
 			{
-				trace("play from start");
 				_stream.close();
 				_stream.play(_mediaVO.url);
 				return;
