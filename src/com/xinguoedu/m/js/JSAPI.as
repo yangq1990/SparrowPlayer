@@ -78,6 +78,15 @@ package com.xinguoedu.m.js
 			available && ExternalInterface.call('showScreenshot', str);
 		}
 		
+		/**
+		 * 刷新当前页面 
+		 * 
+		 */		
+		public function refresh():void
+		{
+			available && ExternalInterface.call("location.replace(location.href)");
+		}
+		
 		/** 外部接口是否可用 **/
 		private function get available():Boolean
 		{
