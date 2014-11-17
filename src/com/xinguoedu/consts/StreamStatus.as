@@ -27,6 +27,10 @@ package com.xinguoedu.consts
 		
 		public static const STREAM_NOT_FOUND:String = "NetStream.Play.StreamNotFound";
 		
+		public static const SEEKSTART_NOTIFY:String = "NetStream.SeekStart.Notify";		
+		/**
+		 * 搜寻操作完成 ,等待buffer full后流就可以播放
+		 */				
 		public static const SEEK_NOTIFY:String = "NetStream.Seek.Notify";
 		
 		public static const SEEK_COMPLETE:String = "NetStream.Seek.Complete";
@@ -43,6 +47,13 @@ package com.xinguoedu.consts
 		 * 距离播放结束超过40s就是not_nearly_complete 
 		 */		
 		public static const NOT_NEARLY_COMPLETE:String = "not_nearly_complete";
+		
+		/**
+		 * 搜索失败，如果流处于不可搜索状态，则会发生搜索失败 
+		 */		
+		public static const SEEK_FAILED:String = "NetStream.Seek.Failed";
+		
+		
 		
 	}
 }
