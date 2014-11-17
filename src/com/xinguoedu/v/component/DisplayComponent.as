@@ -67,9 +67,9 @@ package com.xinguoedu.v.component
 		private function mediaLoadingHandler(evt:MediaEvt):void
 		{
 			_buffer_tf.text = "";
-			_buffer_tf.appendText(int(evt.data.percent*100) + "%"); //这样写更有效
+			(evt.data != null) && _buffer_tf.appendText(int(evt.data.percent*100) + "%"); //这样写更有效
 			if(!this.visible)
-			{
+			{				
 				this.visible = true;
 				resize();
 			}
@@ -89,8 +89,15 @@ package com.xinguoedu.v.component
 		{
 			if(this.visible)
 			{
-				_buffer_mc.x = (stageWidth - _buffer_mc.width) >> 1;
-				_buffer_tf.x = stageWidth >> 1;
+				if(_buffer_tf.text)
+				{
+					_buffer_mc.x = (stageWidth - _buffer_mc.width) >> 1;
+					_buffer_tf.x = stageWidth >> 1;
+				}
+				else
+				{
+					_buffer_mc.x = stage.stageWidth >> 1;
+				}
 				_buffer_mc.y = (stageHeight - controlbarHeight) >> 1 ;
 				_buffer_tf.y = (stageHeight - controlbarHeight - _buffer_tf.height) >> 1;
 			}
