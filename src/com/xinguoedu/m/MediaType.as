@@ -15,6 +15,8 @@ package com.xinguoedu.m
 		
 		public static const HTTPM:String = "httpm";
 		
+		public static const RTMP:String = "rtmp";
+		
 		public function MediaType()
 		{
 		}
