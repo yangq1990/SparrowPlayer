@@ -2,6 +2,7 @@ package com.xinguoedu.m
 {
 	import com.adobe.images.PNGEncoder;
 	import com.hurlant.util.Base64;
+	import com.xinguoedu.consts.ConnectionStatus;
 	import com.xinguoedu.consts.DebugConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
@@ -15,9 +16,11 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.media.HLSMedia;
 	import com.xinguoedu.m.media.HttpEMedia;
 	import com.xinguoedu.m.media.HttpMedia;
+	import com.xinguoedu.m.media.RTMPMedia;
 	import com.xinguoedu.m.media.httpm.HttpMMedia;
 	import com.xinguoedu.m.vo.AdVO;
 	import com.xinguoedu.m.vo.ErrorHintVO;
+	import com.xinguoedu.m.vo.FeedbackVO;
 	import com.xinguoedu.m.vo.LogoVO;
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.m.vo.NodeVO;
@@ -46,6 +49,7 @@ package com.xinguoedu.m
 		private var _videoadVO:VideoAdVO = new VideoAdVO();
 		private var _qrcodeVO:QrcodeVO = new QrcodeVO();
 		private var _nodeVO:NodeVO = new NodeVO();
+		private var _feedbackVO:FeedbackVO = new FeedbackVO();
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
@@ -62,6 +66,7 @@ package com.xinguoedu.m
 			_mediaMap[MediaType.HLS] = new HLSMedia(MediaType.HLS);
 			_mediaMap[MediaType.HTTPE] = new HttpEMedia(MediaType.HTTPE);		
 			_mediaMap[MediaType.HTTPM] = new HttpMMedia(MediaType.HTTPM);
+			_mediaMap[MediaType.RTMP] = new RTMPMedia(MediaType.RTMP);
 		}
 		
 		private function addListeners():void
@@ -83,16 +88,12 @@ package com.xinguoedu.m
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.LOAD_MEDIA));	
 					break;
 				case StreamStatus.LOAD_MEDIA_IOERROR:
-					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR, evt.data));
-					EventBus.getInstance().dispatchEvent(new DebugEvt(DebugEvt.DEBUG, DebugConst.LOAD_MEDIA_IOERROR + ":" + mediaVO.url));
+					sendErrorAndDebugMsg(DebugConst.LOAD_MEDIA_IOERROR + ":" + mediaVO.url);
 					break;
 				case StreamStatus.STREAM_NOT_FOUND:
-					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR, evt.data));
-					EventBus.getInstance().dispatchEvent(new DebugEvt(DebugEvt.DEBUG, DebugConst.STREAM_NOT_FOUND + ":" + mediaVO.url));
+					sendErrorAndDebugMsg(DebugConst.STREAM_NOT_FOUND + ":" + mediaVO.url);
 					break;
 				case StreamStatus.PLAY_START:
-					state = PlayerState.PLAYING;
-					break;			
 				case StreamStatus.BUFFERING:
 					state = PlayerState.BUFFERING;
 					break;
@@ -114,9 +115,27 @@ package com.xinguoedu.m
 				case StreamStatus.NOT_NEARLY_COMPLETE:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.NOT_NEARLY_COMPLETE));
 					break;
+				case ConnectionStatus.CLOSED:
+					sendErrorAndDebugMsg(DebugConst.CONNECTION_CLOSED + ":" + mediaVO.url);
+					break;
+				case ConnectionStatus.REJECTED:
+					sendErrorAndDebugMsg(DebugConst.CONNECTION_REJECTED + ":" + mediaVO.url);
+					break;
+				case ConnectionStatus.SECURITY_ERROR:
+					sendErrorAndDebugMsg(DebugConst.CONNECTION_SECURITY_ERROR + ":" + mediaVO.url);
+					break;
+				case ConnectionStatus.FAILED:
+					sendErrorAndDebugMsg(DebugConst.CONNECTION_FAILED + ":" + mediaVO.url);
 				default:
 					break;
 			}
+		}
+		
+		/** 派发错误事件和调试信息事件 **/
+		private function sendErrorAndDebugMsg(debugMsg:String):void
+		{
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_ERROR));
+			EventBus.getInstance().dispatchEvent(new DebugEvt(DebugEvt.DEBUG, debugMsg));
 		}
 		
 		/** 流状态发生变化 **/
@@ -344,5 +363,11 @@ package com.xinguoedu.m
 		{
 			return _nodeVO;
 		}
+
+		public function get feedbackVO():FeedbackVO
+		{
+			return _feedbackVO;
+		}
+
 	}
 }
