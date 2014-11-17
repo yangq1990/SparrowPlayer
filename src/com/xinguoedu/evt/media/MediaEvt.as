@@ -51,6 +51,11 @@ package com.xinguoedu.evt.media
 		 */		
 		public static const MEDIA_MUTE:String = "media_mute";
 		
+		/**
+		 * 视频预览提示 
+		 */		
+		public static const MEDIA_PREVIEW_HINT:String = "media_preview_hint";
+		
 		public var data:*;
 		
 		public function MediaEvt(type:String, d:*=null, bubbles:Boolean=false, cancelable:Boolean=false)
