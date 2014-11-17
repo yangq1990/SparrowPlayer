@@ -37,5 +37,11 @@ package com.xinguoedu.m.vo
 		 * 存放多段视频地址的数组 
 		 */		
 		public var urlArray:Array;
+		
+		/**
+		 * 回放持续时间（以秒为单位）。 允许的值为 -1、0 或正数。
+		 * 默认值为 -1，它一直播放完实时流或录制流。 如果为 0，则播放距录制流开始处 start 秒的单个帧。 如果为正数，则播放实时流或录制流 len 秒。  
+		 */		
+		public var len:Number = -1;
 	}
 }
