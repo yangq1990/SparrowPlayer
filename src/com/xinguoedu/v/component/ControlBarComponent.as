@@ -692,9 +692,9 @@ package com.xinguoedu.v.component
 		/** 设置timeSlider的mark **/
 		private function bufferHandler(evt:MediaEvt):void
 		{			
-			if (!evt || evt.data.bufferPercent < 0)
+			if (!evt)
 				return;
-			
+		
 			timeSlider.mark.x = 0;
 			if(_m.state == PlayerState.IDLE)
 			{
