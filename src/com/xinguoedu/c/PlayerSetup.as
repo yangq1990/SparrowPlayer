@@ -59,7 +59,15 @@ package com.xinguoedu.c
 			_m.mediaVO.autostart = int(_m.playerconfig.autostart) ? true : false;
 			_m.mediaVO.checkPolicyFile = int(_m.playerconfig.accesspx) ? true : false;
 			
+			//
+			if(_m.playerconfig.len != undefined)
+				_m.mediaVO.len = int(_m.playerconfig.len);
+			
+			//qrcode
 			_m.qrcodeVO.url = decodeURIComponent(_m.playerconfig.qrcodeurl);
+			
+			//feedback
+			_m.feedbackVO.url = decodeURIComponent(_m.playerconfig.feedbackurl);
 			
 			if(_m.playerconfig.urls) //多段视频
 			{
