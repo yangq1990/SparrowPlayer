@@ -3,7 +3,7 @@ package com.xinguoedu.evt.debug
 	import flash.events.Event;
 	
 	/**
-	 * 与调试有关的事件类 
+	 * 与出错调试有关的事件类 
 	 * @author yatsen_yang
 	 * 
 	 */	
