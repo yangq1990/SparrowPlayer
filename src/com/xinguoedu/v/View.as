@@ -14,6 +14,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.StateHintComponent;
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
+	import com.xinguoedu.v.component.logger.LoggerComponent;
 	
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
@@ -44,6 +45,8 @@ package com.xinguoedu.v
 		private var _videoadsComp:VideoAdsComponent;
 		
 		private var _bottomHintComp:BaseComponent;
+		
+		private var _loggerComp:BaseComponent;
 		
 		public function View(m:Model)
 		{
@@ -84,13 +87,16 @@ package com.xinguoedu.v
 			_root.addChild(_stateHintComp);
 			
 			_errorHintComp = new ErrorComponent(_m);
-			_root.addChild(_errorHintComp);			
+			_root.addChild(_errorHintComp);
 			
 			if(_m.videoadVO.enabled)
 			{
 				_videoadsComp = new VideoAdsComponent(_m);			
 				_root.addChild(_videoadsComp);
-			}			
+			}					
+			
+			_loggerComp = new LoggerComponent(_m);
+			_root.addChild(_loggerComp);	
 			
 			var rightclickmenu:RightClickMenu = new RightClickMenu(_m, _root);
 			rightclickmenu.initializeMenu();
