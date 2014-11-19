@@ -6,7 +6,7 @@ package com.xinguoedu.consts
 		{
 		}
 		
-		public static const COPY_DEBUG_INFO:String = "复制调试信息";
+		public static const SHOW_DEBUG_INFO:String = "显示调试信息";
 		
 		public static const LOAD_MEDIA_IOERROR:String = "加载媒体发生IO错误";
 		
