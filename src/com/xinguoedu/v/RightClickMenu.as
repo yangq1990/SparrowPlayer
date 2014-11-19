@@ -2,14 +2,13 @@ package com.xinguoedu.v
 {
 	import com.xinguoedu.consts.DebugConst;
 	import com.xinguoedu.evt.EventBus;
-	import com.xinguoedu.evt.debug.DebugEvt;
+	import com.xinguoedu.evt.view.ViewEvt;
 	import com.xinguoedu.m.Model;
 	
 	import flash.display.Sprite;
 	import flash.events.ContextMenuEvent;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
-	import flash.system.System;
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	
@@ -22,7 +21,6 @@ package com.xinguoedu.v
 	{
 		private var _context:ContextMenu;
 		private var _m:Model;
-		private var _debuggingInfo:String;
 		
 		public function RightClickMenu(m:Model, parent:Sprite)
 		{
@@ -32,17 +30,6 @@ package com.xinguoedu.v
 			_context = new ContextMenu();
 			_context.hideBuiltInItems();
 			parent.contextMenu = _context; //Stage不实现此属性
-			
-			if(m.developermode)
-			{
-				_debuggingInfo = "";
-				EventBus.getInstance().addEventListener(DebugEvt.DEBUG, debugHandler);
-			}			
-		}
-		
-		private function debugHandler(evt:DebugEvt):void
-		{			
-			_debuggingInfo += new Date().toString() + '-->' + evt.info + "\n";  
 		}
 		
 		public function initializeMenu():void
@@ -54,7 +41,7 @@ package com.xinguoedu.v
 				addItem(new ContextMenuItem(obj.title), menuItemSelectHandler);
 			}
 			
-			_m.developermode && addItem(new ContextMenuItem(DebugConst.COPY_DEBUG_INFO), menuItemSelectHandler);
+			addItem(new ContextMenuItem(DebugConst.SHOW_DEBUG_INFO), menuItemSelectHandler);
 		}
 		
 		/** Add an item to the contextmenu.**/
@@ -69,9 +56,9 @@ package com.xinguoedu.v
 		private function menuItemSelectHandler(evt:ContextMenuEvent):void
 		{
 			var caption:String = (evt.target as ContextMenuItem).caption;
-			if(caption == DebugConst.COPY_DEBUG_INFO)
+			if(caption == DebugConst.SHOW_DEBUG_INFO)
 			{
-				System.setClipboard(_debuggingInfo);
+				EventBus.getInstance().dispatchEvent(new ViewEvt(ViewEvt.SHOW_LOGGER_COMPONENT));
 				return;	
 			}
 			
