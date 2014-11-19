@@ -34,7 +34,12 @@ package com.xinguoedu.evt.view
 		/**
 		 * mouse down timeslider, 准备拖动 
 		 */		
-		public static const MOUSEDOWN_TO_SEEK:String = "mousedown_to_seek";
+		public static const MOUSEDOWN_TO_SEEK:String = "mousedown_to_seek_ve";
+		
+		/**
+		 * 显示日志组件 
+		 */		
+		public static const SHOW_LOGGER_COMPONENT:String = "show_logger_component_ve";
 		
 		public var data:*;
 		
