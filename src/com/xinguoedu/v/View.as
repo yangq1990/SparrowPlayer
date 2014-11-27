@@ -12,9 +12,11 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.LogoComponent;
 	import com.xinguoedu.v.component.QrcodeComponent;
 	import com.xinguoedu.v.component.StateHintComponent;
+	import com.xinguoedu.v.component.SubtitleComponent;
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
 	import com.xinguoedu.v.component.logger.LoggerComponent;
+	import com.xinguoedu.v.component.settings.SettingsComponent;
 	
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
@@ -45,6 +47,10 @@ package com.xinguoedu.v
 		private var _videoadsComp:VideoAdsComponent;
 		
 		private var _bottomHintComp:BaseComponent;
+		
+		private var _subtitleComp:BaseComponent;
+		
+		private var _settingsComp:BaseComponent;
 		
 		private var _loggerComp:BaseComponent;
 		
@@ -94,6 +100,15 @@ package com.xinguoedu.v
 				_videoadsComp = new VideoAdsComponent(_m);			
 				_root.addChild(_videoadsComp);
 			}					
+			
+			_settingsComp = new SettingsComponent(_m);
+			_root.addChild(_settingsComp);
+			
+			if(_m.subtitleVO.url)
+			{
+				_subtitleComp = new SubtitleComponent(_m);
+				_root.addChild(_subtitleComp);
+			}
 			
 			_loggerComp = new LoggerComponent(_m);
 			_root.addChild(_loggerComp);	
