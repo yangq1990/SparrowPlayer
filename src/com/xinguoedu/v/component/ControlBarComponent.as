@@ -91,7 +91,7 @@ package com.xinguoedu.v.component
 					nextButton: ViewEvt.PLAY_NEXT,
 					fullscreenButton: ViewEvt.FULLSCREEN,
 					normalscreenButton: ViewEvt.NORMAL,
-					settingButton: "",
+					settingButton: ViewEvt.SHOW_SETTINGS_COMPONENT,
 					trumpet:ViewEvt.MUTE //喇叭mc
 			};
 			
@@ -343,8 +343,8 @@ package com.xinguoedu.v.component
 			//点击设置按钮
 			if(evt.target.name == "settingButton")
 			{
-				//EventBus.getInstance().dispatchEvent(new GlobalEvent(GlobalEvent.SHOW_SETTING_VIEW));
-				//evt.stopImmediatePropagation();	
+				EventBus.getInstance().dispatchEvent(new ViewEvt(BUTTONS[evt.currentTarget.name]));
+				evt.stopImmediatePropagation();	
 				return;
 			}			
 			
