@@ -51,11 +51,16 @@
             
             flashvars.qrcodeurl = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c");
             flashvars.feedbackurl = encodeURIComponent("http://bbs.9ria.com/thread-418059-1-1.html");
+            
+            //值为空或者不设置flashvars.subtitleurl，表明没有字幕文件; 当有字幕文件的时候，如果字幕是双语的，isBilingual需要显式设为1，默认值为0
+            flashvars.subtitleurl = 'http://www.xinguoedu.com/sparrow/video/jp.srt' ;
+            flashvars.bilingual = 1;
         
             //http
-           //flashvars.type = 'http';
+           flashvars.type = 'http';
            // flashvars.url = 'http://www.xinguoedu.com/sparrow/video/gameofcode.mp4';
-           //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");            
+           //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");      
+           flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/akb48.flv")      
             
             //hls
             //flashvars.type = 'hls';
@@ -70,8 +75,8 @@
            	//flashvars.urls = '[{"duration":305.52816326530615,"url":"http://www.xinguoedu.com/sparrow/video/pingfanzhilu.flv"},{"duration":335.6,"url":"http://www.xinguoedu.com/sparrow/video/nfgn.flv"}, {"duration":251.23990929705215,"url":"http://www.xinguoedu.com/sparrow/video/star.flv"}]';
            	
            	//rtmp
-           	flashvars.type = "rtmp";
-           	flashvars.url = "112.124.4.231/sparrow";
+           	//flashvars.type = "rtmp";
+           //	flashvars.url = "112.124.4.2312/sparrow";
            	
            	//flashvars.len =  60; //相当于预览60s
             
