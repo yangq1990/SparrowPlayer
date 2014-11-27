@@ -69,6 +69,13 @@ package com.xinguoedu.c
 			//feedback
 			_m.feedbackVO.url = decodeURIComponent(_m.playerconfig.feedbackurl);
 			
+			//字幕地址
+			if(_m.playerconfig.subtitleurl)
+			{
+				_m.subtitleVO.url = decodeURIComponent(_m.playerconfig.subtitleurl);
+				_m.subtitleVO.isBilingual = (int(_m.playerconfig.bilingual) ? true : false);
+			}
+			
 			if(_m.playerconfig.urls) //多段视频
 			{
 				_m.mediaVO.urlArray = (JSONUtil.decode(_m.playerconfig.urls)) as Array;
@@ -126,6 +133,7 @@ package com.xinguoedu.c
 			}
 			catch(err:Error)
 			{
+				trace('setup view出错', err.toString());
 				_m.developermode && (Logger.error('PlayerSetup', 'setup view出错', err.toString()));
 			}
 		
