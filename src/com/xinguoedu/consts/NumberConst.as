@@ -57,5 +57,15 @@ package com.xinguoedu.consts
 		 * 节点提示的三角形边长 
 		 */		
 		public static const TRIANGLE_SIDE:int = 10;
+		
+		/**
+		 * 设置面板Button的间隔 
+		 */		
+		public static const SETTINGS_BUTTON_MARGIN:int = 20;
+		
+		/**
+		 * 设置面板label和button的间隔 
+		 */		
+		public static const LABEL_BUTTON_MARGIN:int = 25;
 	}
 }
