@@ -1,12 +1,12 @@
 package com.xinguoedu.v.ui
 {
 	import com.xinguoedu.consts.Font;
+	import com.xinguoedu.utils.UIUtil;
 	
 	import flash.display.Graphics;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
 	
 	/**
 	 * 自定义Button
@@ -15,7 +15,7 @@ package com.xinguoedu.v.ui
 	 */	
 	public class Button extends Sprite
 	{
-		private var _func:Function;
+		protected var _func:Function;
 		protected var _tf:TextField;		
 		protected var _w:Number;
 		protected var _h:Number;
@@ -63,12 +63,7 @@ package com.xinguoedu.v.ui
 			
 			_tf = new TextField();
 			_tf.mouseEnabled = false;
-			var format:TextFormat = new TextFormat();
-			format.align = "center";
-			format.font = Font.YAHEI;
-			format.size = Font.SIZE;
-			format.color = Font.COLOR;			
-			_tf.defaultTextFormat = format;
+			_tf.defaultTextFormat = UIUtil.getTextFormat(Font.YAHEI, Font.COLOR, Font.SIZE);
 			addChild(_tf);
 		}
 		
@@ -83,7 +78,7 @@ package com.xinguoedu.v.ui
 			this.addEventListener(MouseEvent.CLICK, onMouseClick);
 		}
 		
-		private function onMouseClick(evt:MouseEvent):void
+		protected function onMouseClick(evt:MouseEvent):void
 		{
 			(_func != null) && _func();
 		}			
@@ -110,8 +105,7 @@ package com.xinguoedu.v.ui
 		/** 调整文字位置 **/
 		private function adjustTFPos():void
 		{
-			_tf.width = _tf.textWidth + 10;
-			_tf.height = _tf.textHeight + 10;
+			UIUtil.adjustTFWidthAndHeight(_tf);
 			_tf.x = (_w - _tf.width) >> 1;
 			_tf.y = (_h - _tf.height) >> 1;
 		}
