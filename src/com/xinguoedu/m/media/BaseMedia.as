@@ -6,6 +6,7 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.vo.MediaVO;
+	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.utils.MetadataUtil;
 	
 	import flash.display.Sprite;
@@ -90,12 +91,25 @@ package com.xinguoedu.m.media
 			else
 			{
 				_ismp4 = false;
-				_keyframes = info['keyframes']; //记录关键帧的位置
+				_keyframes = info['keyframes'];
 			}
+			
+			//格式工厂等软件，在转换mp4->flv的时候，可能不会生成flv需要的keyframes信息，所以这里做了提示
+			!_ismp4 && !_keyframes && Logger.error('BaseMedia', '此flv文件没有关键帧数据，将无法正确拖动');
 			
 			_duration = info.duration;
 			
 			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_METADATA, {w:info.width, h:info.height}));
+		}
+		
+		/**
+		 * 有些视频在播放结束后出调用此函数 
+		 * @param info
+		 * 
+		 */		
+		public function onLastSecond(info:Object):void
+		{
+			
 		}
 		
 		protected function convertSeekpoints(dat:Object):Object 
