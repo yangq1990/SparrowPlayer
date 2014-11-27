@@ -233,9 +233,17 @@ package com.xinguoedu.utils
 			return link;
 		}
 		
-
-		
-		
-	}
-	
+		/**
+		 * 把类似于 00:00:48,018 这样的字符串转成数字，在格式化字幕的时候有用 
+		 * @param str
+		 * @return 
+		 * 
+		 */		
+		public static function string2Number(str:String):Number
+		{
+			var arr:Array = str.split(',');
+			var hms:Array = arr[0].split(':'); //对应h, m, s
+			return int(hms[0]) * 3600 + int(hms[1] * 60) + int(hms[2]) + int(arr[1])/1000;
+		}		
+	}	
 }
