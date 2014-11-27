@@ -25,10 +25,13 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.m.vo.NodeVO;
 	import com.xinguoedu.m.vo.QrcodeVO;
+	import com.xinguoedu.m.vo.SubtitleVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
 	import com.xinguoedu.utils.Logger;
+	import com.xinguoedu.utils.MultifunctionalLoader;
 	import com.xinguoedu.utils.StageReference;
+	import com.xinguoedu.utils.Strings;
 	
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
@@ -50,10 +53,16 @@ package com.xinguoedu.m
 		private var _qrcodeVO:QrcodeVO = new QrcodeVO();
 		private var _nodeVO:NodeVO = new NodeVO();
 		private var _feedbackVO:FeedbackVO = new FeedbackVO();
+		private var _subtitleVO:SubtitleVO = new SubtitleVO();
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
 		private var _isMute:Boolean = false;
+		
+		protected var _srtTimeArray:Array;
+		protected var _srtTimeArrayLength:int = 0;
+		protected var _defaultLangTextArray:Array;
+		protected var _secondLangTextArray:Array;
 		
 		public function Model()
 		{
@@ -205,10 +214,73 @@ package com.xinguoedu.m
 			if(!hasMedia(_mediaVO.type))
 				_mediaVO.type = MediaType.HTTP;
 			
+			if(_subtitleVO.url)
+			{
+				var loader:MultifunctionalLoader = new MultifunctionalLoader(false);
+				loader.registerFunctions(loadSrtComplete);
+				loader.load(_subtitleVO.url);
+			}
+			
 			media = _mediaMap[_mediaVO.type];	
 			media.vol = volume;
 			addListeners();			
 			media.init(_mediaVO);
+		}
+		
+		protected function loadSrtComplete(data:String):void
+		{
+			var srtTimeArr:Array = [];
+			var srtTextArr:Array = [];
+			
+			var arr:Array = data.split('\r\n');
+			var len:int = arr.length;
+			for(var i:int = 0; i < len; i++)
+			{
+				if(int(arr[i]) || !arr[i]) //过滤掉字幕中的数字序列和空字符串
+				{
+					continue;
+				}
+				
+				if(arr[i].indexOf('-->') != -1)
+				{
+					var temp:Array = arr[i].split('-->');
+					srtTimeArr.push(Strings.string2Number(temp[0]), Strings.string2Number(temp[1]));
+				}
+				else
+				{
+					srtTextArr.push(arr[i]);
+				}
+			}
+			
+			if(_subtitleVO.isBilingual)
+			{
+				_srtTimeArray = [];
+				_defaultLangTextArray = [];
+				_secondLangTextArray  =[];
+				
+				var timeArrayLen:int = srtTimeArr.length;
+				for(var j:int = 0; j <= timeArrayLen-4; j+=4)
+				{
+					_srtTimeArray.push(srtTimeArr[j], srtTimeArr[j+1]);
+				}
+				
+				var textArrayLen:int = srtTextArr.length;
+				for(var k:int = 0; k < textArrayLen; k++)
+				{
+					(k % 2 == 0) ? _defaultLangTextArray.push(srtTextArr[k]) : _secondLangTextArray.push(srtTextArr[k]); 
+				}
+				
+				//释放内存
+				srtTextArr = [];
+				srtTextArr = [];
+			}
+			else
+			{
+				_srtTimeArray = srtTimeArr;
+				_defaultLangTextArray = srtTextArr;
+			}
+			
+			_srtTimeArrayLength = _srtTimeArray.length;
 		}
 		
 		private function hasMedia(mediaType:String):Boolean
@@ -369,5 +441,49 @@ package com.xinguoedu.m
 			return _feedbackVO;
 		}
 
+		public function get subtitleVO():SubtitleVO
+		{
+			return _subtitleVO;
+		}
+		
+		/**
+		 * srt字幕时间数组 
+		 * @return 
+		 * 
+		 */		
+		public function get srtTimeArray():Array
+		{
+			return _srtTimeArray;
+		}
+		 
+		/**
+		 * 将srt字幕时间数组的长度缓存，避免重复遍历数组  
+		 * @return 字幕时间数组的长度 
+		 * 
+		 */		
+		public function get srtTimeArrayLength():int
+		{
+			return _srtTimeArrayLength;
+		}
+		
+		/**
+		 * 存储默认字幕文字信息的数组 
+		 * @return 
+		 * 
+		 */		
+		public function get defaultLangTextArray():Array
+		{
+			return _defaultLangTextArray;
+		}
+		
+		/**
+		 * 双语字幕时存储第二字幕文字信息的数组 
+		 * @return 
+		 * 
+		 */		
+		public function get secondLangTextArray():Array
+		{
+			return _secondLangTextArray;
+		}
 	}
 }
