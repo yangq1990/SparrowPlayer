@@ -102,7 +102,7 @@ package com.xinguoedu.v.component
 				
 				var g:Graphics = _back.graphics;
 				g.clear();
-				g.beginFill(PlayerColor.MAIN_BG, 0.5); //跟controlbar的背景色保持一致
+				g.beginFill(PlayerColor.MAIN_BG, 0.8); //跟controlbar的背景色保持一致
 				g.drawRect(0, 0, stageWidth, _hint.height);
 				g.endFill();	
 				
