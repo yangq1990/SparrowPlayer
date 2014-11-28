@@ -5,6 +5,7 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.Model;
+	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.v.base.BaseComponent;
 	
 	import flash.display.MovieClip;
@@ -66,6 +67,9 @@ package com.xinguoedu.v.component
 		 * **/
 		private function mediaLoadingHandler(evt:MediaEvt):void
 		{
+			if(_m.state == PlayerState.PLAYING) //避免一边播放一边显示加载百分比
+				return;
+			
 			_buffer_tf.text = "";
 			(evt.data != null) && _buffer_tf.appendText(int(evt.data.percent*100) + "%"); //这样写更有效
 			if(!this.visible)
