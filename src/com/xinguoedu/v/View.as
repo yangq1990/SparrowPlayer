@@ -34,6 +34,8 @@ package com.xinguoedu.v
 		
 		private var _controlbarComp:BaseComponent;
 		
+		private var _subtitleComp:BaseComponent;
+		
 		private var _logoComp:BaseComponent;	
 		
 		private var _adComp:BaseComponent;
@@ -47,8 +49,6 @@ package com.xinguoedu.v
 		private var _videoadsComp:VideoAdsComponent;
 		
 		private var _bottomHintComp:BaseComponent;
-		
-		private var _subtitleComp:BaseComponent;
 		
 		private var _settingsComp:BaseComponent;
 		
@@ -74,11 +74,17 @@ package com.xinguoedu.v
 			_displayComp = new DisplayComponent(_m);
 			_root.addChild(_displayComp);
 			
+			if(_m.subtitleVO.url)
+			{
+				_subtitleComp = new SubtitleComponent(_m);
+				_root.addChild(_subtitleComp);
+			}
+			
 			_bottomHintComp = new BottomHintComponent(_m);
 			_root.addChild(_bottomHintComp);
 			
 			_controlbarComp = new ControlBarComponent(_m);
-			_root.addChild(_controlbarComp);			
+			_root.addChild(_controlbarComp);		
 			
 			_logoComp = new LogoComponent(_m);
 			_root.addChild(_logoComp);
@@ -103,12 +109,6 @@ package com.xinguoedu.v
 			
 			_settingsComp = new SettingsComponent(_m);
 			_root.addChild(_settingsComp);
-			
-			if(_m.subtitleVO.url)
-			{
-				_subtitleComp = new SubtitleComponent(_m);
-				_root.addChild(_subtitleComp);
-			}
 			
 			_loggerComp = new LoggerComponent(_m);
 			_root.addChild(_loggerComp);	
