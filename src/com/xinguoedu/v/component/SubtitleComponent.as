@@ -35,11 +35,13 @@ package com.xinguoedu.v.component
 		override protected function buildUI():void
 		{
 			_defaultSubtitle = new TextField();
+			_defaultSubtitle.selectable = false;
 			addChild(_defaultSubtitle);
 			
 			if(_m.subtitleVO.isBilingual) //双语字幕
 			{
 				_secondSubtitle = new TextField();
+				_secondSubtitle.selectable = false;
 				addChild(_secondSubtitle);
 			}
 			
