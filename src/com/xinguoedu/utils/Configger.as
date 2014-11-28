@@ -4,6 +4,7 @@ package com.xinguoedu.utils
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.net.SharedObject;
+	import flash.utils.ByteArray;
 	
 	/**
 	 * 加载配置信息 
@@ -15,6 +16,9 @@ package com.xinguoedu.utils
 		private var _config:Object = {};		
 		private var _videoVO:Object;
 		
+		[Embed(source="../.version",mimeType='application/octet-stream')]
+		private var versionXml:Class;
+		
 		public function Configger(target:IEventDispatcher=null)
 		{
 			super(target);
@@ -22,7 +26,12 @@ package com.xinguoedu.utils
 		
 		public function loadConfig():void
 		{
-			//先加载配置文件
+			//加载版本配置文件
+			var ba:ByteArray = new versionXml as ByteArray;
+			var vxml:XML=new XML(ba.readUTFBytes(ba.length));			
+			config['version']  = vxml.value + "-" + vxml.date;
+			
+			//加载播放器配置文件
 			var loader:MultifunctionalLoader = new MultifunctionalLoader(false);
 			loader.registerFunctions(loadXMLCompleteHandler);
 			loader.load("../assets/Config.xml");
@@ -30,8 +39,7 @@ package com.xinguoedu.utils
 		
 		private function loadXMLCompleteHandler(data:*):void
 		{
-			var xml:XML = new XML(data);
-			config['version'] = xml.version;			
+			var xml:XML = new XML(data);		
 			var array:Array = [];		
 			var length:int = xml.rightclickinfo.item.length();
 			for(var i:int = 0; i < length; i++)
