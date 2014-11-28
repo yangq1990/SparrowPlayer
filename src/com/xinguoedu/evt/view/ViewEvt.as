@@ -75,9 +75,9 @@ package com.xinguoedu.evt.view
 		public static const SHOW_LOGGER_COMPONENT:String = "show_logger_component_ve";
 		
 		/**
-		 * 显示设置组件 
+		 * 显示或隐藏设置组件 
 		 */		
-		public static const SHOW_SETTINGS_COMPONENT:String = "show_settings_component_ve";
+		public static const SETTINGS_COMPONENT:String = "settings_component_ve";
 		
 		public var data:*;
 		
