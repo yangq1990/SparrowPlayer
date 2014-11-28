@@ -28,7 +28,7 @@ package com.xinguoedu.v.component.settings
 			
 			_label = new TextField();
 			_label.defaultTextFormat = UIUtil.getTextFormat(Font.YAHEI, Font.COLOR, Font.SIZE);
-			_label.text = label + ": ";
+			_label.text = label;
 			_label.width = _label.textWidth + 5;
 			_label.height = _label.textHeight + 5;
 			addChild(_label);

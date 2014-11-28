@@ -42,7 +42,7 @@ package com.xinguoedu.v.component.settings
 			g.drawRoundRect(0, 0, stageWidth*0.3, stageHeight*0.3, 10, 10);
 			g.endFill();
 			
-			_subtitleItem = new SettingItem('字幕', _subtitleBtnLabelArray);
+			_subtitleItem = new SettingItem('字幕 : ', _subtitleBtnLabelArray);
 			_subtitleItem.x = (this.width - _subtitleItem.width) >> 1;
 			_subtitleItem.y = 10;
 			_subtitleItem.setEnabled(_subtitleBtnLabelArray[0].label);
@@ -58,16 +58,20 @@ package com.xinguoedu.v.component.settings
 		override protected function addListeners():void
 		{
 			super.addListeners();
-			EventBus.getInstance().addEventListener(ViewEvt.SHOW_SETTINGS_COMPONENT, showSettingsCompHandler);
+			EventBus.getInstance().addEventListener(ViewEvt.SETTINGS_COMPONENT, settingsCompHandler);
 		}
 		
-		private function showSettingsCompHandler(evt:ViewEvt):void
+		private function settingsCompHandler(evt:ViewEvt):void
 		{
 			if(!visible)
 			{
 				this.visible = true;
 				resize();
-				TweenLite.from(this, 0.5, {alpha:0.1});
+				TweenLite.from(this, 0.4, {alpha:0.1});
+			}
+			else
+			{
+				this.visible = false;
 			}
 		}
 		
