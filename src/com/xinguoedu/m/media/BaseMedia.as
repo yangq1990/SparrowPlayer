@@ -68,6 +68,18 @@ package com.xinguoedu.m.media
 		}
 		
 		/**
+		 * 构造Video对象，并使视频注册点与中心点重合 
+		 * 
+		 */		
+		protected function getVideo():void
+		{
+			_video = new Video();
+			_video.smoothing = true;
+			_video.x = -_video.width >> 1;
+			_video.y = -_video.height >> 1;
+		}
+		
+		/**
 		 * 开始加载流并播放 
 		 * 交给子类重写
 		 */		
