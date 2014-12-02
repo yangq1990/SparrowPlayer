@@ -15,6 +15,7 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.SubtitleComponent;
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
+	import com.xinguoedu.v.component.bulletcurtain.BulletcurtainComponent;
 	import com.xinguoedu.v.component.logger.LoggerComponent;
 	import com.xinguoedu.v.component.settings.SettingsComponent;
 	
@@ -35,6 +36,8 @@ package com.xinguoedu.v
 		private var _controlbarComp:BaseComponent;
 		
 		private var _subtitleComp:BaseComponent;
+		
+		private var _bulletcurtainComp:BaseComponent;
 		
 		private var _logoComp:BaseComponent;	
 		
@@ -79,6 +82,9 @@ package com.xinguoedu.v
 				_subtitleComp = new SubtitleComponent(_m);
 				_root.addChild(_subtitleComp);
 			}
+			
+			_bulletcurtainComp = new BulletcurtainComponent(_m);
+			_root.addChild(_bulletcurtainComp);
 			
 			_bottomHintComp = new BottomHintComponent(_m);
 			_root.addChild(_bottomHintComp);
