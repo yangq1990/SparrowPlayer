@@ -185,7 +185,7 @@ package com.xinguoedu.v.component
 			_video.width = info.width;
 			_video.height = info.height;
 			_dur = info.duration;
-			Stretcher.stretch(_video, stageWidth, stageHeight);
+			Stretcher.stretch(_video, stageWidth, stageHeight, {w:info.width, h:info.height});
 		}
 		
 		private function convertSeekpoints(dat:Object):Object 
