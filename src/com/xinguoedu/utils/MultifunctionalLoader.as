@@ -60,6 +60,7 @@ package com.xinguoedu.utils
 				_urlLoader = new URLLoader();
 				_urlLoader.addEventListener(Event.COMPLETE, completeHandler);
 				_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+				_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
 				_urlLoader.load(new URLRequest(url));
 			}
 		}
