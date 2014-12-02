@@ -4,7 +4,7 @@ package com.xinguoedu.v.component.settings
 	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerColor;
 	import com.xinguoedu.evt.EventBus;
-	import com.xinguoedu.evt.settings.SubtitleEvt;
+	import com.xinguoedu.evt.settings.SettingsEvt;
 	import com.xinguoedu.utils.UIUtil;
 	import com.xinguoedu.v.ui.StatefulButton;
 	
@@ -70,7 +70,7 @@ package com.xinguoedu.v.component.settings
 				if(_btnInfoArray[i].label == label)
 				{
 					statefulBtn.setState(true);
-					EventBus.getInstance().dispatchEvent(new SubtitleEvt(_btnInfoArray[i].type));
+					EventBus.getInstance().dispatchEvent(new SettingsEvt(_btnInfoArray[i].type));
 				}
 				else
 				{
