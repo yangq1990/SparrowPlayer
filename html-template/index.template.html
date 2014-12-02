@@ -76,7 +76,7 @@
            	
            	//rtmp
            	//flashvars.type = "rtmp";
-           //	flashvars.url = "112.124.4.2312/sparrow";
+            //flashvars.url = "112.124.4.231/sparrow";
            	
            	//flashvars.len =  60; //相当于预览60s
             
@@ -158,6 +158,12 @@
     		{
         		document.getElementById('screenshot').setAttribute('src', str);
     		}
+    		
+    		function tucao()
+        	{	
+            	//alert(document.getElementById('tucaoInput').value);
+            	thisMovie("SparrowPlayer").fl_tucao(document.getElementById('tucaoInput').value);
+        	}
          
          </script>
 
@@ -212,7 +218,8 @@
         <input type="button" onclick="qrcode_handler()" value="二维码">
         <input type="button" onclick="pause_handler()" value="暂停">
         <input type="button" onclick="play_handler()" value="播放">
-        <img id="screenshot" width="320" height="240">
+        <img id="screenshot" width="320" height="240"><br/><br/>
+        <input id="tucaoInput" type="text"/><input type="button" value="吐槽" onclick="tucao()" />
 
    </body>
 </html>
