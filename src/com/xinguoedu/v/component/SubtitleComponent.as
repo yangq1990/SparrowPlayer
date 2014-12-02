@@ -3,7 +3,7 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.consts.Font;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
-	import com.xinguoedu.evt.settings.SubtitleEvt;
+	import com.xinguoedu.evt.settings.SettingsEvt;
 	import com.xinguoedu.m.Model;
 	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.utils.UIUtil;
@@ -52,8 +52,8 @@ package com.xinguoedu.v.component
 		{
 			super.addListeners();
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_TIME, timeHandler);
-			EventBus.getInstance().addEventListener(SubtitleEvt.SHOW_SUBTITLE, showSubtitleHandler);
-			EventBus.getInstance().addEventListener(SubtitleEvt.CLOSE_SUBTITLE, closeSubtitleHandler);
+			EventBus.getInstance().addEventListener(SettingsEvt.SHOW_SUBTITLE, showSubtitleHandler);
+			EventBus.getInstance().addEventListener(SettingsEvt.CLOSE_SUBTITLE, closeSubtitleHandler);
 		}
 	
 		private function timeHandler(evt:MediaEvt):void
@@ -69,7 +69,6 @@ package com.xinguoedu.v.component
 			if(_pos < _m.srtTimeArray[0] || _pos > _m.srtTimeArray[_m.srtTimeArrayLength - 1])
 				return;
 			
-			//trace(_index, _pos, _m.srtTimeArray[_index], _m.srtTimeArray[_index+1]);
 			if((_index % 2 == 0) && _pos >= _m.srtTimeArray[_index] && _pos < _m.srtTimeArray[_index + 1])
 			{
 				if(_defaultSubtitle.text != _m.defaultLangTextArray[_index / 2])
@@ -102,7 +101,7 @@ package com.xinguoedu.v.component
 			}
 		}
 		
-		private function showSubtitleHandler(evt:SubtitleEvt):void
+		private function showSubtitleHandler(evt:SettingsEvt):void
 		{
 			if(!visible)
 			{
@@ -111,7 +110,7 @@ package com.xinguoedu.v.component
 			}
 		}
 		
-		private function closeSubtitleHandler(evt:SubtitleEvt):void
+		private function closeSubtitleHandler(evt:SettingsEvt):void
 		{
 			visible = false;
 		}
