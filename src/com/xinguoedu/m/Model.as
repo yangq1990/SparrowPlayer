@@ -86,6 +86,7 @@ package com.xinguoedu.m
 			js.addEventListener(JSEvt.QRCODE, qrcodeHandler);
 			js.addEventListener(JSEvt.PAUSE, pauseHandler);
 			js.addEventListener(JSEvt.PLAY, playHandler);
+			js.addEventListener(JSEvt.BULLETCURTAIN, bulletcurtainHandler);
 		}
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
@@ -111,8 +112,10 @@ package com.xinguoedu.m
 					break;*/
 				case StreamStatus.UNPAUSE_NOTIFY:	//unpause和bufferfull可认为是一致的			
 				case StreamStatus.BUFFER_FULL:
-					state = PlayerState.PLAYING;
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));
+					if(state == PlayerState.PAUSED) //暂停播放，缓冲视频
+						return;
+					state = PlayerState.PLAYING;					
 					break;
 				case StreamStatus.PLAY_COMPLETE:
 					state = PlayerState.IDLE; 
@@ -202,6 +205,11 @@ package com.xinguoedu.m
 		{
 			media.play();
 		}
+		
+		private function bulletcurtainHandler(evt:JSEvt):void
+		{
+			EventBus.getInstance().dispatchEvent(evt);
+		}
 										   
 		
 		/**
@@ -217,7 +225,7 @@ package com.xinguoedu.m
 			if(_subtitleVO.url)
 			{
 				var loader:MultifunctionalLoader = new MultifunctionalLoader(false);
-				loader.registerFunctions(loadSrtComplete);
+				loader.registerFunctions(loadSrtComplete, loadSrtError);
 				loader.load(_subtitleVO.url);
 			}
 			
@@ -281,6 +289,11 @@ package com.xinguoedu.m
 			}
 			
 			_srtTimeArrayLength = _srtTimeArray.length;
+		}
+		
+		private function loadSrtError(errorMsg:String):void
+		{
+			developermode && Logger.error('Model', '加载字体出错', errorMsg);
 		}
 		
 		private function hasMedia(mediaType:String):Boolean
