@@ -1,6 +1,5 @@
 package com.xinguoedu.m.media
 {
-	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -13,7 +12,6 @@ package com.xinguoedu.m.media
 	import flash.events.NetStatusEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.net.NetStreamAppendBytesAction;
@@ -50,8 +48,7 @@ package com.xinguoedu.m.media
 			_nc = new NetConnection();
 			_nc.connect(null);
 			
-			_video = new Video();
-			_video.smoothing = true;
+			super.getVideo();
 			
 			_tags = [];
 			_totalByteArray = new ByteArray();

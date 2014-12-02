@@ -1,6 +1,5 @@
 package com.xinguoedu.m.media
 {
-	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -8,7 +7,6 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.m.vo.MediaVO;
 	
 	import flash.media.SoundTransform;
-	import flash.media.Video;
 	
 	import org.mangui.HLS.HLS;
 	import org.mangui.HLS.HLSEvent;
@@ -51,8 +49,7 @@ package com.xinguoedu.m.media
 			_hls.addEventListener(HLSEvent.STATE, stateHandler);
 			setVolume(_volume);
 		
-			_video = new Video(320, 240);
-			_video.smoothing = true;
+			super.getVideo();
 			_video.attachNetStream(_hls.stream);
 			_display.addChild(_video);
 		

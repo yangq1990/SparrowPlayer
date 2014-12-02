@@ -10,7 +10,6 @@ package com.xinguoedu.m.media
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
-	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.utils.setInterval;
@@ -99,8 +98,7 @@ package com.xinguoedu.m.media
 				_stream.play(_prefix + _fileName);
 			}
 		
-			_video = new Video();
-			_video.smoothing = true;
+			super.getVideo();
 			_video.attachNetStream(_stream);			
 			_display.addChild(_video);
 			setVolume(_volume);

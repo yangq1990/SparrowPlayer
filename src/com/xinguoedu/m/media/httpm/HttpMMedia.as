@@ -9,7 +9,6 @@ package com.xinguoedu.m.media.httpm
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.utils.Logger;
 	
-	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.utils.Dictionary;
 
@@ -47,8 +46,7 @@ package com.xinguoedu.m.media.httpm
 			}			
 			addSegmentListeners(currentSegment);			
 			
-			_video = new Video();
-			_video.smoothing = true;
+			super.getVideo();
 			_video.attachNetStream(currentSegment.stream);			
 			_display.addChild(_video);
 			

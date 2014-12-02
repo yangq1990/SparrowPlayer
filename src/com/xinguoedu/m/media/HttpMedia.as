@@ -1,6 +1,5 @@
 package com.xinguoedu.m.media
 {
-	import com.xinguoedu.consts.NumberConst;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
@@ -9,7 +8,6 @@ package com.xinguoedu.m.media
 	
 	import flash.events.IOErrorEvent;
 	import flash.events.NetStatusEvent;
-	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.utils.setInterval;
@@ -53,9 +51,9 @@ package com.xinguoedu.m.media
 			_stream.bufferTime = 5;			
 			setVolume(_volume);
 			
-			_video = new Video();
-			_video.smoothing = true;
-			_video.attachNetStream(_stream);			
+			super.getVideo();
+			_video.attachNetStream(_stream);	
+			
 			_display.addChild(_video);
 			
 			mediaVO.autostart && startLoadAndPlay();
