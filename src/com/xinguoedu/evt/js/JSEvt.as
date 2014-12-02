@@ -29,6 +29,11 @@ package com.xinguoedu.evt.js
 		 */		
 		public static const PLAY:String = "play_js";
 		
+		/**
+		 * 弹幕 
+		 */		
+		public static const BULLETCURTAIN:String = "bulletcurtain";
+		
 		public var data:*;
 		
 		public function JSEvt(type:String, data:Object=null, bubbles:Boolean=false, cancelable:Boolean=false)
