@@ -29,6 +29,7 @@ package com.xinguoedu.m.js
 				ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
 				ExternalInterface.addCallback("fl_pause", pauseHandler);
 				ExternalInterface.addCallback("fl_play", playeHandler);
+				ExternalInterface.addCallback("fl_tucao", tucaoHandler);
 			}			
 		}
 	
@@ -57,6 +58,15 @@ package com.xinguoedu.m.js
 		private function playeHandler():void
 		{
 			dispatchEvent(new JSEvt(JSEvt.PLAY));
+		}
+		
+		/** 吐槽，生成弹幕 **/
+		private function tucaoHandler(msg:String):void
+		{
+			if(msg == '')
+				return;
+			
+			dispatchEvent(new JSEvt(JSEvt.BULLETCURTAIN, msg));
 		}
 		
 		/**
