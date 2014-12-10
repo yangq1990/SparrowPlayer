@@ -59,6 +59,7 @@ package com.xinguoedu.c
 		private function mouseDownToSeekHandler(evt:ViewEvt):void
 		{
 			_m.media.mouseDownToSeek();
+			_m.state = PlayerState.PLAYING; //拖动时播放器状态设置为播放
 		}
 		
 		private function seekHandler(evt:ViewEvt):void
