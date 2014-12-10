@@ -103,8 +103,8 @@ package com.xinguoedu.v.component
 			setTips();
 			setTextField();
 			setButtons();
-			setSliders();
 			stateHandler();		
+			setSliders();			
 			volumeHandler();
 			
 			_nodeHintSpt = new NodeHintSpt();
@@ -123,7 +123,6 @@ package com.xinguoedu.v.component
 		{
 			super.addListeners();
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_TIME, timeHandler);
-			//EventBus.getInstance().addEventListener(MediaEvt.MEDIA_LOADING, mediaLoadingHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_ERROR, mediaErrorHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_MUTE, mediaMuteHandler);
 			StageReference.stage.addEventListener(MouseEvent.MOUSE_MOVE, moveHandler);
@@ -340,29 +339,31 @@ package com.xinguoedu.v.component
 		/** Handle clicks from all buttons. **/
 		private function clickHandler(evt:MouseEvent):void
 		{				
+			var name:String = evt.currentTarget.name;
 			//点击设置按钮
-			if(evt.target.name == "settingButton")
+			if(name == "settingButton")
 			{
 				EventBus.getInstance().dispatchEvent(new ViewEvt(BUTTONS[evt.currentTarget.name]));
 				evt.stopImmediatePropagation();	
 				return;
 			}			
 			
-			if(evt.target.name == "kuaijiLogoButto")
+			if(name == "kuaijiLogoButto")
 			{
 				//navigateToURL(new URLRequest("http://video.kuaiji.com"));
 				//evt.stopImmediatePropagation();
 				return;
 			}				
 			
-			var act:String = BUTTONS[evt.currentTarget.name];			
+			var act:String = BUTTONS[name];			
 			var data:Object = null;
 			if (!_blocking) 
 			{
 				if(act == ViewEvt.MUTE)
 				{
 					data = Boolean(!_m.isMute);
-				}				
+				}		
+				
 				dispatchEvent(new ViewEvt(act, data));
 			}
 		}
@@ -512,20 +513,16 @@ package com.xinguoedu.v.component
 			switch(_m.state) 
 			{
 				case PlayerState.BUFFERING:
-					bufferingPlayingHandler();										
-					break;
 				case PlayerState.PLAYING:
-					bufferingPlayingHandler();					
+					pausePlayBtnVisibleHandler(true);		
 					break;
 				case PlayerState.IDLE:
 					timeSlider.done.width = 1;
 					timeSlider.mark.width = 1;
-					_skin.pauseButton.visible = false;
-					_skin.playButton.visible = true;
+					pausePlayBtnVisibleHandler(false);		
 					break;
 				case PlayerState.PAUSED:
-					_skin.playButton.visible = true;
-					_skin.pauseButton.visible = false;
+					pausePlayBtnVisibleHandler(false);		
 					break;
 			}
 		}
@@ -608,13 +605,6 @@ package com.xinguoedu.v.component
 				child = _skin.getChildAt(i);
 				(child is Node) && (child.x = Node(child).time * ratio + timeSlider.x);
 			}
-		}
-		
-		/** buffering和playing状态下相同的处理函数 **/
-		private function bufferingPlayingHandler():void
-		{
-			_skin.playButton.visible = false;
-			_skin.pauseButton.visible = true;
 		}
 		
 		override protected function playerStateChangeHandler(evt:PlayerStateEvt):void
@@ -946,6 +936,17 @@ package com.xinguoedu.v.component
 				volumeSlider.done.height = Math.abs(_iconY);;
 				trumpetHandler(_m.volume);
 			}
-		}										  
+		}		
+		
+		/**
+		 * 处理播放暂停显示的函数 
+		 * @param pauseBtnVisible 是否显示暂停按钮
+		 * 
+		 */		
+		private function pausePlayBtnVisibleHandler(pauseBtnVisible:Boolean=true):void
+		{
+			pauseBtnVisible ? (_skin.pauseButton.visible = true) : _skin.pauseButton.visible = false;
+			_skin.playButton.visible = !_skin.pauseButton.visible;
+		}
 	}
 }
