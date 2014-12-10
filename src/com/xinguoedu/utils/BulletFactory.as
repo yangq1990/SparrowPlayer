@@ -1,8 +1,6 @@
 package com.xinguoedu.utils
 {
 	import com.xinguoedu.v.component.bulletcurtain.Bullet;
-	
-	import flash.utils.Dictionary;
 
 	/**
 	 * 弹幕元素的工厂方法
@@ -11,7 +9,7 @@ package com.xinguoedu.utils
 	 */	
 	public class BulletFactory
 	{
-		private static var _pool:Dictionary = new Dictionary();		
+		private static var _pool:Array = [];
 		
 		public function BulletFactory()
 		{
@@ -19,42 +17,34 @@ package com.xinguoedu.utils
 		
 		/**
 		 * 生产Bullet对象 
-		 * @param msg Bullet对象的msg
+		 * @param data {msg, from}
 		 * @return 
 		 * 
 		 */		
-		public static function produce(msg:String):Bullet
+		public static function produce(data:Object):Bullet
 		{
-			_pool[msg] == null && (_pool[msg] = []);
 			var bullet:Bullet;
-			trace('对象数量', _pool[msg].length);
-			if(_pool[msg].length > 0)
+			if(_pool.length == 0)
 			{
-				bullet = _pool[msg].pop();
-				bullet.msg = msg;
-				bullet.alpha = 1;
+				bullet = new Bullet(data.msg, data.from);
 			}
 			else
 			{
-				bullet = new Bullet(msg);
-				_pool[msg].push(bullet);
+				bullet = _pool.pop() as Bullet;
+				bullet.reset(data.msg, data.from);
 			}
+			bullet.cacheAsBitmap = true;
 			return bullet;
 		}
 		
 		/**
 		 * 回收Bullet对象 
 		 * @param bullet
-		 * @param msg
 		 * 
 		 */		
-		public static function reclaim(bullet:Bullet, msg:String):void
+		public static function reclaim(bullet:Bullet):void
 		{
-			_pool[msg] == null && (_pool[msg] = []);			
-			if(_pool[msg].indexOf(bullet) == -1)
-			{
-				_pool[msg].push(bullet);
-			}
+			_pool.push(bullet);
 		}
 		
 		/**
@@ -63,7 +53,7 @@ package com.xinguoedu.utils
 		 */		
 		public static function clear():void
 		{
-			_pool = new Dictionary();
+			_pool = [];
 		}
 	}
 }
