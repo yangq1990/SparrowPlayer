@@ -70,10 +70,9 @@ package com.xinguoedu.m.media
 		
 		override protected function netStatusHandler(evt:NetStatusEvent):void
 		{
-			//trace('httpmideia---->', evt.info.code);
 			switch(evt.info.code)
 			{
-				case StreamStatus.BUFFER_FULL: //无拖动或者拖动后缓冲区满
+				case StreamStatus.BUFFER_FULL:
 					!_posInterval && (_posInterval = setInterval(positionInterval, 100));
 					break;
 				case StreamStatus.SEEK_COMPLETE:
@@ -213,6 +212,7 @@ package com.xinguoedu.m.media
 					_stream.play(_mediaVO.url + "?start=" + _kfTime);
 				}		
 				
+				//_isSeeking = true;
 				checkIsNearlyComplete(_duration, _kfTime, true);
 				
 				Logger.info("HttpMedia", "newurl:" + newurl);
