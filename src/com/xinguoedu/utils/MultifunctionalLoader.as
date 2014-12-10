@@ -79,7 +79,7 @@ package com.xinguoedu.utils
 			destroy();
 			if(_errorFunc != null)
 			{
-				_errorFunc.apply(this, evt.toString());
+				_errorFunc.apply(this, [evt.toString()]);
 			}
 		}
 		
