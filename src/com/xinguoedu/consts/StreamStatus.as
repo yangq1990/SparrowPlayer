@@ -23,7 +23,7 @@ package com.xinguoedu.consts
 		
 		public static const BUFFER_EMPTY:String = "NetStream.Buffer.Empty";
 		
-		public static const BUFFERING:String = "NetStream.Buffering";
+		//public static const BUFFERING:String = "NetStream.Buffering";
 		
 		public static const STREAM_NOT_FOUND:String = "NetStream.Play.StreamNotFound";
 		
