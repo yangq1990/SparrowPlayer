@@ -61,12 +61,12 @@ package com.xinguoedu.m.js
 		}
 		
 		/** 吐槽，生成弹幕 **/
-		private function tucaoHandler(msg:String):void
+		private function tucaoHandler(obj:Object):void
 		{
-			if(msg == '')
+			if(obj.msg == '')
 				return;
 			
-			dispatchEvent(new JSEvt(JSEvt.BULLETCURTAIN, msg));
+			dispatchEvent(new JSEvt(JSEvt.BULLETCURTAIN, obj));
 		}
 		
 		/**
