@@ -91,7 +91,7 @@ package com.xinguoedu.m
 		
 		private function mediaInfoHandler(evt:MediaEvt):void
 		{
-			developermode && (Logger.info('Model', evt.data));
+			developermode && (Logger.info('Model---start', evt.data + '-->状态:->' + state));
 			switch(evt.data)
 			{
 				case StreamStatus.START_LOAD_MEDIA:
@@ -103,19 +103,26 @@ package com.xinguoedu.m
 				case StreamStatus.STREAM_NOT_FOUND:
 					sendErrorAndDebugMsg(DebugConst.STREAM_NOT_FOUND + ":" + mediaVO.url);
 					break;
+				case StreamStatus.BUFFER_EMPTY: 	//缓冲
 				case StreamStatus.PLAY_START:
-				case StreamStatus.BUFFERING:
-					state = PlayerState.BUFFERING;
+					if(state == PlayerState.PAUSED)
+					{
+						EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_LOADING));
+					}
+					else
+					{
+						state = PlayerState.BUFFERING;
+					}
 					break;
-				/*case StreamStatus.PAUSE_NOTIFY: //视频缓冲中在某些情况下也会触发，所以不再处理这个状态
-					state = PlayerState.PAUSED;
-					break;*/
-				case StreamStatus.UNPAUSE_NOTIFY:	//unpause和bufferfull可认为是一致的			
-				case StreamStatus.BUFFER_FULL:
-					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));
-					if(state == PlayerState.PAUSED) //暂停播放，缓冲视频
-						return;
-					state = PlayerState.PLAYING;					
+				case StreamStatus.BUFFER_FULL:     //缓冲满
+					if(state == PlayerState.PAUSED)
+					{
+						EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_BUFFER_FULL));
+					}
+					else
+					{
+						state = PlayerState.PLAYING;
+					}
 					break;
 				case StreamStatus.PLAY_COMPLETE:
 					state = PlayerState.IDLE; 
@@ -303,7 +310,7 @@ package com.xinguoedu.m
 			
 		public function get mediaVO():MediaVO
 		{
-			return _mediaVO;
+ 			return _mediaVO;
 		}
 
 		public function get logoVO():LogoVO
@@ -355,8 +362,8 @@ package com.xinguoedu.m
 			if(_state != value)
 			{
 				_state = value;
-				EventBus.getInstance().dispatchEvent(new PlayerStateEvt(PlayerStateEvt.PLAYER_STATE_CHANGE));
-			}			
+				EventBus.getInstance().dispatchEvent(new PlayerStateEvt(PlayerStateEvt.PLAYER_STATE_CHANGE));	
+			}		
 		}		
 
 		public function get videoadVO():VideoAdVO
