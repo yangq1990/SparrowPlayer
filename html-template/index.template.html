@@ -158,17 +158,54 @@
     		{
         		document.getElementById('screenshot').setAttribute('src', str);
     		}
-    		
-    		function tucao()
+
+    		/** from指的是弹幕的信息来源，self 自己  someone 某人， 默认是self **/
+    		function tucao(from='someone')
         	{	
-            	//alert(document.getElementById('tucaoInput').value);
-            	thisMovie("SparrowPlayer").fl_tucao(document.getElementById('tucaoInput').value);
+        		//setInterval(function(){thisMovie("SparrowPlayer").fl_tucao({msg:document.getElementById('tucaoInput').value, from:from});}, 50);
+
+                tucaoInput.disabled = true;
+                tucaoBtn.disabled = true;
+                thisMovie("SparrowPlayer").fl_tucao({msg:tucaoInput.value, from:from});
+                tucaoInput.value = '';
+
+                setTimeout(function() {
+                    tucaoInput.disabled = false;
+                    tucaoBtn.disabled = false;
+                    tucaoInput.focus();
+                }, 1000);
         	}
+
+            var tucaoInput;
+            var tucaoBtn;
+            //获取dom元素引用
+            function getRef()
+            {
+                tucaoInput = document.getElementById('tucaoInput');
+                tucaoBtn = document.getElementById('tucaoBtn');
+                var handler = function(evt)
+                {
+                    var e = evt || window.event;
+                    if(e.keyCode == 13) //按下Enter键
+                    {
+                        tucao('self');
+                    }
+                };
+
+                if(tucaoInput.addEventListener)
+                {
+                    tucaoInput.addEventListener('keydown', handler);
+                }
+                else if(tucaoInput.attachEvent) //IE8及其以前版本
+                {
+                    tucaoInput.attachEvent('onkeydown', handler);
+                }
+            }
          
          </script>
 
     </head>
-    <body>
+    <body onload="getRef()">
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
@@ -219,7 +256,7 @@
         <input type="button" onclick="pause_handler()" value="暂停">
         <input type="button" onclick="play_handler()" value="播放">
         <img id="screenshot" width="320" height="240"><br/><br/>
-        <input id="tucaoInput" type="text"/><input type="button" value="吐槽" onclick="tucao()" />
+        <input id="tucaoInput" type="text"/><input id="tucaoBtn" type="button" value="吐槽" onclick="tucao('self')" />
 
    </body>
 </html>
