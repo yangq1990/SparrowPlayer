@@ -9,6 +9,8 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.evt.settings.SettingsEvt;
 	import com.xinguoedu.evt.view.ViewEvt;
 	import com.xinguoedu.m.Model;
+	import com.xinguoedu.utils.Logger;
+	import com.xinguoedu.utils.StageReference;
 	import com.xinguoedu.utils.Stretcher;
 	import com.xinguoedu.v.base.BaseComponent;
 	
@@ -16,6 +18,7 @@ package com.xinguoedu.v.component
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -60,7 +63,7 @@ package com.xinguoedu.v.component
 			EventBus.getInstance().addEventListener(SettingsEvt.UNIFORM, resizeFrameHandler);
 			EventBus.getInstance().addEventListener(SettingsEvt.NONE, resizeFrameHandler);
 			EventBus.getInstance().addEventListener(SettingsEvt.EXACTFIT, resizeFrameHandler);
-			EventBus.getInstance().addEventListener(SettingsEvt.SIXTEEN_NINE, resizeFrameHandler);			
+			EventBus.getInstance().addEventListener(SettingsEvt.SIXTEEN_NINE, resizeFrameHandler);	
 		}
 		
 		private function mediaLoadedHandler(evt:MediaEvt):void
@@ -82,10 +85,16 @@ package com.xinguoedu.v.component
 		override protected function resize():void
 		{
 			drawBack();			
-			stretchMedia(_stretcherType);	
+			stretchMedia(_stretcherType, false);	
 		}	
 		
-		private function stretchMedia(type:String):void
+		/**
+		 * 调整画面尺寸 
+		 * @param type 调整规则
+		 * @param needTween 调整后是否需要缓动效果
+		 * 
+		 */		
+		private function stretchMedia(type:String, needTween:Boolean=true):void
 		{
 			if(!_widHeiDict)
 				return;
@@ -103,7 +112,7 @@ package com.xinguoedu.v.component
 				Stretcher.stretch(_media, stageWidth, stageHeight - controlbarHeight, _widHeiDict, type);
 			}
 			
-			TweenLite.from(_media, 0.4, {scaleX:w/_media.width, scaleY:h/_media.height, ease:Cubic.easeOut});
+			needTween && TweenLite.from(_media, 0.4, {scaleX:w/_media.width, scaleY:h/_media.height, ease:Cubic.easeOut});
 		}
 		
 		private function clickHandler(evt:MouseEvent):void
