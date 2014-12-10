@@ -66,6 +66,6 @@ package com.xinguoedu.consts
 		/**
 		 * 设置面板label和button的间隔 
 		 */		
-		public static const LABEL_BUTTON_MARGIN:int = 15
+		public static const LABEL_BUTTON_MARGIN:int = 15;
 	}
 }
