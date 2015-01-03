@@ -30,8 +30,6 @@
         
         <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
         <!-- BEGIN Browser History required section ${useBrowserHistory}>
-        <!-- <link rel="stylesheet" type="text/css" href="history/history.css" /> -->
-        <!-- <script type="text/javascript" src="history/history.js"></script> -->
         <!${useBrowserHistory} END Browser History required section -->  
             
         <script type="text/javascript" src="swfobject.js"></script>
@@ -57,10 +55,10 @@
             flashvars.bilingual = 1;
         
             //http
-           flashvars.type = 'http';
-           // flashvars.url = 'http://www.xinguoedu.com/sparrow/video/gameofcode.mp4';
-           //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");      
-           flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/akb48.flv")      
+            flashvars.type = 'http';
+            //flashvars.url = 'http://www.xinguoedu.com/sparrow/video/jp.mp4';
+            //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");      
+            flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/akb48.flv")      
             
             //hls
             //flashvars.type = 'hls';
@@ -74,11 +72,19 @@
             //flashvars.type = "httpm";
            	//flashvars.urls = '[{"duration":305.52816326530615,"url":"http://www.xinguoedu.com/sparrow/video/pingfanzhilu.flv"},{"duration":335.6,"url":"http://www.xinguoedu.com/sparrow/video/nfgn.flv"}, {"duration":251.23990929705215,"url":"http://www.xinguoedu.com/sparrow/video/star.flv"}]';
            	
-           	//rtmp
-           	//flashvars.type = "rtmp";
-            //flashvars.url = "112.124.4.231/sparrow";
-           	
-           	//flashvars.len =  60; //相当于预览60s
+           	//rtmp vod
+           	//flashvars.type = "rtmp_vod";
+            //flashvars.url = "112.124.4.231/sparrow_vod";
+            //flashvars.len =  60; //相当于预览60s            
+            
+            //rtmp live
+            //flashvars.type = "rtmp_live";
+            //flashvars.url = "112.124.4.231/sparrow_live";
+            
+            //p2p直播
+            //flashvars.type = "p2plive";
+            //flashvars.url = "112.124.4.231/sparrow_live";
+            //flashvars.groupName = "sparrowplayer";
             
             //是否打开视频广告功能，1打开 0关闭
             flashvars.vads_enabled = 0;
@@ -160,45 +166,45 @@
     		}
 
     		/** from指的是弹幕的信息来源，self 自己  someone 某人， 默认是self **/
-    		function tucao(from='someone')
+    		function sendMsg(from)
         	{	
-        		//setInterval(function(){thisMovie("SparrowPlayer").fl_tucao({msg:document.getElementById('tucaoInput').value, from:from});}, 50);
+        		//setInterval(function(){thisMovie("SparrowPlayer").fl_sendMsg({msg:document.getElementById('msgInput').value, from:from});}, 50);
 
-                tucaoInput.disabled = true;
-                tucaoBtn.disabled = true;
-                thisMovie("SparrowPlayer").fl_tucao({msg:tucaoInput.value, from:from});
-                tucaoInput.value = '';
+                msgInput.disabled = true;
+                sendMsgBtn.disabled = true;
+                thisMovie("SparrowPlayer").fl_sendMsg({msg:msgInput.value, from:from});
+                msgInput.value = '';
 
                 setTimeout(function() {
-                    tucaoInput.disabled = false;
-                    tucaoBtn.disabled = false;
-                    tucaoInput.focus();
-                }, 1000);
+                    msgInput.disabled = false;
+                    sendMsgBtn.disabled = false;
+                    msgInput.focus();
+                }, 700);                
         	}
 
-            var tucaoInput;
-            var tucaoBtn;
+            var msgInput;
+            var sendMsgBtn;
             //获取dom元素引用
             function getRef()
             {
-                tucaoInput = document.getElementById('tucaoInput');
-                tucaoBtn = document.getElementById('tucaoBtn');
+                msgInput = document.getElementById('msgInput');
+                sendMsgBtn = document.getElementById('sendMsgBtn');
                 var handler = function(evt)
                 {
                     var e = evt || window.event;
                     if(e.keyCode == 13) //按下Enter键
                     {
-                        tucao('self');
+                        sendMsg('self');
                     }
                 };
 
-                if(tucaoInput.addEventListener)
+                if(msgInput.addEventListener)
                 {
-                    tucaoInput.addEventListener('keydown', handler);
+                    msgInput.addEventListener('keydown', handler);
                 }
-                else if(tucaoInput.attachEvent) //IE8及其以前版本
+                else if(msgInput.attachEvent) //IE8及其以前版本
                 {
-                    tucaoInput.attachEvent('onkeydown', handler);
+                    msgInput.attachEvent('onkeydown', handler);
                 }
             }
          
@@ -220,7 +226,14 @@
                 document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
                                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
             </script> 
-        </div>
+        </div> 
+          <input id="msgInput" type="text"/><input id="sendMsgBtn" type="button" value="发送" onclick="sendMsg('self')" />
+        <br/><br/>        
+        <input type="button" onclick="screenshot_handler()" value="截图">
+        <input type="button" onclick="qrcode_handler()" value="二维码">
+        <input type="button" onclick="pause_handler()" value="暂停">
+        <input type="button" onclick="play_handler()" value="播放">
+        <img id="screenshot" width="320" height="240"><br/><br/>   
         
         <noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="${width}" height="${height}" id="${application}">
@@ -251,12 +264,7 @@
             </object>
         </noscript>     
         
-        <input type="button" onclick="screenshot_handler()" value="截图">
-        <input type="button" onclick="qrcode_handler()" value="二维码">
-        <input type="button" onclick="pause_handler()" value="暂停">
-        <input type="button" onclick="play_handler()" value="播放">
-        <img id="screenshot" width="320" height="240"><br/><br/>
-        <input id="tucaoInput" type="text"/><input id="tucaoBtn" type="button" value="吐槽" onclick="tucao('self')" />
+     
 
    </body>
 </html>
