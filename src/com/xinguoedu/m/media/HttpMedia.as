@@ -90,11 +90,18 @@ package com.xinguoedu.m.media
 		
 		private function positionInterval():void
 		{
-			//!_ismp4 && (_kfTime = 0);
 			if(_duration <= 0)
 				return;
 			
-			_pos = _stream.time;
+			if(_ismp4)
+			{
+				_pos = _stream.time + _kfTime;
+			}
+			else
+			{
+				_pos = _stream.time;
+				_kfTime = 0;
+			}
 			
 			if(_kfTime > 0) //拖动过
 			{
@@ -203,16 +210,8 @@ package com.xinguoedu.m.media
 					newurl = _mediaVO.url.replace(/start=([0-9]+)/i, 'start='+getOffset(sec));
 				}			
 				
-				if(!_ismp4)
-				{				
-					_stream.play(newurl);
-				}
-				else
-				{
-					_stream.play(_mediaVO.url + "?start=" + _kfTime);
-				}		
-				
-				//_isSeeking = true;
+				//区分mp4和flv的拖动处理
+				!_ismp4 ? _stream.play(newurl): _stream.play(_mediaVO.url + "?start=" + _kfTime);
 				checkIsNearlyComplete(_duration, _kfTime, true);
 				
 				Logger.info("HttpMedia", "newurl:" + newurl);
