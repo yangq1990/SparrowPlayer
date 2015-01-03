@@ -53,6 +53,11 @@ package com.xinguoedu.consts
 		 */		
 		public static const SEEK_FAILED:String = "NetStream.Seek.Failed";
 		
+		/**
+		 * 直播流，包括rtmfp和rtmp直播流 
+		 */		
+		public static const LIVE_STREAM:String = "live_stream";
+		
 		
 		
 	}
