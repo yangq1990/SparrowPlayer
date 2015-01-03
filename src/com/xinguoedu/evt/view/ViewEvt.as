@@ -79,6 +79,21 @@ package com.xinguoedu.evt.view
 		 */		
 		public static const SETTINGS_COMPONENT:String = "settings_component_ve";
 		
+		/**
+		 * 显示p2p直播时的登录界面 
+		 */		
+		public static const SHOW_LOGIN_COMPONENT:String = "show_login_component_ve";
+		
+		/**
+		 * 移除登录界面 
+		 */		
+		public static const REMOVE_LOGIN_COMPONENT:String = "remove_login_component_ve";
+		
+		/**
+		 * 进入直播房间 
+		 */		
+		public static const ENTER_ROOM:String = "enter_room_ve";
+		
 		public var data:*;
 		
 		public function ViewEvt(type:String, data:*=null,  bubbles:Boolean=false, cancelable:Boolean=false)
