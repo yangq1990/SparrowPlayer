@@ -16,6 +16,9 @@ package com.xinguoedu.v
 	import com.xinguoedu.v.component.VideoAdsComponent;
 	import com.xinguoedu.v.component.VideoComponent;
 	import com.xinguoedu.v.component.bulletcurtain.BulletcurtainComponent;
+	import com.xinguoedu.v.component.live.LiveStatusComponent;
+	import com.xinguoedu.v.component.live.LoginComponent;
+	import com.xinguoedu.v.component.live.UserOnOffLineComponent;
 	import com.xinguoedu.v.component.logger.LoggerComponent;
 	import com.xinguoedu.v.component.settings.SettingsComponent;
 	
@@ -55,6 +58,12 @@ package com.xinguoedu.v
 		
 		private var _settingsComp:BaseComponent;
 		
+		private var _loginComp:BaseComponent;
+		
+		private var _liveStatusComp:BaseComponent;
+		
+		private var _userOnOffLineComp:BaseComponent;
+		
 		private var _loggerComp:BaseComponent;
 		
 		public function View(m:Model)
@@ -67,57 +76,84 @@ package com.xinguoedu.v
 		public function setup():void
 		{
 			_root = new Sprite();
+			_root.name = 'root';
 			//_root.mouseEnabled = false; 设置为false会导致自定义右键菜单无法显示
 			StageReference.stage.addChildAt(_root, 0);
 			
 			
 			_videoComp = new VideoComponent(_m);
+			_videoComp.name = 'videoComp';
 			_root.addChild(_videoComp);
 			
 			_displayComp = new DisplayComponent(_m);
+			_displayComp.name = 'displayComp';
 			_root.addChild(_displayComp);
 			
 			if(_m.subtitleVO.url)
 			{
 				_subtitleComp = new SubtitleComponent(_m);
+				_subtitleComp.name = 'subtitleComp';
 				_root.addChild(_subtitleComp);
 			}
 			
 			_bulletcurtainComp = new BulletcurtainComponent(_m);
+			_bulletcurtainComp.name = 'bulletcurtainComp';
 			_root.addChild(_bulletcurtainComp);
 			
 			_bottomHintComp = new BottomHintComponent(_m);
+			_bottomHintComp.name = 'bottomHintComp';
 			_root.addChild(_bottomHintComp);
 			
 			_controlbarComp = new ControlBarComponent(_m);
+			_controlbarComp.name = 'controlbarComp';
 			_root.addChild(_controlbarComp);		
 			
-			_logoComp = new LogoComponent(_m);
-			_root.addChild(_logoComp);
-			
 			_adComp = new AdComponent(_m);
+			_adComp.name = 'adComp';
 			_root.addChild(_adComp);
 			
 			_qrcodeComp = new QrcodeComponent(_m);
+			_qrcodeComp.name = 'qrcodeComp';
 			_root.addChild(_qrcodeComp);
 			
 			_stateHintComp = new StateHintComponent(_m);
+			_stateHintComp.name = 'stateHintComp';
 			_root.addChild(_stateHintComp);
 			
 			_errorHintComp = new ErrorComponent(_m);
+			_errorHintComp.name = 'errorHintComp';
 			_root.addChild(_errorHintComp);
 			
 			if(_m.videoadVO.enabled)
 			{
-				_videoadsComp = new VideoAdsComponent(_m);			
+				_videoadsComp = new VideoAdsComponent(_m);
+				_videoadsComp.name = 'videoadsComp';
 				_root.addChild(_videoadsComp);
 			}					
 			
 			_settingsComp = new SettingsComponent(_m);
+			_settingsComp.name = 'settingComp';
 			_root.addChild(_settingsComp);
 			
+			_loginComp = new LoginComponent(_m);
+			_loginComp.name = 'loginComp';
+			_root.addChild(_loginComp);
+			
+			_liveStatusComp = new LiveStatusComponent(_m);
+			_liveStatusComp.name = 'liveStatusComp';
+			_root.addChild(_liveStatusComp);
+			
+			_userOnOffLineComp = new UserOnOffLineComponent(_m);
+			_userOnOffLineComp.name = "userOnOffLineComp";
+			_root.addChild(_userOnOffLineComp);
+			
 			_loggerComp = new LoggerComponent(_m);
-			_root.addChild(_loggerComp);	
+			_loggerComp.name = 'loggerComp';
+			_root.addChild(_loggerComp);
+			
+			_logoComp = new LogoComponent(_m);
+			_logoComp.name = 'logoComp';
+			_root.addChild(_logoComp);
 			
 			var rightclickmenu:RightClickMenu = new RightClickMenu(_m, _root);
 			rightclickmenu.initializeMenu();
@@ -152,6 +188,8 @@ package com.xinguoedu.v
 			_videoComp.addEventListener(ViewEvt.PLAY, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_videoComp.addEventListener(ViewEvt.NORMAL, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			_videoComp.addEventListener(ViewEvt.FULLSCREEN, function(evt:ViewEvt):void{ dispatchEvent(evt); });
+			
+			_loginComp.addEventListener(ViewEvt.ENTER_ROOM, function(evt:ViewEvt):void{ dispatchEvent(evt); });
 			
 			if(_m.videoadVO.enabled)
 			{
