@@ -67,5 +67,10 @@ package com.xinguoedu.consts
 		 * 设置面板label和button的间隔 
 		 */		
 		public static const LABEL_BUTTON_MARGIN:int = 15;
+		
+		/**
+		 * 直播状态提示文字切换时间，单位毫秒 
+		 */		
+		public static const LIVE_STATUS_SWITCH:int = 1000;
 	}
 }
