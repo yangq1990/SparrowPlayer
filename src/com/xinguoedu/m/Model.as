@@ -4,6 +4,7 @@ package com.xinguoedu.m
 	import com.hurlant.util.Base64;
 	import com.xinguoedu.consts.ConnectionStatus;
 	import com.xinguoedu.consts.DebugConst;
+	import com.xinguoedu.consts.MediaType;
 	import com.xinguoedu.consts.PlayerState;
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
@@ -11,12 +12,15 @@ package com.xinguoedu.m
 	import com.xinguoedu.evt.debug.DebugEvt;
 	import com.xinguoedu.evt.js.JSEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
+	import com.xinguoedu.evt.view.BulletEvt;
 	import com.xinguoedu.m.js.JSAPI;
 	import com.xinguoedu.m.media.BaseMedia;
 	import com.xinguoedu.m.media.HLSMedia;
 	import com.xinguoedu.m.media.HttpEMedia;
 	import com.xinguoedu.m.media.HttpMedia;
-	import com.xinguoedu.m.media.RTMPMedia;
+	import com.xinguoedu.m.media.P2PLiveMedia;
+	import com.xinguoedu.m.media.RtmpLiveMedia;
+	import com.xinguoedu.m.media.RtmpVodMedia;
 	import com.xinguoedu.m.media.httpm.HttpMMedia;
 	import com.xinguoedu.m.vo.AdVO;
 	import com.xinguoedu.m.vo.ErrorHintVO;
@@ -26,6 +30,7 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.vo.NodeVO;
 	import com.xinguoedu.m.vo.QrcodeVO;
 	import com.xinguoedu.m.vo.SubtitleVO;
+	import com.xinguoedu.m.vo.UserVO;
 	import com.xinguoedu.m.vo.VideoAdVO;
 	import com.xinguoedu.utils.Configger;
 	import com.xinguoedu.utils.Logger;
@@ -36,6 +41,7 @@ package com.xinguoedu.m
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.display.StageDisplayState;
+	import flash.external.ExternalInterface;
 	import flash.utils.ByteArray;
 	
 	public class Model
@@ -54,6 +60,7 @@ package com.xinguoedu.m
 		private var _nodeVO:NodeVO = new NodeVO();
 		private var _feedbackVO:FeedbackVO = new FeedbackVO();
 		private var _subtitleVO:SubtitleVO = new SubtitleVO();
+		private var _userVO:UserVO = new UserVO();
 		/** 播放器皮肤 **/
 		private var _skin:MovieClip;
 		private var _state:String = PlayerState.IDLE;
@@ -75,7 +82,9 @@ package com.xinguoedu.m
 			_mediaMap[MediaType.HLS] = new HLSMedia(MediaType.HLS);
 			_mediaMap[MediaType.HTTPE] = new HttpEMedia(MediaType.HTTPE);		
 			_mediaMap[MediaType.HTTPM] = new HttpMMedia(MediaType.HTTPM);
-			_mediaMap[MediaType.RTMP] = new RTMPMedia(MediaType.RTMP);
+			_mediaMap[MediaType.RTMP_VOD] = new RtmpVodMedia(MediaType.RTMP_VOD);
+			_mediaMap[MediaType.RTMP_LIVE] = new RtmpLiveMedia(MediaType.RTMP_LIVE);
+			_mediaMap[MediaType.P2PLIVE] = new P2PLiveMedia(MediaType.P2PLIVE);
 		}
 		
 		private function addListeners():void
@@ -134,6 +143,10 @@ package com.xinguoedu.m
 				case StreamStatus.NOT_NEARLY_COMPLETE:
 					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.NOT_NEARLY_COMPLETE));
 					break;
+				case StreamStatus.LIVE_STREAM:
+					EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.IS_LIVE_MEDIA));
+					break;				
+				//handle connection
 				case ConnectionStatus.CLOSED:
 					sendErrorAndDebugMsg(DebugConst.CONNECTION_CLOSED + ":" + mediaVO.url);
 					break;
@@ -145,6 +158,7 @@ package com.xinguoedu.m
 					break;
 				case ConnectionStatus.FAILED:
 					sendErrorAndDebugMsg(DebugConst.CONNECTION_FAILED + ":" + mediaVO.url);
+					break;
 				default:
 					break;
 			}
@@ -215,7 +229,20 @@ package com.xinguoedu.m
 		
 		private function bulletcurtainHandler(evt:JSEvt):void
 		{
-			EventBus.getInstance().dispatchEvent(evt);
+			var msg:String = evt.data.msg;
+			if(media.isLive)
+			{
+				if(!media.isConnected)
+				{
+					ExternalInterface.call('alert', '少年莫急，需要先登录服务器');
+					return;
+				}
+				
+				media.sendChatMsg(_userVO.name, msg);
+			}			
+			
+			evt.data.msg = '我说：' + msg;
+			EventBus.getInstance().dispatchEvent(new BulletEvt(BulletEvt.CHAT_MSG_INCOMING, evt.data));
 		}
 										   
 		
@@ -504,6 +531,11 @@ package com.xinguoedu.m
 		public function get secondLangTextArray():Array
 		{
 			return _secondLangTextArray;
+		}
+
+		public function get userVO():UserVO
+		{
+			return _userVO;
 		}
 	}
 }
