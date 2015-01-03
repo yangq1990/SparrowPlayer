@@ -37,6 +37,7 @@ package com.xinguoedu.c
 			_v.addEventListener(ViewEvt.PLAY_NEXT, playnextHandler);
 			_v.addEventListener(ViewEvt.DRAG_TIMESLIDER_MOVING, dragTimeSliderMovingHandler);
 			_v.addEventListener(ViewEvt.MUTE, muteHandler);
+			_v.addEventListener(ViewEvt.ENTER_ROOM, enterRoomHandler);
 		}
 		
 		private function playHandler(evt:ViewEvt):void
@@ -140,6 +141,13 @@ package com.xinguoedu.c
 		{
 			_m.media.mute(evt.data, _m.volume);
 			_m.isMute = evt.data;
+		}
+		
+		/** 用户尝试登录直播房间 **/
+		private function enterRoomHandler(evt:ViewEvt):void
+		{
+			_m.userVO.name = evt.data;
+			_m.media.connectToMediaServer(_m.userVO);
 		}
 	}
 }
