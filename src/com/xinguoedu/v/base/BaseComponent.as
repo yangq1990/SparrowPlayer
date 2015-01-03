@@ -1,11 +1,14 @@
 package com.xinguoedu.v.base
 {
 	import com.greensock.TweenLite;
+	import com.xinguoedu.consts.ModuleID;
 	import com.xinguoedu.consts.PlayerColor;
 	import com.xinguoedu.evt.EventBus;
+	import com.xinguoedu.evt.ModuleEvt;
 	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.Model;
+	import com.xinguoedu.m.vo.MsgVO;
 	import com.xinguoedu.utils.ShapeFactory;
 	import com.xinguoedu.utils.StageReference;
 	
@@ -16,6 +19,8 @@ package com.xinguoedu.v.base
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
+	import flash.text.TextField;
+	import flash.utils.Dictionary;
 	import flash.utils.clearTimeout;
 	
 	/**
@@ -38,12 +43,18 @@ package com.xinguoedu.v.base
 		protected var _compTween:TweenLite;
 		/** 超时计时器 **/
 		protected var _timeout:uint;
+		protected var _dict:Dictionary = new Dictionary();
+		/** 缓存数据的仓库 **/
+		protected var _repo:Array;
+		/** 提示信息 **/
+		protected var _hint:TextField;
 		
 		public function BaseComponent(m:Model)
 		{
 			super();			
 			this._m = m;		
 			buildUI();
+			registerCallback();
 			addListeners();
 		}
 		
@@ -57,6 +68,7 @@ package com.xinguoedu.v.base
 			StageReference.stage.addEventListener(Event.RESIZE, resizeHandler);
 			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_COMPLETE, mediaCompleteHandler);
+			EventBus.getInstance().addEventListener(ModuleEvt.INCOMING_MSG, moduleMsgHandler);
 		}
 		
 		private function resizeHandler(evt:Event):void
@@ -220,6 +232,24 @@ package com.xinguoedu.v.base
 				_timeout = undefined;
 			}		
 		}
+		
+		protected function registerCallback():void
+		{
+			_dict[ModuleID.USER] = usrModuleHandler;
+		}
+		
+		protected function usrModuleHandler(data:MsgVO):void
+		{
+			
+		}		
+		
+		private function moduleMsgHandler(evt:ModuleEvt):void
+		{
+			if(_dict[evt.moduleID] is Function)
+			{
+				_dict[evt.moduleID](evt.data);
+			}
+		}	
 		
 	}
 }
