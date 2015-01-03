@@ -9,8 +9,6 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.evt.settings.SettingsEvt;
 	import com.xinguoedu.evt.view.ViewEvt;
 	import com.xinguoedu.m.Model;
-	import com.xinguoedu.utils.Logger;
-	import com.xinguoedu.utils.StageReference;
 	import com.xinguoedu.utils.Stretcher;
 	import com.xinguoedu.v.base.BaseComponent;
 	
@@ -18,7 +16,6 @@ package com.xinguoedu.v.component
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.StageDisplayState;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -40,6 +37,8 @@ package com.xinguoedu.v.component
 		private var _widHeiDict:Object;
 		/** 当前画面调整规则 **/
 		private var _stretcherType:String = StretcherType.UNIFORM;
+		/** 是否直播媒体 **/
+		private var _isLive:Boolean;
 		
 		public function VideoComponent(m:Model)
 		{
@@ -64,9 +63,21 @@ package com.xinguoedu.v.component
 			EventBus.getInstance().addEventListener(SettingsEvt.NONE, resizeFrameHandler);
 			EventBus.getInstance().addEventListener(SettingsEvt.EXACTFIT, resizeFrameHandler);
 			EventBus.getInstance().addEventListener(SettingsEvt.SIXTEEN_NINE, resizeFrameHandler);	
+			EventBus.getInstance().addEventListener(MediaEvt.IS_LIVE_MEDIA, liveMediaHandler);
 		}
 		
 		private function mediaLoadedHandler(evt:MediaEvt):void
+		{
+			show();
+		}
+		
+		private function liveMediaHandler(evt:MediaEvt):void
+		{
+			_isLive = true;
+			show();	
+		}
+		
+		private function show():void
 		{
 			_media = _m.media.display;
 			addChild(_media);
@@ -79,7 +90,7 @@ package com.xinguoedu.v.component
 		private function mediaMetaDataHandler(evt:MediaEvt):void
 		{
 			_widHeiDict = evt.data;
-			stretchMedia(_stretcherType);	
+			stretchMedia(_stretcherType, true, _isLive);	
 		}
 		
 		override protected function resize():void
@@ -92,9 +103,9 @@ package com.xinguoedu.v.component
 		 * 调整画面尺寸 
 		 * @param type 调整规则
 		 * @param needTween 调整后是否需要缓动效果
-		 * 
+		 * @param isLvie 是否直播，直播的时候controlbar隐藏，根据stageHeight调整视频的位置
 		 */		
-		private function stretchMedia(type:String, needTween:Boolean=true):void
+		private function stretchMedia(type:String, needTween:Boolean=true, isLive:Boolean=false):void
 		{
 			if(!_widHeiDict)
 				return;
@@ -103,7 +114,7 @@ package com.xinguoedu.v.component
 			var w:Number = _media.width;
 			var h:Number = _media.height;
 			
-			if(_m.autohide || (!_m.autohide && _m.isFullScreen))
+			if(isLive || _m.autohide || (!_m.autohide && _m.isFullScreen))
 			{
 				Stretcher.stretch(_media, stageWidth, stageHeight, _widHeiDict, type);	
 			}
