@@ -109,6 +109,9 @@ package com.xinguoedu.c
 			
 			//error hint
 			_m.errorHintVO.url = _m.playerconfig.errorHint.url;		
+			
+			//groupname for p2p
+			_m.userVO.groupName = _m.playerconfig.groupname;
 		}
 		
 		/** 加载皮肤 **/
