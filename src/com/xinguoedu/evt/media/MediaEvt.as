@@ -56,6 +56,16 @@ package com.xinguoedu.evt.media
 		 */		
 		public static const MEDIA_PREVIEW_HINT:String = "media_preview_hint";
 		
+		/**
+		 * 直播媒体，包括p2p直播和rtmp直播 
+		 */		
+		public static const IS_LIVE_MEDIA:String = "is_live_media";
+		
+		/**
+		 * 直播状态 
+		 */		
+		public static const LIVE_STATUS:String = "live_status"; 
+		
 		public var data:*;
 		
 		public function MediaEvt(type:String, d:*=null, bubbles:Boolean=false, cancelable:Boolean=false)
