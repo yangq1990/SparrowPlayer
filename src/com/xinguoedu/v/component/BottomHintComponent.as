@@ -24,8 +24,6 @@ package com.xinguoedu.v.component
 	{
 		/** 背景图形 **/
 		private var _back:Shape;
-		/** 提示信息 **/
-		private var _hint:TextField;		
 		
 		public function BottomHintComponent(m:Model)
 		{
