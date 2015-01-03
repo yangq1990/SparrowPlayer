@@ -29,7 +29,7 @@ package com.xinguoedu.m.js
 				ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
 				ExternalInterface.addCallback("fl_pause", pauseHandler);
 				ExternalInterface.addCallback("fl_play", playeHandler);
-				ExternalInterface.addCallback("fl_tucao", tucaoHandler);
+				ExternalInterface.addCallback("fl_sendMsg", sendMsgHandler);
 			}			
 		}
 	
@@ -60,8 +60,8 @@ package com.xinguoedu.m.js
 			dispatchEvent(new JSEvt(JSEvt.PLAY));
 		}
 		
-		/** 吐槽，生成弹幕 **/
-		private function tucaoHandler(obj:Object):void
+		/** 聊天信息，生成弹幕 **/
+		private function sendMsgHandler(obj:Object):void
 		{
 			if(obj.msg == '')
 				return;
