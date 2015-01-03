@@ -130,7 +130,8 @@ package com.xinguoedu.v.component
 			StageReference.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownHandler);
 			StageReference.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpHandler);
 			this.addEventListener(MouseEvent.MOUSE_OVER, mouseOverControlbarHandler);
-			this.addEventListener(MouseEvent.MOUSE_OUT, mouseOutControlbarHandler);			
+			this.addEventListener(MouseEvent.MOUSE_OUT, mouseOutControlbarHandler);	
+			EventBus.getInstance().addEventListener(ViewEvt.SHOW_LOGIN_COMPONENT, function(evt:ViewEvt):void{_skin.visible = false;});
 		}
 		
 		/** 提示，包括文字提示和时间提示 **/
@@ -197,7 +198,8 @@ package com.xinguoedu.v.component
 						return;
 					
 					rct = new Rectangle(_scrubber.rail.x+_scrubber.icon.width*0.5, _scrubber.icon.y, _scrubber.rail.width - _scrubber.icon.width, 0);	
-					_scrubber.mark.width = _scrubber.done.width = evt.localX;		
+					_scrubber.mark.width = _scrubber.done.width = evt.localX;	
+					_elapsedText.text = Strings.digits(evt.localX / widthDurationScale);  //立刻显示拖动到的时间
 					dispatchEvent(new ViewEvt(ViewEvt.MOUSEDOWN_TO_SEEK));
 				}
 				else if(_scrubber.name == 'volumeSlider')
