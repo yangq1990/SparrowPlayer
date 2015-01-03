@@ -9,6 +9,11 @@ package com.xinguoedu.evt.view
 		 */		
 		public static const ADD_NEW_BULLET:String = "add_new_bullet";
 		
+		/**
+		 * 收到聊天信息 
+		 */		
+		public static const CHAT_MSG_INCOMING:String = "chat_msg_incoming";
+		
 		public var data:*;
 		
 		public function BulletEvt(type:String, data:*=null, bubbles:Boolean=false, cancelable:Boolean=false)
