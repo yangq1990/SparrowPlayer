@@ -5,6 +5,7 @@ package com.xinguoedu.m.media
 	import com.xinguoedu.consts.StreamStatus;
 	import com.xinguoedu.evt.EventBus;
 	import com.xinguoedu.evt.media.MediaEvt;
+	import com.xinguoedu.m.vo.BaseVO;
 	import com.xinguoedu.m.vo.MediaVO;
 	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.utils.MetadataUtil;
@@ -54,6 +55,10 @@ package com.xinguoedu.m.media
 		/** 是否播放完标识，对于分段视频，指的是全部分段播放complete,或者最后一个分段播放complete **/
 		protected var _isComplete:Boolean = false;
 		protected var _volume:int = 70;
+		/** 是否直播 **/
+		protected var _isLive:Boolean = false;
+		/** 是否连接到服务器 **/
+		protected var _isConnected:Boolean = false;
 		
 		public function BaseMedia(mediaType:String)
 		{
@@ -66,14 +71,18 @@ package com.xinguoedu.m.media
 		{
 			_mediaVO = mediaVO;
 		}
-		
+
 		/**
-		 * 构造Video对象，并使视频注册点与中心点重合 
+		 * 构造Video对象，并使视频注册点与中心点重合
+		 * @param w  video宽 
+		 * @param h  video高
 		 * 
 		 */		
-		protected function getVideo():void
+		protected function getVideo(w:int=320, h:int=240):void
 		{
 			_video = new Video();
+			_video.width = w;
+			_video.height = h;
 			_video.smoothing = true;
 			_video.x = -_video.width >> 1;
 			_video.y = -_video.height >> 1;
@@ -109,9 +118,15 @@ package com.xinguoedu.m.media
 			//格式工厂等软件，在转换mp4->flv的时候，可能不会生成flv需要的keyframes信息，所以这里做了提示
 			!_ismp4 && !_keyframes && Logger.error('BaseMedia', '此flv文件没有关键帧数据，将无法正确拖动');
 			
-			_duration = info.duration;
+			//mp4拖动后仍然会触发onMetaData,并且duration会发生变化，这里作判断，防止重复更改_duration的值
+			(_duration==0) && (_duration = info.duration);
 			
-			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_METADATA, {w:info.width, h:info.height}));
+			dispatchMetaData({w:info.width, h:info.height});
+		}
+		
+		protected function dispatchMetaData(obj:Object):void
+		{
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.MEDIA_METADATA, obj));
 		}
 		
 		/**
@@ -318,6 +333,47 @@ package com.xinguoedu.m.media
 		{
 			_volume = value;
 		}
+		
+		/**
+		 * 连接media server 
+		 * 交给子类重写
+		 */		
+		public function connectToMediaServer(vo:BaseVO=null):void
+		{
+			
+		}
+	
+		/**
+		 * 发送聊天信息, 交给子类重写 
+		 * @param name 发送者名字
+		 * @param msg 聊天信息
+		 * 
+		 */		
+		public function sendChatMsg(name:String, msg:String):void
+		{
+			
+		}	
 
+		/** 是否直播 **/
+		public function get isLive():Boolean
+		{
+			return _isLive;
+		}
+
+		/** 是否连接到服务器 **/
+		public function get isConnected():Boolean
+		{
+			return _isConnected;
+		}
+
+		/**
+		 * 派发直播时的状态消息 
+		 * @param status
+		 * 
+		 */		
+		protected function dispatchLiveStatus(status:String):void
+		{
+			EventBus.getInstance().dispatchEvent(new MediaEvt(MediaEvt.LIVE_STATUS, status));
+		}
 	}
 }
