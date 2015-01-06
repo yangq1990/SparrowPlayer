@@ -18,6 +18,7 @@ package com.xinguoedu.v.component
 	import flash.events.IOErrorEvent;
 	import flash.events.MouseEvent;
 	import flash.events.NetStatusEvent;
+	import flash.filters.BlurFilter;
 	import flash.media.SoundTransform;
 	import flash.media.Video;
 	import flash.net.NetConnection;
@@ -35,7 +36,7 @@ package com.xinguoedu.v.component
 	 */	
 	public class VideoAdsComponent extends BaseComponent
 	{
-		private var _container:Sprite;	
+		private var _back:Sprite;	
 		private var _nc:NetConnection;
 		private var _stream:NetStream;		
 		private var _video:Video;
@@ -47,16 +48,12 @@ package com.xinguoedu.v.component
 		private var _dur:Number = 0;
 		/** 广告总时长 **/
 		private var _totalDur:int = 0;
-		/** Object with keyframe times and positions. **/
-		private var _keyframes:Object;
-		/** 是否mp4文件 **/
-		private var _mp4:Boolean;		
 		/** 剩余时间 **/
 		private var _secText:TextField;
 		/** 静音 **/
 		private var _muteMC:MovieClip;
 		/** 会员去广告 **/
-		private var _noadMC:Sprite;
+		private var _noAdMC:Sprite;
 		/** 计时器 **/
 		private var _interval:uint;
 		/** **/
@@ -68,10 +65,12 @@ package com.xinguoedu.v.component
 		/** 视频是否在静音状态 **/
 		private var _isMute:Boolean;
 		/** 视频音量 **/
-		private var _vol:Number;
-		
+		private var _vol:Number;		
 		private var _timeBeforeSeeking:Number = 0;
 		private var _timeWhenSeekComplete:Number = 0;
+		/** 视频原始宽高 **/
+		private var _w:Number;
+		private var _h:Number;
 		
 		
 		public function VideoAdsComponent(m:Model)
@@ -81,19 +80,19 @@ package com.xinguoedu.v.component
 		
 		override protected function buildUI():void
 		{			
-			_container = new Sprite();
-			var g:Graphics = _container.graphics;
+			_back = new Sprite();
+			var g:Graphics = _back.graphics;
 			g.beginFill(0x000000);
 			g.drawRect(0, 0, stageWidth, stageHeight);
 			g.endFill();
-			addChild(_container);
+			addChild(_back);
 			
 			_video = new Video();
 			_video.smoothing = true;
 			addChild(_video);			
 			
 			_skin = _m.skin.videoad as MovieClip;
-			_skin.x = stageWidth - _skin.width*0.5 - Layout.MARGIN_TO_STAGEBORDER;
+			_skin.x = _skin.width*0.5 + Layout.MARGIN_TO_STAGEBORDER;
 			_skin.y = Layout.MARGIN_TO_STAGEBORDER + _skin.height * 0.5;
 			addChild(_skin);
 			
@@ -104,14 +103,16 @@ package com.xinguoedu.v.component
 			_muteMC.buttonMode = true;
 			_muteMC.addEventListener(MouseEvent.CLICK, mutemcClickHandler);
 			
-			_noadMC = _skin.noad_mc as MovieClip;
-			_noadMC.mouseChildren = false;
-			_noadMC.buttonMode = true;
-			_noadMC.addEventListener(MouseEvent.CLICK, noadmcClickHandler);
+			_noAdMC = _skin.noad_mc as MovieClip;
+			_noAdMC.mouseChildren = false;
+			_noAdMC.buttonMode = true;
+			_noAdMC.addEventListener(MouseEvent.CLICK, noadmcClickHandler);
 			
 			_learnmoreBtn = new Sprite();
 			_learnmoreBtn.buttonMode = true;
-			_learnmoreBtn.addEventListener(MouseEvent.CLICK, learnmoreHandler);		
+			_learnmoreBtn.addEventListener(MouseEvent.MOUSE_OVER, overLearnmoreHandler);
+			_learnmoreBtn.addEventListener(MouseEvent.MOUSE_OUT, outLearnmoreHandler);
+			_learnmoreBtn.addEventListener(MouseEvent.CLICK, clickLearnmoreHandler);		
 			
 			super.buildUI();
 		}
@@ -123,7 +124,6 @@ package com.xinguoedu.v.component
 				_totalDur += item.duration;
 			}
 			_secText.text = (Math.ceil(_totalDur)).toString();
-			_interval = setInterval(countdownHandler, NumberConst.COUNTDOWN_INTERVAL);
 			
 			var loader:MultifunctionalLoader = new MultifunctionalLoader();
 			loader.registerFunctions(loadCompleteHandler);
@@ -135,7 +135,8 @@ package com.xinguoedu.v.component
 			_stream = getStream();		
 			_stream.play(_m.videoadVO.adsArray[_index].url);			
 			
-			_video.attachNetStream(_stream);			
+			_video.attachNetStream(_stream);
+			_video.visible = false;//等到开始播放的时候再显示
 			
 			this.visible = true;
 		}
@@ -143,7 +144,7 @@ package com.xinguoedu.v.component
 		private function loadCompleteHandler(dp:DisplayObject):void
 		{
 			_learnmoreBtn.addChild(dp);
-			_learnmoreBtn.x = stageWidth - dp.width - Layout.MARGIN_TO_STAGEBORDER;
+			_learnmoreBtn.x =Layout.MARGIN_TO_STAGEBORDER;
 			_learnmoreBtn.y = stageHeight - dp.height - Layout.MARGIN_TO_STAGEBORDER;
 			addChild(_learnmoreBtn); //添加到最上层
 		}
@@ -155,15 +156,21 @@ package com.xinguoedu.v.component
 		
 		private function statusHandler(evt:NetStatusEvent):void
 		{
+			trace('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur);
 			_m.developermode && (Logger.info('VideoAdsComponent', evt.info.code + '--' + _stream.time + '--' + _dur));
 			switch(evt.info.code)
 			{
 				case StreamStatus.PLAY_START:
+					if(_interval)
+					{
+						clearInterval(_interval);
+						_interval = undefined;
+					}
+					break;
 				case StreamStatus.BUFFER_FULL:
 					_isPlaying = true;
-					break;
-				case StreamStatus.BUFFERING:
-					_isPlaying = false;
+					resize();
+					!_interval && (_interval = setInterval(countdownHandler, NumberConst.COUNTDOWN_INTERVAL));
 					break;
 				case StreamStatus.PLAY_STOP: 
 					break;
@@ -182,48 +189,18 @@ package com.xinguoedu.v.component
 		
 		public function onMetaData(info:Object):void
 		{
-			_video.width = info.width;
-			_video.height = info.height;
+			_w = info.width;
+			_h = info.height;
 			_dur = info.duration;
-			Stretcher.stretch(_video, stageWidth, stageHeight, {w:info.width, h:info.height});
 		}
 		
-		private function convertSeekpoints(dat:Object):Object 
+		override protected function resize():void
 		{
-			var kfr:Object = {};
-			kfr.times = [];
-			kfr.filepositions = [];
-			for (var j:String in dat)
-			{
-				kfr.times[j] = Number(dat[j]['time']);
-				kfr.filepositions[j] = Number(dat[j]['offset']);
-			}
-			return kfr;
-		}
-		
-		/**
-		 * 获得离指定时间最近的关键帧的位置或者时间
-		 * @param sec 指定的时间
-		 * @return 
-		 * 
-		 */		
-		public function getOffset(sec:Number):Number 
-		{
-			if (!_keyframes) 
-			{
-				return 0;
-			}
-			
-			for (var i:Number = 0; i < _keyframes.times.length - 1; i++) 
-			{
-				if (_keyframes.times[i] <= sec && _keyframes.times[i + 1] >= sec) 
-				{
-					break;
-				}
-			}
-			
-			return _keyframes.times[i+1];
-		}
+			Stretcher.stretch(_video, stageWidth, stageHeight, {w:_w, h:_h}, 'uniform', false);
+			_video.x = (stageWidth - _video.width) >> 1;
+			_video.y = (stageHeight - _video.height) >> 1;
+			_video.visible = true;
+		}	
 		
 		/**
 		 *  Receive NetStream playback codes
@@ -305,10 +282,23 @@ package com.xinguoedu.v.component
 			
 		}
 		
-		/** 跳到指定的链接 **/
-		private function learnmoreHandler(evt:Event):void
+		private function overLearnmoreHandler(evt:MouseEvent):void
 		{
-			navigateToURL(new URLRequest(_m.videoadVO.adsArray[_index].link));
+			_learnmoreBtn.filters = [new BlurFilter()];
+		}
+		
+		private function outLearnmoreHandler(evt:MouseEvent):void
+		{
+			_learnmoreBtn.filters = [];
+		}
+		
+		/** 跳到指定的链接 **/
+		private function clickLearnmoreHandler(evt:Event):void
+		{
+			var link:String = _m.videoadVO.adsArray[_index].link;
+			if(link == null)
+				return;
+			navigateToURL(new URLRequest(link));
 		}
 		
 		/** 倒计时处理函数 **/
@@ -353,12 +343,12 @@ package com.xinguoedu.v.component
 			
 			//destroy skin
 			_muteMC.removeEventListener(MouseEvent.CLICK, mutemcClickHandler);
-			_noadMC.removeEventListener(MouseEvent.CLICK, noadmcClickHandler);
+			_noAdMC.removeEventListener(MouseEvent.CLICK, noadmcClickHandler);
 			removeChild(_skin);
 			_skin = null;
 			
 			//destroy learnmore button
-			_learnmoreBtn.removeEventListener(MouseEvent.CLICK, learnmoreHandler);
+			_learnmoreBtn.removeEventListener(MouseEvent.CLICK, clickLearnmoreHandler);
 			removeChild(_learnmoreBtn);
 			_learnmoreBtn = null;	
 			
@@ -373,8 +363,8 @@ package com.xinguoedu.v.component
 			
 			_nc = null;
 			
-			removeChild(_container);
-			_container = null;			
+			removeChild(_back);
+			_back = null;			
 			
 			dispatchEvent(new ViewEvt(ViewEvt.VIDEOADS_COMPLETE));
 		}
