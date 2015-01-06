@@ -18,8 +18,9 @@ package com.xinguoedu.utils
 		 * @param hei	The target height.
 		 * @param widHeiDict 存储视频原始宽高的关联数组，数据结构 {w: Number, h:Number}
 		 * @param typ	The stretching type.
+		 * @param needAdjustment 是否需要调整clp坐标，默认是true
 		 **/
-		public static function stretch(clp:DisplayObject, wid:Number, hei:Number, widHeiDict:Object, typ:String='uniform'):void 
+		public static function stretch(clp:DisplayObject, wid:Number, hei:Number, widHeiDict:Object, typ:String='uniform', needAdjustment:Boolean=true):void 
 		{			
 			switch (typ) {
 				case StretcherType.EXACTFIT:
@@ -70,8 +71,12 @@ package com.xinguoedu.utils
 			
 			(clp.width / wid > 0.95) && (clp.width = wid);
 			(clp.height / hei > 0.95) && (clp.height = hei);
-			clp.x = wid >> 1;
-			clp.y = hei >> 1;
+			
+			if(needAdjustment)
+			{
+				clp.x = wid >> 1;
+				clp.y = hei >> 1;
+			}			
 			
 			//往下移1px
 			(clp.y == 0) && (clp.y = 1);
