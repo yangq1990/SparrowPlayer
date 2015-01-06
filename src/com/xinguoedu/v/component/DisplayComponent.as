@@ -5,7 +5,6 @@ package com.xinguoedu.v.component
 	import com.xinguoedu.evt.PlayerStateEvt;
 	import com.xinguoedu.evt.media.MediaEvt;
 	import com.xinguoedu.m.Model;
-	import com.xinguoedu.utils.Logger;
 	import com.xinguoedu.v.base.BaseComponent;
 	
 	import flash.display.MovieClip;
