@@ -51,22 +51,22 @@
             flashvars.feedbackurl = encodeURIComponent("http://bbs.9ria.com/thread-418059-1-1.html");
             
             //值为空或者不设置flashvars.subtitleurl，表明没有字幕文件; 当有字幕文件的时候，如果字幕是双语的，isBilingual需要显式设为1，默认值为0
-            flashvars.subtitleurl = 'http://www.xinguoedu.com/sparrow/video/jp.srt' ;
-            flashvars.bilingual = 1;
+            //flashvars.subtitleurl = 'http://www.xinguoedu.com/sparrow/video/jp.srt' ;
+            //flashvars.bilingual = 1;
         
             //http
-            flashvars.type = 'http';
+            //flashvars.type = 'http';
             //flashvars.url = 'http://www.xinguoedu.com/sparrow/video/jp.mp4';
             //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/xiaojibibi.flv");      
-            flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/akb48.flv")      
+            //flashvars.url = encodeURIComponent("http://www.xinguoedu.com/sparrow/video/akb48.flv")      
             
             //hls
             //flashvars.type = 'hls';
             //flashvars.url = 'http://my.tv.sohu.com/ipad/75266300.m3u8';
             
             //httpe
-            //flashvars.type = 'httpe';
-            //flashvars.url = 'http://www.xinguoedu.com/sparrow/video/jiangnan.flv';
+            flashvars.type = 'httpe';
+            flashvars.url = 'http://www.xinguoedu.com/sparrow/video/jiangnan.flv';
             
            	//httpm  http multi-segments  多段视频
             //flashvars.type = "httpm";
@@ -89,16 +89,20 @@
             //是否打开视频广告功能，1打开 0关闭
             flashvars.vads_enabled = 0;
             //片头的视频广告, 包含相关信息的json string
-            flashvars.videoads ='[{"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv"},{"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv"},{"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv"}]';
+            var link = encodeURIComponent("http://homecode.taobao.com");
+            var videoAdsArr = new Array();
+            videoAdsArr.push({"duration":15.09,"url":"http://www.xinguoedu.com/sparrow/videoads/intel.flv", "link":link});
+            videoAdsArr.push({"duration":30.19,"url":"http://www.xinguoedu.com/sparrow/videoads/baiwei.flv", "link":link});
+            videoAdsArr.push({"duration":15.10,"url":"http://www.xinguoedu.com/sparrow/videoads/biyou.flv", "link":link});
+            flashvars.videoads = JSON.stringify(videoAdsArr);
             
             //视频暂停时候的广告
-            var str = encodeURIComponent("http://wd.koudai.com/?userid=221705143&wfr=c"); //需要先encodeURIComponent，不然json解析会出错
             var arr = new Array();
-            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad4.jpg","link": str});
-            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad0.jpg","link": str});
-            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad3.jpg","link": str});
-            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad1.jpg","link": str});
-            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad2.jpg","link": str});            
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad4.jpg","link": link});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad0.jpg","link": link});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad3.jpg","link": link});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad1.jpg","link": link});
+            arr.push({"url":"http://www.xinguoedu.com/sparrow/ad2.jpg","link": link});            
             flashvars.ads = JSON.stringify(arr);       
             
             //视频节点(或者教学视频的知识点)所在的时间和提示信息
