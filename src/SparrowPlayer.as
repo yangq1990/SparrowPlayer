@@ -24,14 +24,14 @@ package
 		
 		override protected function init():void
 		{
-			super.init();
+			super.init();			
 			
 			new StageReference(this);
 			
 			_m = new Model();
 			_v = new View(_m);
-			_c = new Controller(_v, _m);
 			
+			_c = new Controller(_v, _m);		
 			_c.setupPlayer();
 		}
 	}
