@@ -16,11 +16,11 @@ package com.xinguoedu.m
 	import com.xinguoedu.m.js.JSAPI;
 	import com.xinguoedu.m.media.BaseMedia;
 	import com.xinguoedu.m.media.HLSMedia;
-	import com.xinguoedu.m.media.HttpEMedia;
 	import com.xinguoedu.m.media.HttpMedia;
 	import com.xinguoedu.m.media.P2PLiveMedia;
 	import com.xinguoedu.m.media.RtmpLiveMedia;
 	import com.xinguoedu.m.media.RtmpVodMedia;
+	import com.xinguoedu.m.media.httpe.HttpEMedia;
 	import com.xinguoedu.m.media.httpm.HttpMMedia;
 	import com.xinguoedu.m.vo.AdVO;
 	import com.xinguoedu.m.vo.ErrorHintVO;
