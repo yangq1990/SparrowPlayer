@@ -56,7 +56,14 @@ package com.xinguoedu.consts
 		 */		
 		public static const LIVE_STREAM:String = "live_stream";
 		
+		/**
+		 * FlashPlayer版本低于12.0, 无法使用多线程 
+		 */		
+		public static const FPVERSION_TOO_LOW:String = "fpversion_too_low";
 		
-		
+		/**
+		 * 处理加密视频时发生错误 
+		 */		
+		public static const HANDLE_ENCRYPTED_MEDIA_ERROR:String ="handle_encrypted_media_error";	
 	}
 }
