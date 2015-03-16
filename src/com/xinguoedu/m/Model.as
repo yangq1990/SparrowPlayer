@@ -112,6 +112,9 @@ package com.xinguoedu.m
 				case StreamStatus.STREAM_NOT_FOUND:
 					sendErrorAndDebugMsg(DebugConst.STREAM_NOT_FOUND + ":" + mediaVO.url);
 					break;
+				case StreamStatus.HANDLE_ENCRYPTED_MEDIA_ERROR:
+					sendErrorAndDebugMsg(DebugConst.HANDLE_ENCRYPTED_MEDIA_ERROR + ":" + mediaVO.url);
+					break;
 				case StreamStatus.BUFFER_EMPTY: 	//缓冲
 				case StreamStatus.PLAY_START:
 					if(state == PlayerState.PAUSED)
@@ -159,6 +162,8 @@ package com.xinguoedu.m
 				case ConnectionStatus.FAILED:
 					sendErrorAndDebugMsg(DebugConst.CONNECTION_FAILED + ":" + mediaVO.url);
 					break;
+				case StreamStatus.FPVERSION_TOO_LOW:
+					js.fpVersionTooLow();
 				default:
 					break;
 			}
