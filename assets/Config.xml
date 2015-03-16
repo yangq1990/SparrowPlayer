@@ -34,7 +34,7 @@
 	<volume>70</volume>
 	
 	<decrypt>
-		<omittedLength>0</omittedLength>
+		<omittedLength>1759</omittedLength>
 		<seed>128</seed>
 	</decrypt>
 	

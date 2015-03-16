@@ -40,11 +40,18 @@ package com.xinguoedu.v.component
 			destroy();
 			
 			if(_m.state == PlayerState.IDLE)
+			{
+				this.visible = false;
 				return;
+			}				
 			else if(_m.state == PlayerState.PLAYING || _m.state == PlayerState.BUFFERING)
+			{
 				_skin.gotoAndStop(2);
+			}				
 			else if(_m.state == PlayerState.PAUSED)
+			{
 				_skin.gotoAndStop(1);
+			}				
 			
 			this.visible = true;
 			resize();
