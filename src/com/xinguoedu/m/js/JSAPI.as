@@ -97,6 +97,15 @@ package com.xinguoedu.m.js
 			available && ExternalInterface.call("location.replace(location.href)");
 		}
 		
+		/**
+		 * 提醒用户升级 
+		 * 
+		 */		
+		public function fpVersionTooLow():void
+		{
+			available && ExternalInterface.call("alert", "FlashPlayer版本太低，请升级到12.0(包括12.0)以上");
+		}
+		
 		/** 外部接口是否可用 **/
 		private function get available():Boolean
 		{
