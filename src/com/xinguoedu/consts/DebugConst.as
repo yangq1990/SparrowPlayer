@@ -19,5 +19,7 @@ package com.xinguoedu.consts
 		public static const CONNECTION_SECURITY_ERROR:String = "连接media server发生安全沙箱错误";
 		
 		public static const CONNECTION_FAILED:String = "连接media server failed";
+		
+		public static const HANDLE_ENCRYPTED_MEDIA_ERROR:String = "处理加密视频时发生错误";
 	}
 }
