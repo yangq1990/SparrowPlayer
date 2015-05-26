@@ -22,7 +22,7 @@
         -->
         <style type="text/css" media="screen"> 
             html, body  { height:100%; }
-            body { margin:0; padding:10px 50px; overflow:auto; text-align:left; 
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
                    background-color: ${bgcolor}; }   
             object:focus { outline:none; }
             #flashContent { display:none; }
@@ -30,6 +30,8 @@
         
         <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
         <!-- BEGIN Browser History required section ${useBrowserHistory}>
+        <link rel="stylesheet" type="text/css" href="history/history.css" />
+        <script type="text/javascript" src="history/history.js"></script>
         <!${useBrowserHistory} END Browser History required section -->  
             
         <script type="text/javascript" src="swfobject.js"></script>
@@ -40,7 +42,6 @@
             var xiSwfUrlStr = "${expressInstallSwf}";
             var flashvars = {};
             
-            var flashvars = {};
             flashvars.vid = '123123123123';
             flashvars.autostart = 1; //1 自动播放 0 需要点击后才能播放
             flashvars.autohide = 0; //在normal screen的情况下，计时器时间到后是否自动隐藏controlbar
@@ -56,6 +57,7 @@
         
             //http
             //flashvars.type = 'http';
+            //flashvars.url = encodeURIComponent("http://124.117.232.70:8024/vod/93/Ns2YKc/Ns2YKc.flv");    
             
             //hls
             //flashvars.type = 'hls';
@@ -106,25 +108,25 @@
             //视频节点(或者教学视频的知识点)所在的时间和提示信息
             flashvars.nodes = '[{"hint":"挖掘机技术到底哪家强挖掘机技术到底哪家强挖掘机技术到底哪家强挖掘机技术到底哪家强挖掘机技术到底哪家强","time":30},{"hint":"中国山东找蓝翔！！！","time":80},{"hint":"读蓝翔技校，走向人生巅峰","time":130}]';
             
+            
             var params = {};
             params.quality = "high";
             params.bgcolor = "#000000";
             params.allowscriptaccess = "always";
             params.allowfullscreen = "true";
             var attributes = {};
-            attributes.id = "${application}";
-            attributes.name = "${application}";
+            attributes.id = "SparrowPlayer";
+            attributes.name = "SparrowPlayer";
             attributes.align = "middle";
             swfobject.embedSWF(
-                "${swf}.swf", "flashContent", 
+                "SparrowPlayer.swf", "flashContent", 
                 "860", "520", 
                 swfVersionStr, xiSwfUrlStr, 
                 flashvars, params, attributes);
             // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
             swfobject.createCSS("#flashContent", "display:block;text-align:left;");
         </script>
-        
-         <script type="text/javascript">
+        <script type="text/javascript">
     	   function thisMovie(movieName) 
    		   {
        		     if (navigator.appName.indexOf("Microsoft") != -1) 
@@ -166,54 +168,11 @@
     		{
         		document.getElementById('screenshot').setAttribute('src', str);
     		}
-
-    		/** from指的是弹幕的信息来源，self 自己  someone 某人， 默认是self **/
-    		function sendMsg(from)
-        	{	
-        		//setInterval(function(){thisMovie("SparrowPlayer").fl_sendMsg({msg:document.getElementById('msgInput').value, from:from});}, 50);
-
-                msgInput.disabled = true;
-                sendMsgBtn.disabled = true;
-                thisMovie("SparrowPlayer").fl_sendMsg({msg:msgInput.value, from:from});
-                msgInput.value = '';
-
-                setTimeout(function() {
-                    msgInput.disabled = false;
-                    sendMsgBtn.disabled = false;
-                    msgInput.focus();
-                }, 700);                
-        	}
-
-            var msgInput;
-            var sendMsgBtn;
-            //获取dom元素引用
-            function getRef()
-            {
-                msgInput = document.getElementById('msgInput');
-                sendMsgBtn = document.getElementById('sendMsgBtn');
-                var handler = function(evt)
-                {
-                    var e = evt || window.event;
-                    if(e.keyCode == 13) //按下Enter键
-                    {
-                        sendMsg('self');
-                    }
-                };
-
-                if(msgInput.addEventListener)
-                {
-                    msgInput.addEventListener('keydown', handler);
-                }
-                else if(msgInput.attachEvent) //IE8及其以前版本
-                {
-                    msgInput.attachEvent('onkeydown', handler);
-                }
-            }
          
          </script>
-
+         
     </head>
-    <body onload="getRef()">
+    <body>
         <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
              JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
              when JavaScript is disabled.
@@ -228,27 +187,20 @@
                 document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
                                 + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
             </script> 
-        </div> 
-          <input id="msgInput" type="text"/><input id="sendMsgBtn" type="button" value="发送" onclick="sendMsg('self')" />
-        <br/><br/>        
-        <input type="button" onclick="screenshot_handler()" value="截图">
-        <input type="button" onclick="qrcode_handler()" value="二维码">
-        <input type="button" onclick="pause_handler()" value="暂停">
-        <input type="button" onclick="play_handler()" value="播放">
-        <img id="screenshot" width="320" height="240"><br/><br/>   
+        </div>
         
         <noscript>
             <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="${width}" height="${height}" id="${application}">
                 <param name="movie" value="${swf}.swf" />
                 <param name="quality" value="high" />
                 <param name="bgcolor" value="${bgcolor}" />
-                <param name="allowScriptAccess" value="always" />
+                <param name="allowScriptAccess" value="sameDomain" />
                 <param name="allowFullScreen" value="true" />
                 <!--[if !IE]>-->
                 <object type="application/x-shockwave-flash" data="${swf}.swf" width="${width}" height="${height}">
                     <param name="quality" value="high" />
                     <param name="bgcolor" value="${bgcolor}" />
-                    <param name="allowScriptAccess" value="always" />
+                    <param name="allowScriptAccess" value="sameDomain" />
                     <param name="allowFullScreen" value="true" />
                 <!--<![endif]-->
                 <!--[if gte IE 6]>-->
@@ -265,8 +217,5 @@
                 <!--<![endif]-->
             </object>
         </noscript>     
-        
-     
-
    </body>
 </html>

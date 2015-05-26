@@ -8,6 +8,8 @@ package com.xinguoedu.c
 	
 	import flash.display.StageDisplayState;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.ui.Keyboard;
 
 	public class Controller
 	{
@@ -38,6 +40,8 @@ package com.xinguoedu.c
 			_v.addEventListener(ViewEvt.DRAG_TIMESLIDER_MOVING, dragTimeSliderMovingHandler);
 			_v.addEventListener(ViewEvt.MUTE, muteHandler);
 			_v.addEventListener(ViewEvt.ENTER_ROOM, enterRoomHandler);
+			
+			StageReference.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 		}
 		
 		private function playHandler(evt:ViewEvt):void
@@ -89,6 +93,29 @@ package com.xinguoedu.c
 		{
 			evt.data.save2cookie && (_m.volume = evt.data.pct);
 			_m.media.setVolume(evt.data.pct);
+		}
+		
+		private var _now:int = 100;
+		private function onKeyDown(evt:KeyboardEvent):void
+		{
+			switch(evt.keyCode)
+			{
+				case Keyboard.ENTER:
+					if(StageReference.stage.displayState == StageDisplayState.NORMAL)
+					{
+						StageReference.stage.displayState = StageDisplayState.FULL_SCREEN;
+					}
+					break;
+				/*case Keyboard.SPACE:
+					break;
+				case Keyboard.UP:
+					trace("up--->");
+					_now += 100;
+					_m.media.setVolume(_now);
+					break;*/
+				default:
+					break;				
+			}
 		}
 		
 		public function setupPlayer():void

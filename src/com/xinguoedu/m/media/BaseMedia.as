@@ -211,7 +211,7 @@ package com.xinguoedu.m.media
 		{
 			if(_stream != null && _stream.soundTransform.volume != volume / 100)
 			{
-				_stream.soundTransform = new SoundTransform(volume / 100);
+				_stream.soundTransform = new SoundTransform(volume / 100);				
 			}
 		}
 		
