@@ -1,6 +1,7 @@
 package com.xinguoedu.m.js
 {
 	import com.xinguoedu.evt.js.JSEvt;
+	import com.xinguoedu.utils.Logger;
 	
 	import flash.events.EventDispatcher;
 	import flash.external.ExternalInterface;
@@ -25,11 +26,18 @@ package com.xinguoedu.m.js
 		{
 			if(available)
 			{
-				ExternalInterface.addCallback("fl_screenshot", screenshotHandler);
-				ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
-				ExternalInterface.addCallback("fl_pause", pauseHandler);
-				ExternalInterface.addCallback("fl_play", playeHandler);
-				ExternalInterface.addCallback("fl_sendMsg", sendMsgHandler);
+				try
+				{
+					ExternalInterface.addCallback("fl_screenshot", screenshotHandler);
+					ExternalInterface.addCallback("fl_qrcode", qrcodeHandler);
+					ExternalInterface.addCallback("fl_pause", pauseHandler);
+					ExternalInterface.addCallback("fl_play", playeHandler);
+					ExternalInterface.addCallback("fl_sendMsg", sendMsgHandler);
+				}
+				catch(err:Error)
+				{
+					Logger.error("JSAPI", err.toString());
+				}
 			}			
 		}
 	
