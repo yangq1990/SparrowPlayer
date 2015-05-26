@@ -21,6 +21,7 @@ package com.xinguoedu.v.base
 		
 		protected function addedToStageHandler(evt:Event):void			
 		{
+			this.removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler);
 			init();
 		}
 		
