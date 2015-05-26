@@ -49,6 +49,9 @@ package com.xinguoedu.v.base
 		/** 提示信息 **/
 		protected var _hint:TextField;
 		
+		/** 是否需要重绘界面  **/
+		private var _updateFlag:Boolean = false;
+		
 		public function BaseComponent(m:Model)
 		{
 			super();			
@@ -66,6 +69,7 @@ package com.xinguoedu.v.base
 		protected function addListeners():void
 		{
 			StageReference.stage.addEventListener(Event.RESIZE, resizeHandler);
+			StageReference.stage.addEventListener(Event.RENDER, renderHandler);
 			EventBus.getInstance().addEventListener(PlayerStateEvt.PLAYER_STATE_CHANGE, playerStateChangeHandler);
 			EventBus.getInstance().addEventListener(MediaEvt.MEDIA_COMPLETE, mediaCompleteHandler);
 			EventBus.getInstance().addEventListener(ModuleEvt.INCOMING_MSG, moduleMsgHandler);
@@ -73,7 +77,23 @@ package com.xinguoedu.v.base
 		
 		private function resizeHandler(evt:Event):void
 		{
-			resize();
+			_updateFlag = true;
+			StageReference.stage.invalidate(); //标记失效
+		}
+		
+		private function renderHandler(evt:Event):void
+		{
+			if(_updateFlag)
+			{
+				resize();
+				_updateFlag = false;
+			}
+		}
+		
+		/** 交给子类重写 **/
+		protected function resize():void
+		{
+			
 		}
 		
 		/**
@@ -99,12 +119,6 @@ package com.xinguoedu.v.base
 		protected function getSkinComponent(skin:MovieClip, compName:String):DisplayObject
 		{
 			return skin.getChildByName(compName);
-		}
-		
-		/** 交给子类重写 **/
-		protected function resize():void
-		{
-			
 		}
 		
 		/**
