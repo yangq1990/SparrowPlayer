@@ -11,6 +11,7 @@ package com.xinguoedu.m.media.httpm
 	
 	import flash.net.NetConnection;
 	import flash.utils.Dictionary;
+	import flash.utils.setTimeout;
 
 	/**
 	 * 播放多段拼接起来的视频 
@@ -174,9 +175,15 @@ package com.xinguoedu.m.media.httpm
 		private function switchFrame():void
 		{
 			//_video.attachNetStream(null); 可能有bug，所以就注释掉了
-			_video.clear();			
-			_video.attachNetStream(currentSegment.stream);
-			currentSegment.setVolume(_volume);
+			_video.clear();
+			
+			//12ms后video attach 新的netstream,
+			//这样做的目的是as3底层需要大概10ms来准备播放需要的context
+			//如果video.clear()后直接attach, 可能会导致屏幕突然卡顿一下			
+			setTimeout(function() {
+				_video.attachNetStream(currentSegment.stream);
+				currentSegment.setVolume(_volume);
+			}, 12);			
 		}
 		
 		
